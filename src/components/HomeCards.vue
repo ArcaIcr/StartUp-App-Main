@@ -1,23 +1,39 @@
 <script setup>
 import Card from "@/components/Card.vue";
+import { RouterLink } from "vue-router"; // Import RouterLink to handle navigation
 </script>
 
 <template>
   <section class="py-4">
     <div class="container-xl lg:container m-auto">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-lg">
-        <Card>
-          <h2 class="text-2xl font-bold">For Developers</h2>
-          <p class="mt-2 mb-4">
-            Browse our Vue jobs and start your career today
-          </p>
-          <a
-            href="jobs.html"
-            class="inline-block bg-black text-white rounded-lg px-4 py-2 hover:bg-gray-700"
-          >
-            Browse Jobs
-          </a>
+        <!-- Card for Developers with correct RouterLink usage -->
+        <Card bg="bg-violet-200">
+          <h2 class="text-2xl font-bold">ROI Calculator</h2>
+          <p class="mt-2 mb-4">Calculate your ROI now!</p>
+          <!-- Correct usage of RouterLink to navigate to ROI -->
+          <RouterLink to="/roi">
+            <span
+              class="inline-block bg-black text-white rounded-lg px-4 py-2 hover:bg-gray-700 cursor-pointer"
+            >
+              Calculate ROI
+            </span>
+          </RouterLink>
         </Card>
+
+        <!-- Example Card for Employers -->
+        <Card bg="bg-violet-200">
+          <h2 class="text-2xl font-bold">Business Assessment</h2>
+          <p class="mt-2 mb-4">Start Appraising your Business</p>
+          <RouterLink
+            to="/business"
+            class="inline-block bg-violet-500 text-white rounded-lg px-4 py-2 hover:bg-green-600"
+          >
+            Assessment
+          </RouterLink>
+        </Card>
+
+        <!-- Another Example Card for Employers -->
         <Card bg="bg-violet-200">
           <h2 class="text-2xl font-bold">For Employers</h2>
           <p class="mt-2 mb-4">
@@ -30,18 +46,8 @@ import Card from "@/components/Card.vue";
             Add Job
           </a>
         </Card>
-        <Card bg="bg-violet-200">
-          <h2 class="text-2xl font-bold">For Employers</h2>
-          <p class="mt-2 mb-4">
-            List your job to find the perfect developer for the role
-          </p>
-          <a
-            href="add-job.html"
-            class="inline-block bg-violet-500 text-white rounded-lg px-4 py-2 hover:bg-green-600"
-          >
-            Add Job
-          </a>
-        </Card>
+
+        <!-- Additional Card Example -->
         <Card bg="bg-violet-200">
           <h2 class="text-2xl font-bold">For Employers</h2>
           <p class="mt-2 mb-4">

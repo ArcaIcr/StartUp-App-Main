@@ -1,26 +1,38 @@
 <script setup>
 import { ref } from "vue";
 import { RouterLink } from "vue-router"; // Import RouterLink to handle navigation
+import axios from "axios"; // Import Axios for making HTTP requests
 
 // Reactive variables to store form inputs
 const revenue = ref("");
-const profitMargin = ref("");
-const growthRate = ref("");
+const previousRevenue = ref("");
+const totalExpenses = ref("");
 const customerBase = ref("");
+const months = ref(12); // Default to 12 months
 const insights = ref("");
 
 // Method to handle form submission
-const handleFormSubmit = () => {
-  // Example insight generation based on form inputs
-  insights.value = `
-    Based on your inputs:
-    - Revenue: $${revenue.value}
-    - Profit Margin: ${profitMargin.value}%
-    - Growth Rate: ${growthRate.value}%
-    - Customer Base: ${customerBase.value}
-
-    Suggested Action: Focus on increasing your profit margin through cost optimization, and consider diversifying your customer base to drive growth.
-  `;
+const handleFormSubmit = async () => {
+  try {
+    const response = await axios.get('https://startup-compass-api.onrender.com/business-assessment', {
+      params: {
+        current_revenue: revenue.value,
+        previous_revenue: previousRevenue.value,
+        total_expenses: totalExpenses.value,
+        customer_base: customerBase.value,
+        months: months.value
+      }
+    });
+    
+    // Set insights from the response
+    insights.value = response.data.insights.join('\n');
+  } catch (error) {
+    if (error.response) {
+      insights.value = error.response.data.error || 'An error occurred.';
+    } else {
+      insights.value = 'An error occurred while connecting to the API.';
+    }
+  }
 };
 </script>
 
@@ -42,48 +54,40 @@ const handleFormSubmit = () => {
             <!-- Business Performance Overview Form -->
             <form @submit.prevent="handleFormSubmit">
               <!-- Revenue Input -->
-              <label for="revenue" class="block mb-2"
-                >Monthly Revenue ($)</label
-              >
+              <label for="revenue" class="block mb-2">Current Monthly Revenue ($)</label>
               <input
                 v-model="revenue"
                 type="number"
                 id="revenue"
                 class="w-full p-2 mb-4 border border-gray-300 rounded-lg"
-                placeholder="Enter your monthly revenue"
+                placeholder="Enter your current monthly revenue"
                 required
               />
 
-              <!-- Profit Margin Input -->
-              <label for="profit-margin" class="block mb-2"
-                >Profit Margin (%)</label
-              >
+              <!-- Previous Revenue Input -->
+              <label for="previous-revenue" class="block mb-2">Previous Monthly Revenue ($)</label>
               <input
-                v-model="profitMargin"
+                v-model="previousRevenue"
                 type="number"
-                id="profit-margin"
+                id="previous-revenue"
                 class="w-full p-2 mb-4 border border-gray-300 rounded-lg"
-                placeholder="Enter your profit margin"
+                placeholder="Enter your previous monthly revenue"
                 required
               />
 
-              <!-- Growth Rate Input -->
-              <label for="growth-rate" class="block mb-2"
-                >Growth Rate (%)</label
-              >
+              <!-- Total Expenses Input -->
+              <label for="total-expenses" class="block mb-2">Total Expenses ($)</label>
               <input
-                v-model="growthRate"
+                v-model="totalExpenses"
                 type="number"
-                id="growth-rate"
+                id="total-expenses"
                 class="w-full p-2 mb-4 border border-gray-300 rounded-lg"
-                placeholder="Enter your growth rate"
+                placeholder="Enter your total expenses"
                 required
               />
 
               <!-- Customer Base Input -->
-              <label for="customer-base" class="block mb-2"
-                >Customer Base (Number of Customers)</label
-              >
+              <label for="customer-base" class="block mb-2">Customer Base (Number of Customers)</label>
               <input
                 v-model="customerBase"
                 type="number"
@@ -91,6 +95,16 @@ const handleFormSubmit = () => {
                 class="w-full p-2 mb-4 border border-gray-300 rounded-lg"
                 placeholder="Enter the size of your customer base"
                 required
+              />
+
+              <!-- Months Input -->
+              <label for="months" class="block mb-2">Months for Average Revenue Calculation</label>
+              <input
+                v-model="months"
+                type="number"
+                id="months"
+                class="w-full p-2 mb-4 border border-gray-300 rounded-lg"
+                placeholder="Enter the number of months (default is 12)"
               />
 
               <!-- Submit Button -->

@@ -1,3 +1,4 @@
+import About from "@/components/About.vue";
 import Business from "@/components/Business.vue";
 import Login from "@/components/Login.vue";
 import ROI from "@/components/ROI.vue";
@@ -42,6 +43,11 @@ const router = createRouter({
       path: "/login",
       name: "Login",
       component: Login,
+    },
+    {
+      path: "/about",
+      name: "About",
+      component: About,
     },
     {
       path: "/assessment",

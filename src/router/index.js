@@ -1,4 +1,5 @@
 import About from "@/components/About.vue";
+import Analysis from "@/components/Analysis.vue";
 import Business from "@/components/Business.vue";
 import Login from "@/components/Login.vue";
 import ROI from "@/components/ROI.vue";
@@ -54,6 +55,11 @@ const router = createRouter({
       name: "Assessment",
       component: AssessmentView,
       meta: { requiresAuth: true },
+    },
+    {
+      path: "/analysis",
+      name: "Analysis",
+      component: Analysis,
     },
     {
       path: "/:catchAll(.*)",

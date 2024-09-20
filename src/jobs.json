@@ -1,11 +1,11 @@
 [
   {
     "id": 1,
-    "title": "Senior Vue Developer",
-    "type": "Full-Time",
-    "description": "We are seeking a talented Front-End Developer to join our team in Boston, MA. The ideal candidate will have strong skills in HTML, CSS, and JavaScript, with experience working with modern JavaScript frameworks such as Vue or Angular.",
+    "title": "Libre Ka Sakin",
+    "type": "Free",
+    "description": "Libreng Patikim sa aming Website",
     "location": "Boston, MA",
-    "salary": "$70K - $80K",
+    "salary": "0",
     "company": {
       "name": "NewTek Solutions",
       "description": "NewTek Solutions is a leading technology company specializing in web development and digital solutions. We pride ourselves on delivering high-quality products and services to our clients while fostering a collaborative and innovative work environment.",
@@ -15,11 +15,11 @@
   },
   {
     "id": 2,
-    "title": "Front-End Engineer (Vue)",
-    "type": "Full-Time",
-    "description": "Join our team as a Front-End Developer in sunny Miami, FL. We are looking for a motivated individual with a passion for crafting beautiful and responsive web applications. Experience with UI/UX design principles and a strong attention to detail are highly desirable.",
+    "title": "Semi Vip lang po",
+    "type": "Semi Vip",
+    "description": "Semi Vip kasi we need funds para sa aming araw araw na gawain hehehehehe",
     "location": "Miami, FL",
-    "salary": "$70K - $80K",
+    "salary": "$10",
     "company": {
       "name": "Veneer Solutions",
       "description": "Veneer Solutions is a creative agency specializing in digital design and development. Our team is dedicated to pushing the boundaries of creativity and innovation to deliver exceptional results for our clients.",
@@ -29,11 +29,11 @@
   },
   {
     "id": 3,
-    "title": "Vue.js Developer",
-    "type": "Full-Time",
-    "description": "Are you passionate about front-end development? Join our team in vibrant Brooklyn, NY, and work on exciting projects that make a difference. We offer competitive compensation and a collaborative work environment where your ideas are valued.",
+    "title": "Full Vip na po",
+    "type": "Full Vip",
+    "description": "Sanaol madaming pera para makapagfull pledge VIP. Hehehe May kiss ka sakin mwa!",
     "location": "Brooklyn, NY",
-    "salary": "$70K - $80K",
+    "salary": "$20",
     "company": {
       "name": "Dolor Cloud",
       "description": "Dolor Cloud is a leading technology company specializing in digital solutions for businesses of all sizes. With a focus on innovation and customer satisfaction, we are committed to delivering cutting-edge products and services.",

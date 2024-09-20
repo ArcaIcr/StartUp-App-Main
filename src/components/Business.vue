@@ -1,7 +1,7 @@
 <script setup>
+import axios from "axios"; // Import Axios for making HTTP requests
 import { ref } from "vue";
 import { RouterLink } from "vue-router"; // Import RouterLink to handle navigation
-import axios from "axios"; // Import Axios for making HTTP requests
 
 // Reactive variables to store form inputs
 const revenue = ref("");
@@ -14,23 +14,26 @@ const insights = ref("");
 // Method to handle form submission
 const handleFormSubmit = async () => {
   try {
-    const response = await axios.get('https://startup-compass-api.onrender.com/business-assessment', {
-      params: {
-        current_revenue: revenue.value,
-        previous_revenue: previousRevenue.value,
-        total_expenses: totalExpenses.value,
-        customer_base: customerBase.value,
-        months: months.value
+    const response = await axios.get(
+      "https://startup-compass-api.onrender.com/business-assessment",
+      {
+        params: {
+          current_revenue: revenue.value,
+          previous_revenue: previousRevenue.value,
+          total_expenses: totalExpenses.value,
+          customer_base: customerBase.value,
+          months: months.value,
+        },
       }
-    });
-    
+    );
+
     // Set insights from the response
-    insights.value = response.data.insights.join('\n');
+    insights.value = response.data.insights.join("\n");
   } catch (error) {
     if (error.response) {
-      insights.value = error.response.data.error || 'An error occurred.';
+      insights.value = error.response.data.error || "An error occurred.";
     } else {
-      insights.value = 'An error occurred while connecting to the API.';
+      insights.value = "An error occurred while connecting to the API.";
     }
   }
 };
@@ -54,7 +57,9 @@ const handleFormSubmit = async () => {
             <!-- Business Performance Overview Form -->
             <form @submit.prevent="handleFormSubmit">
               <!-- Revenue Input -->
-              <label for="revenue" class="block mb-2">Current Monthly Revenue ($)</label>
+              <label for="revenue" class="block mb-2"
+                >Current Monthly Revenue ($)</label
+              >
               <input
                 v-model="revenue"
                 type="number"
@@ -65,7 +70,9 @@ const handleFormSubmit = async () => {
               />
 
               <!-- Previous Revenue Input -->
-              <label for="previous-revenue" class="block mb-2">Previous Monthly Revenue ($)</label>
+              <label for="previous-revenue" class="block mb-2"
+                >Previous Monthly Revenue ($)</label
+              >
               <input
                 v-model="previousRevenue"
                 type="number"
@@ -76,7 +83,9 @@ const handleFormSubmit = async () => {
               />
 
               <!-- Total Expenses Input -->
-              <label for="total-expenses" class="block mb-2">Total Expenses ($)</label>
+              <label for="total-expenses" class="block mb-2"
+                >Total Expenses ($)</label
+              >
               <input
                 v-model="totalExpenses"
                 type="number"
@@ -87,7 +96,9 @@ const handleFormSubmit = async () => {
               />
 
               <!-- Customer Base Input -->
-              <label for="customer-base" class="block mb-2">Customer Base (Number of Customers)</label>
+              <label for="customer-base" class="block mb-2"
+                >Customer Base (Number of Customers)</label
+              >
               <input
                 v-model="customerBase"
                 type="number"
@@ -98,7 +109,9 @@ const handleFormSubmit = async () => {
               />
 
               <!-- Months Input -->
-              <label for="months" class="block mb-2">Months for Average Revenue Calculation</label>
+              <label for="months" class="block mb-2"
+                >Months for Average Revenue Calculation</label
+              >
               <input
                 v-model="months"
                 type="number"

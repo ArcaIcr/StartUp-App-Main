@@ -35,30 +35,28 @@ import { RouterLink } from "vue-router"; // Import RouterLink to handle navigati
 
         <!-- Another Example Card for Employers -->
         <Card bg="bg-violet-200">
-          <h2 class="text-2xl font-bold">For Employers</h2>
-          <p class="mt-2 mb-4">
-            List your job to find the perfect developer for the role
-          </p>
-          <a
-            href="add-job.html"
+          <h2 class="text-2xl font-bold">Marketing Analysis</h2>
+          <p class="mt-2 mb-4">Charts and Graphs for your Business</p>
+          <RouterLink
+            to="/analysis"
             class="inline-block bg-violet-500 text-white rounded-lg px-4 py-2 hover:bg-green-600"
           >
-            Add Job
-          </a>
+            Analysis
+          </RouterLink>
         </Card>
 
         <!-- Additional Card Example -->
         <Card bg="bg-violet-200">
-          <h2 class="text-2xl font-bold">For Employers</h2>
+          <h2 class="text-2xl font-bold">Trend Seeker</h2>
           <p class="mt-2 mb-4">
-            List your job to find the perfect developer for the role
+            Find the products that people are looking for a specific location.
           </p>
-          <a
-            href="add-job.html"
+          <RouterLink
+            to="/search"
             class="inline-block bg-violet-500 text-white rounded-lg px-4 py-2 hover:bg-green-600"
           >
-            Add Job
-          </a>
+            Search
+          </RouterLink>
         </Card>
       </div>
     </div>

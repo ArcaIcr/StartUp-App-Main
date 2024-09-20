@@ -6,52 +6,27 @@
     <form @submit.prevent="fetchApiData">
       <div>
         <label for="niche">Niche:</label>
-        <input
-          v-model="query.niche"
-          id="niche"
-          type="text"
-          placeholder="e.g., coffee"
-        />
+        <input v-model="query.niche" id="niche" type="text" placeholder="e.g., coffee" />
       </div>
 
       <div>
         <label for="location">Location:</label>
-        <input
-          v-model="query.location"
-          id="location"
-          type="text"
-          placeholder="e.g., US"
-        />
+        <input v-model="query.location" id="location" type="text" placeholder="e.g., US" />
       </div>
 
       <div>
         <label for="timeframe">Timeframe:</label>
-        <input
-          v-model="query.timeframe"
-          id="timeframe"
-          type="text"
-          placeholder="e.g., today 12-m"
-        />
+        <input v-model="query.timeframe" id="timeframe" type="text" placeholder="e.g., today 12-m" />
       </div>
 
       <div>
         <label for="investment_amount">Investment Amount:</label>
-        <input
-          v-model="query.investment_amount"
-          id="investment_amount"
-          type="number"
-          placeholder="e.g., 500"
-        />
+        <input v-model="query.investment_amount" id="investment_amount" type="number" placeholder="e.g., 500" />
       </div>
 
       <div>
         <label for="forecast_period">Forecast Period (days):</label>
-        <input
-          v-model="query.forecast_period"
-          id="forecast_period"
-          type="number"
-          placeholder="e.g., 180"
-        />
+        <input v-model="query.forecast_period" id="forecast_period" type="number" placeholder="e.g., 180" />
       </div>
 
       <button type="submit">Send Request</button>
@@ -65,49 +40,44 @@
   </div>
 </template>
 
-<script>
-import axios from "axios";
+<script setup>
+import { ref } from 'vue';
+import axios from 'axios';
 
-export default {
-  data() {
-    return {
-      query: {
-        niche: "",
-        location: "",
-        timeframe: "",
-        investment_amount: "",
-        forecast_period: "",
-      },
-      response: null,
-    };
-  },
-  methods: {
-    async fetchApiData() {
-      try {
-        const res = await axios.get(
-          "http://startup-compass-api.onrender.com/calculate_roi",
-          {
-            params: {
-              niche: this.query.niche,
-              location: this.query.location,
-              timeframe: this.query.timeframe,
-              investment_amount: this.query.investment_amount,
-              forecast_period: this.query.forecast_period,
-            },
-          }
-        );
-        this.response = res.data;
-      } catch (error) {
-        this.response = `Error: ${error.message}`;
+// Reactive state for the query parameters and the response
+const query = ref({
+  niche: '',
+  location: '',
+  timeframe: '',
+  investment_amount: '',
+  forecast_period: ''
+});
+
+const response = ref(null);
+
+// Function to fetch data from the API
+const fetchApiData = async () => {
+  try {
+    const res = await axios.get('https://startup-compass-api.onrender.com/calculate_roi', {
+      params: {
+        niche: query.value.niche,
+        location: query.value.location,
+        timeframe: query.value.timeframe,
+        investment_amount: query.value.investment_amount,
+        forecast_period: query.value.forecast_period
       }
-    },
-  },
+    });
+    response.value = res.data; // Set the response data
+  } catch (error) {
+    response.value = `Error: ${error.message}`; // Handle errors
+  }
 };
 </script>
 
 <style scoped>
 .api-interaction {
   font-family: Arial, sans-serif;
+  margin: 20px;
 }
 
 form {

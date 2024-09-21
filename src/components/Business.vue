@@ -9,6 +9,7 @@ const previousRevenue = ref("");
 const totalExpenses = ref("");
 const customerBase = ref("");
 const months = ref(12); // Default to 12 months
+const industry = ref(""); // Added industry field
 const insights = ref("");
 
 // Method to handle form submission
@@ -23,6 +24,7 @@ const handleFormSubmit = async () => {
           total_expenses: totalExpenses.value,
           customer_base: customerBase.value,
           months: months.value,
+          industry: industry.value, // Include industry in the request
         },
       }
     );
@@ -120,6 +122,17 @@ const handleFormSubmit = async () => {
                 id="months"
                 class="w-full p-2 mb-4 border border-gray-300 rounded-lg"
                 placeholder="Enter the number of months (default is 12)"
+              />
+
+              <!-- Industry Input -->
+              <label for="industry" class="block mb-2">Industry</label>
+              <input
+                v-model="industry"
+                type="text"
+                id="industry"
+                class="w-full p-2 mb-4 border border-gray-300 rounded-lg"
+                placeholder="Enter your industry (e.g., Retail, Tech)"
+                required
               />
 
               <!-- Submit Button -->

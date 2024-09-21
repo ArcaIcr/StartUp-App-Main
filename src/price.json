@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "title": "Free Plan",
+    "description": "Enjoy our basic features at no cost.",
+    "price": "$0/month"
+  },
+  {
+    "id": 2,
+    "title": "Half-Time Premium",
+    "description": "Unlock additional features with our Half-Time Premium plan.",
+    "price": "$10/month"
+  },
+  {
+    "id": 3,
+    "title": "Full-Time Premium",
+    "description": "Get the most out of our services with the Full-Time Premium plan.",
+    "price": "$20/month"
+  }
+]

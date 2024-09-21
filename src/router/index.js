@@ -2,12 +2,12 @@ import About from "@/components/About.vue";
 import Analysis from "@/components/Analysis.vue";
 import Business from "@/components/Business.vue";
 import Login from "@/components/Login.vue";
+import Pricing from "@/components/Pricing.vue";
 import ROI from "@/components/ROI.vue";
 import SignUp from "@/components/SignUp.vue";
 import { auth } from "@/firebaseConfig"; // Ensure this path is correct
 import AssessmentView from "@/views/AssessmentView.vue";
 import HomeView from "@/views/HomeView.vue";
-import JobsView from "@/views/JobsView.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
 
 import { createRouter, createWebHistory } from "vue-router";
@@ -21,9 +21,9 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      path: "/jobs",
+      path: "/pricing",
       name: "Pricing",
-      component: JobsView,
+      component: Pricing,
     },
     {
       path: "/roi",

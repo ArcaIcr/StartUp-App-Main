@@ -4,56 +4,74 @@ import { RouterLink } from "vue-router"; // Import RouterLink to handle navigati
 </script>
 
 <template>
-  <section class="py-4">
+  <section class="py-10 bg-lightblue/10">
     <div class="container-xl lg:container m-auto">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-lg">
-        <!-- Card for Developers with correct RouterLink usage -->
-        <Card bg="bg-violet-200">
-          <h2 class="text-2xl font-bold">ROI Calculator</h2>
-          <p class="mt-2 mb-4">Calculate your ROI now!</p>
-          <!-- Correct usage of RouterLink to navigate to ROI -->
+      <h2 class="text-3xl font-bold text-darkblue text-center mb-6">
+        Explore Our Tools
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 rounded-lg">
+        <!-- Card for ROI Calculator -->
+        <Card bg="bg-gradient-to-br from-beige to-tan">
+          <h2 class="text-2xl font-bold text-darkblue flex items-center">
+            <i class="pi pi-calculator mr-2 text-orange-700"></i>
+            ROI Calculator
+          </h2>
+          <p class="mt-2 mb-4 text-darkblue/80">Calculate your ROI now!</p>
           <RouterLink to="/roi">
             <span
-              class="inline-block bg-black text-white rounded-lg px-4 py-2 hover:bg-gray-700 cursor-pointer"
+              class="inline-block bg-lightblue text-white rounded-lg px-4 py-2 hover:bg-darkblue transition duration-300 cursor-pointer"
             >
               Calculate ROI
             </span>
           </RouterLink>
         </Card>
 
-        <!-- Example Card for Employers -->
-        <Card bg="bg-violet-200">
-          <h2 class="text-2xl font-bold">Business Assessment</h2>
-          <p class="mt-2 mb-4">Start Appraising your Business</p>
+        <!-- Card for Business Assessment -->
+        <Card bg="bg-gradient-to-br from-beige to-tan">
+          <h2 class="text-2xl font-bold text-darkblue flex items-center">
+            <i class="pi pi-briefcase mr-2 text-orange-700"></i>
+            Business Assessment
+          </h2>
+          <p class="mt-2 mb-4 text-darkblue/80">
+            Start appraising your business.
+          </p>
           <RouterLink
             to="/business"
-            class="inline-block bg-violet-500 text-white rounded-lg px-4 py-2 hover:bg-green-600"
+            class="inline-block bg-lightblue text-white rounded-lg px-4 py-2 hover:bg-darkblue transition duration-300"
           >
             Assessment
           </RouterLink>
         </Card>
 
-        <!-- Another Example Card for Employers -->
-        <Card bg="bg-violet-200">
-          <h2 class="text-2xl font-bold">Marketing Analysis</h2>
-          <p class="mt-2 mb-4">Charts and Graphs for your Business</p>
+        <!-- Card for Marketing Analysis -->
+        <Card bg="bg-gradient-to-br from-beige to-tan">
+          <h2 class="text-2xl font-bold text-darkblue flex items-center">
+            <i class="pi pi-chart-line mr-2 text-orange-700"></i>
+            Marketing Analysis
+          </h2>
+          <p class="mt-2 mb-4 text-darkblue/80">
+            Charts and graphs for your business.
+          </p>
           <RouterLink
             to="/analysis"
-            class="inline-block bg-violet-500 text-white rounded-lg px-4 py-2 hover:bg-green-600"
+            class="inline-block bg-lightblue text-white rounded-lg px-4 py-2 hover:bg-darkblue transition duration-300"
           >
             Analysis
           </RouterLink>
         </Card>
 
-        <!-- Additional Card Example -->
-        <Card bg="bg-violet-200">
-          <h2 class="text-2xl font-bold">Trend Seeker</h2>
-          <p class="mt-2 mb-4">
-            Find the products that people are looking for a specific location.
+        <!-- Card for Trend Seeker -->
+        <Card bg="bg-gradient-to-br from-beige to-tan">
+          <h2 class="text-2xl font-bold text-darkblue flex items-center">
+            <i class="pi pi-search mr-2 text-orange-700"></i>
+            Trend Seeker
+          </h2>
+          <p class="mt-2 mb-4 text-darkblue/80">
+            Find trending products in your area.
           </p>
           <RouterLink
             to="/search"
-            class="inline-block bg-violet-500 text-white rounded-lg px-4 py-2 hover:bg-green-600"
+            class="inline-block bg-lightblue text-white rounded-lg px-4 py-2 hover:bg-darkblue transition duration-300"
           >
             Search
           </RouterLink>

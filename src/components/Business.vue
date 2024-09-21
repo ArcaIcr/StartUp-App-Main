@@ -43,13 +43,15 @@ const handleFormSubmit = async () => {
   <section class="py-4">
     <div class="container-xl lg:container m-auto">
       <div
-        class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-lg bg-white shadow-md"
+        class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-lg bg-white shadow-lg spotlight-effect"
       >
         <!-- Form Section for Business Performance Overview -->
         <div class="p-6 flex flex-col justify-between">
           <div>
-            <h2 class="text-2xl font-bold">Business Assessment</h2>
-            <p class="mt-2 mb-4">
+            <h2 class="text-3xl font-extrabold text-darkblue mb-4">
+              Business Assessment
+            </h2>
+            <p class="mb-4 text-gray-700">
               Evaluate your business's performance and get tailored
               recommendations to boost growth.
             </p>
@@ -123,7 +125,7 @@ const handleFormSubmit = async () => {
               <!-- Submit Button -->
               <button
                 type="submit"
-                class="inline-block bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700 cursor-pointer"
+                class="inline-block bg-darkblue text-white rounded-lg px-4 py-2 hover:bg-lightblue cursor-pointer transition duration-300"
               >
                 Get Insights
               </button>
@@ -139,9 +141,9 @@ const handleFormSubmit = async () => {
 
         <!-- Navigation Section -->
         <div class="p-6 flex flex-col justify-between">
-          <RouterLink to="/business-assessment">
+          <RouterLink to="/signup">
             <span
-              class="inline-block bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700 cursor-pointer"
+              class="inline-block bg-darkblue text-white rounded-lg px-4 py-2 hover:bg-lightblue cursor-pointer transition duration-300"
             >
               Start Full Assessment
             </span>
@@ -153,5 +155,17 @@ const handleFormSubmit = async () => {
 </template>
 
 <style scoped>
-/* Optional: Add any custom styles here */
+.spotlight-effect {
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.9),
+    rgba(255, 255, 255, 0.7)
+  );
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s;
+}
+
+.spotlight-effect:hover {
+  transform: scale(1.02);
+}
 </style>

@@ -9,7 +9,7 @@ const isActiveLink = (routePath) => {
 </script>
 
 <template>
-  <nav class="bg-gradient-to-r from-beige to-tan border-b border-lightblue">
+  <nav class="bg-bgLight border-b border-lightblue">
     <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
       <div class="flex h-20 items-center justify-between">
         <div
@@ -28,7 +28,7 @@ const isActiveLink = (routePath) => {
                 to="/"
                 :class="[
                   isActiveLink('/')
-                    ? 'bg-lightblue text-white'
+                    ? 'bg-accentDark text-white'
                     : 'hover:bg-lightblue hover:text-white',
                   'text-darkblue',
                   'px-4',
@@ -43,7 +43,7 @@ const isActiveLink = (routePath) => {
                 to="/about"
                 :class="[
                   isActiveLink('/about')
-                    ? 'bg-lightblue text-white'
+                    ? 'bg-accentDark text-white'
                     : 'hover:bg-lightblue hover:text-white',
                   'text-darkblue',
                   'px-4',
@@ -58,7 +58,7 @@ const isActiveLink = (routePath) => {
                 to="/pricing"
                 :class="[
                   isActiveLink('/pricing')
-                    ? 'bg-lightblue text-white'
+                    ? 'bg-accentDark text-white'
                     : 'hover:bg-lightblue hover:text-white',
                   'text-darkblue',
                   'px-4',
@@ -73,7 +73,7 @@ const isActiveLink = (routePath) => {
                 to="/login"
                 :class="[
                   isActiveLink('/login')
-                    ? 'bg-lightblue text-white'
+                    ? 'bg-accentDark text-white'
                     : 'hover:bg-lightblue hover:text-white',
                   'text-darkblue',
                   'px-4',
@@ -88,7 +88,7 @@ const isActiveLink = (routePath) => {
                 to="/signup"
                 :class="[
                   isActiveLink('/signup')
-                    ? 'bg-lightblue text-white'
+                    ? 'bg-accentDark text-white'
                     : 'hover:bg-lightblue hover:text-white',
                   'text-darkblue',
                   'px-4',

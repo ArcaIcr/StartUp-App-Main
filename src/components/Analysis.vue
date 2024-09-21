@@ -14,11 +14,12 @@ import { Bar } from "vue-chartjs"; // Chart.js Bar chart component
 // Registering necessary components for Chart.js
 ChartJS.register(Title, Tooltip, BarElement, CategoryScale, LinearScale);
 
-// Reactive variables to store form inputs and API response
+// Reactive variables to store form inputs and API responses
 const niche = ref(""); // Niche input
 const location = ref(""); // Location input
 const timeframe = ref(""); // Timeframe input
 const apiResponse = ref(null); // To store the API response
+const regionalResponse = ref(null); // To store regional interest data
 const error = ref(""); // To display error messages
 
 // Reactive chartData for Bar chart
@@ -33,8 +34,20 @@ const chartData = ref({
   ],
 });
 
-// Method to fetch data from API based on form inputs
-const fetchData = async () => {
+// Reactive chartData for Regional Interest Scores
+const regionalChartData = ref({
+  labels: [], // Regions from the API response
+  datasets: [
+    {
+      label: "Regional Interest Scores",
+      backgroundColor: "#FFA726",
+      data: [], // Scores from the regional API response
+    },
+  ],
+});
+
+// Method to fetch interest score data from API based on form inputs
+const fetchInterestScores = async () => {
   try {
     const response = await axios.get("https://startup-compass-api.onrender.com/get-bar-graph-data", {
       params: {
@@ -57,15 +70,51 @@ const fetchData = async () => {
       chartData.value.datasets[0].data = [];
     }
   } catch (err) {
-    if (err.response) {
-      error.value = err.response.data.error || "An error occurred.";
-    } else {
-      error.value = "An error occurred while connecting to the API.";
-    }
-    apiResponse.value = null; // Clear any previous response
-    chartData.value.labels = [];
-    chartData.value.datasets[0].data = [];
+    handleApiError(err);
   }
+};
+
+// Method to fetch regional interest data
+const fetchRegionalInterestScores = async () => {
+  try {
+    const response = await axios.get("https://startup-compass-api.onrender.com/interest_by_region", {
+      params: {
+        niche: niche.value,
+        timeframe: timeframe.value,
+        location: location.value,
+      },
+    });
+
+    // Check if the API response contains the required fields
+    if (response.data.labels && response.data.values) {
+      regionalResponse.value = response.data; // Store the full response
+      regionalChartData.value.labels = response.data.labels; // Set labels from response
+      regionalChartData.value.datasets[0].data = response.data.values; // Set values from response
+      error.value = ""; // Clear previous errors
+    } else {
+      error.value = "No regional data available for the given parameters.";
+      regionalResponse.value = null; // Clear any previous response
+      regionalChartData.value.labels = [];
+      regionalChartData.value.datasets[0].data = [];
+    }
+  } catch (err) {
+    handleApiError(err);
+  }
+};
+
+// Error handling function
+const handleApiError = (err) => {
+  if (err.response) {
+    error.value = err.response.data.error || "An error occurred.";
+  } else {
+    error.value = "An error occurred while connecting to the API.";
+  }
+  apiResponse.value = null; // Clear any previous response
+  chartData.value.labels = [];
+  chartData.value.datasets[0].data = [];
+  regionalResponse.value = null; // Clear any previous regional response
+  regionalChartData.value.labels = [];
+  regionalChartData.value.datasets[0].data = [];
 };
 </script>
 
@@ -83,7 +132,7 @@ const fetchData = async () => {
             </p>
 
             <!-- Interest Score Analysis Form -->
-            <form @submit.prevent="fetchData">
+            <form @submit.prevent="fetchInterestScores">
               <label for="niche" class="block mb-2">Niche</label>
               <input v-model="niche" type="text" id="niche" class="w-full p-2 mb-4 border border-gray-300 rounded-lg" placeholder="Enter your niche (e.g., coffee)" required />
 
@@ -94,6 +143,7 @@ const fetchData = async () => {
               <input v-model="timeframe" type="text" id="timeframe" class="w-full p-2 mb-4 border border-gray-300 rounded-lg" placeholder="e.g., today 12-m" required />
 
               <button type="submit" class="inline-block bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700 cursor-pointer">Analyze</button>
+              <button @click.prevent="fetchRegionalInterestScores" class="inline-block bg-green-600 text-white rounded-lg px-4 py-2 hover:bg-green-700 cursor-pointer">Fetch Regional Data</button>
             </form>
 
             <div v-if="error" class="mt-4 p-4 bg-red-100 text-red-600 rounded-lg">
@@ -121,6 +171,15 @@ const fetchData = async () => {
             <h3 class="text-xl font-semibold">Interest Scores Chart</h3>
             <Bar v-if="chartData.labels.length > 0" :data="chartData" />
             <div v-else class="mt-2 text-gray-500">No data to display in chart.</div>
+          </div>
+        </div>
+
+        <!-- Regional Interest Chart Section -->
+        <div class="p-6 flex flex-col justify-between">
+          <div class="bg-white shadow-md rounded-lg p-4">
+            <h3 class="text-xl font-semibold">Regional Interest Scores Chart</h3>
+            <Bar v-if="regionalChartData.labels.length > 0" :data="regionalChartData" />
+            <div v-else class="mt-2 text-gray-500">No regional data to display in chart.</div>
           </div>
         </div>
       </div>

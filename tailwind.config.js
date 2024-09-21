@@ -11,6 +11,20 @@ export default {
         tan: "#C7BCAB",
         darkblue: "#1F2E43",
         lightblue: "#8799A6",
+        // NEW COLORS
+        primaryLight: "#d4eaf7",   // Light Blue
+        primaryMedium: "#b6ccd8",  // Medium Blue
+        primaryDark: "#3b3c3d",    // Dark Gray
+
+        accentLight: "#71c4ef",    // Sky Blue
+        accentDark: "#00668c",     // Deep Blue
+
+        textDark: "#1d1c1c",      // Dark Text
+        textMedium: "#313d44",     // Medium Text
+
+        bgLight: "#fffefb",        // Off White
+        bgMedium: "#f5f4f1",       // Light Gray
+        bgDark: "#cccbc8"          // Gray    
       },
       gridTemplateColumns: {
         "70/30": "70% 30%",

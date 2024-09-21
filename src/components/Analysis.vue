@@ -1,6 +1,18 @@
 <script setup>
 import axios from "axios"; // Import Axios for making HTTP requests
+import {
+  BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  LinearScale,
+  Title,
+  Tooltip,
+} from "chart.js"; // Import Chart.js components
 import { ref } from "vue"; // Vue reactive data
+import { Bar } from "vue-chartjs"; // Chart.js Bar chart component
+
+// Registering necessary components for Chart.js
+ChartJS.register(Title, Tooltip, BarElement, CategoryScale, LinearScale);
 
 // Reactive variables to store form inputs and API response
 const niche = ref(""); // Niche input
@@ -8,6 +20,18 @@ const location = ref(""); // Location input
 const timeframe = ref(""); // Timeframe input
 const apiResponse = ref(null); // To store the API response
 const error = ref(""); // To display error messages
+
+// Reactive chartData for Bar chart
+const chartData = ref({
+  labels: [], // Dates from the API response
+  datasets: [
+    {
+      label: "Interest Scores",
+      backgroundColor: "#42A5F5",
+      data: [], // Scores from the API response
+    },
+  ],
+});
 
 // Method to fetch data from API based on form inputs
 const fetchData = async () => {
@@ -23,10 +47,14 @@ const fetchData = async () => {
     // Check if the API response contains the required fields
     if (response.data.labels && response.data.values) {
       apiResponse.value = response.data; // Store the full response
+      chartData.value.labels = response.data.labels; // Set labels from response
+      chartData.value.datasets[0].data = response.data.values; // Set values from response
       error.value = ""; // Clear previous errors
     } else {
       error.value = "No data available for the given parameters.";
       apiResponse.value = null; // Clear any previous response
+      chartData.value.labels = [];
+      chartData.value.datasets[0].data = [];
     }
   } catch (err) {
     if (err.response) {
@@ -35,6 +63,8 @@ const fetchData = async () => {
       error.value = "An error occurred while connecting to the API.";
     }
     apiResponse.value = null; // Clear any previous response
+    chartData.value.labels = [];
+    chartData.value.datasets[0].data = [];
   }
 };
 </script>
@@ -82,6 +112,15 @@ const fetchData = async () => {
             <div v-if="!apiResponse" class="mt-2 text-gray-500">
               No data received yet.
             </div>
+          </div>
+        </div>
+
+        <!-- Bar Chart Section -->
+        <div class="p-6 flex flex-col justify-between">
+          <div class="bg-white shadow-md rounded-lg p-4">
+            <h3 class="text-xl font-semibold">Interest Scores Chart</h3>
+            <Bar v-if="chartData.labels.length > 0" :data="chartData" />
+            <div v-else class="mt-2 text-gray-500">No data to display in chart.</div>
           </div>
         </div>
       </div>

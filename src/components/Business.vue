@@ -12,6 +12,18 @@ const months = ref(12); // Default to 12 months
 const industry = ref(""); // Added industry field
 const insights = ref("");
 
+// List of available industries (same as those in the fetch_industry_benchmarks function)
+const industries = [
+  "Retail",
+  "Tech",
+  "Healthcare",
+  "Finance",
+  "Energy",
+  "Consumer Goods",
+  "Utilities",
+  "Industrial",
+];
+
 // Method to handle form submission
 const handleFormSubmit = async () => {
   try {
@@ -45,7 +57,7 @@ const handleFormSubmit = async () => {
   <section class="py-4">
     <div class="container-xl lg:container m-auto">
       <div
-        class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-lg bg-white shadow-lg spotlight-effect"
+        class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-lg bg-white shadow-lg"
       >
         <!-- Form Section for Business Performance Overview -->
         <div class="p-6 flex flex-col justify-between">
@@ -124,16 +136,17 @@ const handleFormSubmit = async () => {
                 placeholder="Enter the number of months (default is 12)"
               />
 
-              <!-- Industry Input -->
+              <!-- Industry Input as a Dropdown -->
               <label for="industry" class="block mb-2">Industry</label>
-              <input
+              <select
                 v-model="industry"
-                type="text"
                 id="industry"
                 class="w-full p-2 mb-4 border border-gray-300 rounded-lg"
-                placeholder="Enter your industry (e.g., Retail, Tech)"
                 required
-              />
+              >
+                <option disabled value="">Select your industry</option>
+                <option v-for="ind in industries" :key="ind" :value="ind">{{ ind }}</option>
+              </select>
 
               <!-- Submit Button -->
               <button

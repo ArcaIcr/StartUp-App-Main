@@ -109,6 +109,10 @@
 import axios from "axios";
 import { ref } from "vue";
 
+// Import API endpoint
+import { getApiEndpoint } from '@/apiConfig';
+const endpoint = getApiEndpoint(); // Get the API endpoint
+
 // Reactive state for the query parameters and the response
 const query = ref({
   niche: "",
@@ -124,7 +128,7 @@ const response = ref(null);
 const fetchApiData = async () => {
   try {
     const res = await axios.get(
-      "https://startup-compass-api.onrender.com/calculate_roi",
+      `${endpoint}/calculate_roi`,
       {
         params: {
           niche: query.value.niche,

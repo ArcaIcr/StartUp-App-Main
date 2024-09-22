@@ -11,6 +11,10 @@ import {
 import { ref, computed } from "vue"; // Vue reactive data
 import { Bar } from "vue-chartjs"; // Chart.js Bar chart component
 
+// Import API endpoint
+import { getApiEndpoint } from '@/apiConfig';
+const endpoint = getApiEndpoint(); // Get the API endpoint
+
 // Registering necessary components for Chart.js
 ChartJS.register(Title, Tooltip, BarElement, CategoryScale, LinearScale);
 
@@ -50,7 +54,7 @@ const regionalChartData = ref({
 // Method to fetch interest score data from API based on form inputs
 const fetchInterestScores = async () => {
   try {
-    const response = await axios.get("https://startup-compass-api.onrender.com/get-bar-graph-data", {
+    const response = await axios.get(`${endpoint}/get-bar-graph-data`, {
       params: {
         niche: niche.value,
         location: location.value,

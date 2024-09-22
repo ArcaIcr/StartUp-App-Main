@@ -3,6 +3,10 @@ import axios from "axios"; // Import Axios for making HTTP requests
 import { ref } from "vue";
 import { RouterLink } from "vue-router"; // Import RouterLink to handle navigation
 
+// Import API endpoint
+import { getApiEndpoint } from '@/apiConfig';
+const endpoint = getApiEndpoint(); // Get the API endpoint
+
 // Reactive variables to store form inputs
 const revenue = ref("");
 const previousRevenue = ref("");
@@ -27,19 +31,16 @@ const industries = [
 // Method to handle form submission
 const handleFormSubmit = async () => {
   try {
-    const response = await axios.get(
-      "https://startup-compass-api.onrender.com/business-assessment",
-      {
-        params: {
-          current_revenue: revenue.value,
-          previous_revenue: previousRevenue.value,
-          total_expenses: totalExpenses.value,
-          customer_base: customerBase.value,
-          months: months.value,
-          industry: industry.value, // Include industry in the request
-        },
-      }
-    );
+    const response = await axios.get(`${endpoint}/business-assessment`, { // Use backticks for the template literal
+      params: {
+        current_revenue: revenue.value,
+        previous_revenue: previousRevenue.value,
+        total_expenses: totalExpenses.value,
+        customer_base: customerBase.value,
+        months: months.value,
+        industry: industry.value, // Include industry in the request
+      },
+    });
 
     // Set insights from the response
     insights.value = response.data.insights.join("\n");
@@ -52,6 +53,7 @@ const handleFormSubmit = async () => {
   }
 };
 </script>
+
 
 <template>
   <section class="py-4">

@@ -1,110 +1,3 @@
-<template>
-  <div
-    class="roi-container flex flex-col items-center justify-center h-screen bg-gray-100 p-4"
-  >
-    <div
-      class="bg-white shadow-lg rounded-lg p-8 max-w-lg w-full bg-opacity-90"
-    >
-      <h2 class="text-3xl font-extrabold text-center text-darkblue mb-6">
-        ROI Calculator
-      </h2>
-      <p class="text-center mb-4 text-gray-600">
-        Unlock your business potential with accurate ROI insights!
-      </p>
-
-      <!-- Query Parameters Form -->
-      <form @submit.prevent="fetchApiData" class="space-y-4">
-        <div>
-          <label for="niche" class="block text-sm font-medium text-gray-700"
-            >Niche</label
-          >
-          <input
-            v-model="query.niche"
-            id="niche"
-            type="text"
-            placeholder="e.g., coffee"
-            class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-lightblue focus:border-lightblue"
-          />
-        </div>
-
-        <div>
-          <label for="location" class="block text-sm font-medium text-gray-700"
-            >Location</label
-          >
-          <input
-            v-model="query.location"
-            id="location"
-            type="text"
-            placeholder="e.g., US"
-            class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-lightblue focus:border-lightblue"
-          />
-        </div>
-
-        <div>
-          <label for="timeframe" class="block text-sm font-medium text-gray-700"
-            >Timeframe</label
-          >
-          <input
-            v-model="query.timeframe"
-            id="timeframe"
-            type="text"
-            placeholder="e.g., today 12-m"
-            class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-lightblue focus:border-lightblue"
-          />
-        </div>
-
-        <div>
-          <label
-            for="investment_amount"
-            class="block text-sm font-medium text-gray-700"
-            >Investment Amount</label
-          >
-          <input
-            v-model="query.investment_amount"
-            id="investment_amount"
-            type="number"
-            placeholder="e.g., 500"
-            class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-lightblue focus:border-lightblue"
-          />
-        </div>
-
-        <div>
-          <label
-            for="forecast_period"
-            class="block text-sm font-medium text-gray-700"
-            >Forecast Period (days)</label
-          >
-          <input
-            v-model="query.forecast_period"
-            id="forecast_period"
-            type="number"
-            placeholder="e.g., 180"
-            class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-lightblue focus:border-lightblue"
-          />
-        </div>
-
-        <button
-          type="submit"
-          class="w-full py-2 px-4 bg-darkblue text-white font-semibold rounded-lg shadow-md hover:bg-lightblue transition duration-300 focus:outline-none focus:ring-2 focus:ring-lightblue focus:ring-offset-2"
-        >
-          Send Request
-        </button>
-      </form>
-
-      <!-- Display the API Response -->
-      <div
-        v-if="response"
-        class="api-response mt-6 p-4 border rounded-lg bg-gray-50"
-      >
-        <h3 class="font-bold">Response</h3>
-        <pre class="whitespace-pre-wrap text-sm text-gray-700">{{
-          response
-        }}</pre>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup>
 import axios from "axios";
 import { ref } from "vue";
@@ -146,13 +39,101 @@ const fetchApiData = async () => {
 };
 </script>
 
-<style scoped>
-.roi-container {
-  background-image: url("@/assets/img/roi-bg.png"); /* Optional background image */
-  background-size: cover;
-  background-position: center;
-}
+<template>
+  <section class="py-4">
+    <div class="container-xl lg:container m-auto">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-lg bg-white shadow-lg">
+        <!-- ROI Calculator Section -->
+        <div class="p-6 flex flex-col justify-between">
+          <div>
+            <h2 class="text-3xl font-extrabold text-darkblue mb-4">
+              ROI Calculator
+            </h2>
+            <p class="mb-4 text-gray-700">
+              Unlock your business potential with accurate ROI insights!
+            </p>
 
+            <!-- Query Parameters Form -->
+            <form @submit.prevent="fetchApiData">
+              <!-- Niche Input -->
+              <label for="niche" class="block mb-2">Niche</label>
+              <input
+                v-model="query.niche"
+                id="niche"
+                type="text"
+                placeholder="e.g., coffee"
+                class="w-full p-2 mb-4 border border-gray-300 rounded-lg"
+                required
+              />
+
+              <!-- Location Input -->
+              <label for="location" class="block mb-2">Location</label>
+              <input
+                v-model="query.location"
+                id="location"
+                type="text"
+                placeholder="e.g., US"
+                class="w-full p-2 mb-4 border border-gray-300 rounded-lg"
+                required
+              />
+
+              <!-- Timeframe Input -->
+              <label for="timeframe" class="block mb-2">Timeframe</label>
+              <input
+                v-model="query.timeframe"
+                id="timeframe"
+                type="text"
+                placeholder="e.g., today 12-m"
+                class="w-full p-2 mb-4 border border-gray-300 rounded-lg"
+                required
+              />
+
+              <!-- Investment Amount Input -->
+              <label for="investment_amount" class="block mb-2">Investment Amount</label>
+              <input
+                v-model="query.investment_amount"
+                id="investment_amount"
+                type="number"
+                placeholder="e.g., 500"
+                class="w-full p-2 mb-4 border border-gray-300 rounded-lg"
+                required
+              />
+
+              <!-- Forecast Period Input -->
+              <label for="forecast_period" class="block mb-2">Forecast Period (days)</label>
+              <input
+                v-model="query.forecast_period"
+                id="forecast_period"
+                type="number"
+                placeholder="e.g., 180"
+                class="w-full p-2 mb-4 border border-gray-300 rounded-lg"
+                required
+              />
+
+              <!-- Submit Button -->
+              <button
+                type="submit"
+                class="inline-block bg-darkblue text-white rounded-lg px-4 py-2 hover:bg-lightblue cursor-pointer transition duration-300"
+              >
+                Send Request
+              </button>
+            </form>
+
+            <!-- Display the API Response -->
+            <div v-if="response" class="api-response mt-6 p-4 bg-gray-100 rounded-lg">
+              <h3 class="font-bold">Response</h3>
+              <pre class="whitespace-pre-wrap text-sm text-gray-700">{{
+                response
+              }}</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</template>
+
+<style scoped>
 .api-response {
   background-color: #f9f9f9;
   border: 1px solid #ccc;

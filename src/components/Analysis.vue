@@ -8,8 +8,12 @@ import {
   Title,
   Tooltip,
 } from "chart.js"; // Import Chart.js components
-import { ref } from "vue"; // Vue reactive data
+import { ref, computed } from "vue"; // Vue reactive data
 import { Bar } from "vue-chartjs"; // Chart.js Bar chart component
+
+// Import API endpoint
+import { getApiEndpoint } from '@/apiConfig';
+const endpoint = getApiEndpoint(); // Get the API endpoint
 
 // Registering necessary components for Chart.js
 ChartJS.register(Title, Tooltip, BarElement, CategoryScale, LinearScale);
@@ -21,6 +25,7 @@ const timeframe = ref(""); // Timeframe input
 const apiResponse = ref(null); // To store the API response
 const regionalResponse = ref(null); // To store regional interest data
 const error = ref(""); // To display error messages
+const downloadGraphOption = ref("interestScores"); // Default graph to download
 
 // Reactive chartData for Bar chart
 const chartData = ref({
@@ -49,7 +54,7 @@ const regionalChartData = ref({
 // Method to fetch interest score data from API based on form inputs
 const fetchInterestScores = async () => {
   try {
-    const response = await axios.get("https://startup-compass-api.onrender.com/get-bar-graph-data", {
+    const response = await axios.get(`${endpoint}/get-bar-graph-data`, {
       params: {
         niche: niche.value,
         location: location.value,
@@ -60,8 +65,14 @@ const fetchInterestScores = async () => {
     // Check if the API response contains the required fields
     if (response.data.labels && response.data.values) {
       apiResponse.value = response.data; // Store the full response
-      chartData.value.labels = response.data.labels; // Set labels from response
-      chartData.value.datasets[0].data = response.data.values; // Set values from response
+      // Get top 5 highest scores and their corresponding labels
+      const sortedData = response.data.values
+        .map((value, index) => ({ value, label: response.data.labels[index] }))
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 5);
+      
+      chartData.value.labels = sortedData.map(item => item.label);
+      chartData.value.datasets[0].data = sortedData.map(item => item.value);
       error.value = ""; // Clear previous errors
     } else {
       error.value = "No data available for the given parameters.";
@@ -88,8 +99,14 @@ const fetchRegionalInterestScores = async () => {
     // Check if the API response contains the required fields
     if (response.data.labels && response.data.values) {
       regionalResponse.value = response.data; // Store the full response
-      regionalChartData.value.labels = response.data.labels; // Set labels from response
-      regionalChartData.value.datasets[0].data = response.data.values; // Set values from response
+      // Get top 5 highest regional scores
+      const sortedData = response.data.values
+        .map((value, index) => ({ value, label: response.data.labels[index] }))
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 5);
+
+      regionalChartData.value.labels = sortedData.map(item => item.label);
+      regionalChartData.value.datasets[0].data = sortedData.map(item => item.value);
       error.value = ""; // Clear previous errors
     } else {
       error.value = "No regional data available for the given parameters.";
@@ -100,6 +117,27 @@ const fetchRegionalInterestScores = async () => {
   } catch (err) {
     handleApiError(err);
   }
+};
+
+// Method to clear graphs and responses
+const clearGraphs = () => {
+  apiResponse.value = null;
+  regionalResponse.value = null;
+  chartData.value.labels = [];
+  chartData.value.datasets[0].data = [];
+  regionalChartData.value.labels = [];
+  regionalChartData.value.datasets[0].data = [];
+  error.value = ""; // Clear error message
+};
+
+// Method to download the selected graph as an image
+const downloadGraph = () => {
+  const canvasId = downloadGraphOption.value === "interestScores" ? "chartCanvas" : "regionalChartCanvas";
+  const canvas = document.getElementById(canvasId);
+  const link = document.createElement('a');
+  link.href = canvas.toDataURL('image/png');
+  link.download = downloadGraphOption.value === "interestScores" ? 'interest_scores.png' : 'regional_interest_scores.png';
+  link.click();
 };
 
 // Error handling function
@@ -144,6 +182,17 @@ const handleApiError = (err) => {
 
               <button type="submit" class="inline-block bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700 cursor-pointer">Analyze</button>
               <button @click.prevent="fetchRegionalInterestScores" class="inline-block bg-green-600 text-white rounded-lg px-4 py-2 hover:bg-green-700 cursor-pointer">Fetch Regional Data</button>
+              <button @click.prevent="clearGraphs" class="inline-block bg-red-600 text-white rounded-lg px-4 py-2 hover:bg-red-700 cursor-pointer">Clear Graphs</button>
+              
+              <div class="mt-4">
+                <label for="downloadOption" class="block mb-2">Download Graph:</label>
+                <select v-model="downloadGraphOption" id="downloadOption" class="border border-gray-300 rounded-lg p-2">
+                  <option value="interestScores">Interest Scores</option>
+                  <option value="regionalInterestScores">Regional Interest Scores</option>
+                </select>
+              </div>
+
+              <button @click.prevent="downloadGraph" class="inline-block bg-yellow-600 text-white rounded-lg px-4 py-2 hover:bg-yellow-700 cursor-pointer">Download</button>
             </form>
 
             <div v-if="error" class="mt-4 p-4 bg-red-100 text-red-600 rounded-lg">
@@ -169,7 +218,7 @@ const handleApiError = (err) => {
         <div class="p-6 flex flex-col justify-between">
           <div class="bg-white shadow-md rounded-lg p-4">
             <h3 class="text-xl font-semibold">Interest Scores Chart</h3>
-            <Bar v-if="chartData.labels.length > 0" :data="chartData" />
+            <Bar v-if="chartData.labels.length > 0" :data="chartData" id="chartCanvas" :height="400" :width="600" />
             <div v-else class="mt-2 text-gray-500">No data to display in chart.</div>
           </div>
         </div>
@@ -178,7 +227,7 @@ const handleApiError = (err) => {
         <div class="p-6 flex flex-col justify-between">
           <div class="bg-white shadow-md rounded-lg p-4">
             <h3 class="text-xl font-semibold">Regional Interest Scores Chart</h3>
-            <Bar v-if="regionalChartData.labels.length > 0" :data="regionalChartData" />
+            <Bar v-if="regionalChartData.labels.length > 0" :data="regionalChartData" id="regionalChartCanvas" :height="400" :width="600" />
             <div v-else class="mt-2 text-gray-500">No regional data to display in chart.</div>
           </div>
         </div>

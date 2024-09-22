@@ -4,22 +4,22 @@ import { RouterLink } from "vue-router"; // Import RouterLink to handle navigati
 </script>
 
 <template>
-  <section class="py-10 bg-lightblue/10">
-    <div class="container-xl lg:container m-auto">
+  <section class="py-5 bg-white/10">
+    <div class="container-xl lg:container m-auto rounded-lg bg-white shadow-md">
       <h2 class="text-3xl font-bold text-darkblue text-center mb-6">
         Explore Our Tools
       </h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 rounded-lg">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 rounded-lg bg-white shadow-md">
         <!-- Card for ROI Calculator -->
-        <Card bg="bg-gradient-to-br from-beige to-tan">
+        <Card bg="bg-gradient-to-br from-beige to-bgDark transition-transform transform hover:scale-105">
           <h2 class="text-2xl font-bold text-darkblue flex items-center">
             <i class="pi pi-calculator mr-2 text-orange-700"></i>
             ROI Calculator
           </h2>
-          <p class="mt-2 mb-4 text-darkblue/80">Calculate your ROI now!</p>
+          <p class="mt-2 mb-4 text-darkblue/80">Predict your returns based on the Trends!</p>
           <RouterLink to="/roi">
             <span
-              class="inline-block bg-lightblue text-white rounded-lg px-4 py-2 hover:bg-darkblue transition duration-300 cursor-pointer"
+              class="inline-block bg-accentDark text-white rounded-lg px-4 py-2 hover:bg-darkblue transition duration-300 cursor-pointer"
             >
               Calculate ROI
             </span>
@@ -27,7 +27,7 @@ import { RouterLink } from "vue-router"; // Import RouterLink to handle navigati
         </Card>
 
         <!-- Card for Business Assessment -->
-        <Card bg="bg-gradient-to-br from-beige to-tan">
+        <Card bg="bg-gradient-to-br from-beige to-bgDark transition-transform transform hover:scale-105">
           <h2 class="text-2xl font-bold text-darkblue flex items-center">
             <i class="pi pi-briefcase mr-2 text-orange-700"></i>
             Business Assessment
@@ -37,14 +37,14 @@ import { RouterLink } from "vue-router"; // Import RouterLink to handle navigati
           </p>
           <RouterLink
             to="/business"
-            class="inline-block bg-lightblue text-white rounded-lg px-4 py-2 hover:bg-darkblue transition duration-300"
+            class="inline-block bg-accentDark text-white rounded-lg px-4 py-2 hover:bg-darkblue transition duration-300"
           >
             Assessment
           </RouterLink>
         </Card>
 
         <!-- Card for Marketing Analysis -->
-        <Card bg="bg-gradient-to-br from-beige to-tan">
+        <Card bg="bg-gradient-to-br from-beige to-bgDark transition-transform transform hover:scale-105">
           <h2 class="text-2xl font-bold text-darkblue flex items-center">
             <i class="pi pi-chart-line mr-2 text-orange-700"></i>
             Marketing Analysis
@@ -54,14 +54,14 @@ import { RouterLink } from "vue-router"; // Import RouterLink to handle navigati
           </p>
           <RouterLink
             to="/analysis"
-            class="inline-block bg-lightblue text-white rounded-lg px-4 py-2 hover:bg-darkblue transition duration-300"
+            class="inline-block bg-accentDark text-white rounded-lg px-4 py-2 hover:bg-darkblue transition duration-300"
           >
             Analysis
           </RouterLink>
         </Card>
 
         <!-- Card for Trend Seeker -->
-        <Card bg="bg-gradient-to-br from-beige to-tan">
+        <Card bg="bg-gradient-to-br from-beige to-bgDark transition-transform transform hover:scale-105">
           <h2 class="text-2xl font-bold text-darkblue flex items-center">
             <i class="pi pi-search mr-2 text-orange-700"></i>
             Trend Seeker
@@ -71,7 +71,7 @@ import { RouterLink } from "vue-router"; // Import RouterLink to handle navigati
           </p>
           <RouterLink
             to="/search"
-            class="inline-block bg-lightblue text-white rounded-lg px-4 py-2 hover:bg-darkblue transition duration-300"
+            class="inline-block bg-accentDark text-white rounded-lg px-4 py-2 hover:bg-darkblue transition duration-300"
           >
             Search
           </RouterLink>

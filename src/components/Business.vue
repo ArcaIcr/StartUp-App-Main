@@ -3,29 +3,44 @@ import axios from "axios"; // Import Axios for making HTTP requests
 import { ref } from "vue";
 import { RouterLink } from "vue-router"; // Import RouterLink to handle navigation
 
+// Import API endpoint
+import { getApiEndpoint } from '@/apiConfig';
+const endpoint = getApiEndpoint(); // Get the API endpoint
+
 // Reactive variables to store form inputs
 const revenue = ref("");
 const previousRevenue = ref("");
 const totalExpenses = ref("");
 const customerBase = ref("");
 const months = ref(12); // Default to 12 months
+const industry = ref(""); // Added industry field
 const insights = ref("");
+
+// List of available industries (same as those in the fetch_industry_benchmarks function)
+const industries = [
+  "Retail",
+  "Tech",
+  "Healthcare",
+  "Finance",
+  "Energy",
+  "Consumer Goods",
+  "Utilities",
+  "Industrial",
+];
 
 // Method to handle form submission
 const handleFormSubmit = async () => {
   try {
-    const response = await axios.get(
-      "https://startup-compass-api.onrender.com/business-assessment",
-      {
-        params: {
-          current_revenue: revenue.value,
-          previous_revenue: previousRevenue.value,
-          total_expenses: totalExpenses.value,
-          customer_base: customerBase.value,
-          months: months.value,
-        },
-      }
-    );
+    const response = await axios.get(`${endpoint}/business-assessment`, { // Use backticks for the template literal
+      params: {
+        current_revenue: revenue.value,
+        previous_revenue: previousRevenue.value,
+        total_expenses: totalExpenses.value,
+        customer_base: customerBase.value,
+        months: months.value,
+        industry: industry.value, // Include industry in the request
+      },
+    });
 
     // Set insights from the response
     insights.value = response.data.insights.join("\n");
@@ -39,11 +54,12 @@ const handleFormSubmit = async () => {
 };
 </script>
 
+
 <template>
   <section class="py-4">
     <div class="container-xl lg:container m-auto">
       <div
-        class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-lg bg-white shadow-lg spotlight-effect"
+        class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-lg bg-white shadow-lg"
       >
         <!-- Form Section for Business Performance Overview -->
         <div class="p-6 flex flex-col justify-between">
@@ -121,6 +137,18 @@ const handleFormSubmit = async () => {
                 class="w-full p-2 mb-4 border border-gray-300 rounded-lg"
                 placeholder="Enter the number of months (default is 12)"
               />
+
+              <!-- Industry Input as a Dropdown -->
+              <label for="industry" class="block mb-2">Industry</label>
+              <select
+                v-model="industry"
+                id="industry"
+                class="w-full p-2 mb-4 border border-gray-300 rounded-lg"
+                required
+              >
+                <option disabled value="">Select your industry</option>
+                <option v-for="ind in industries" :key="ind" :value="ind">{{ ind }}</option>
+              </select>
 
               <!-- Submit Button -->
               <button

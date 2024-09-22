@@ -57,3 +57,13 @@ export async function saveAssessmentToFirestore(userId, assessmentData) {
     throw new Error("Error saving assessment: " + error.message);
   }
 }
+
+// Function to save payment information to Firestore
+export async function savePaymentInfo(userId, paymentInfo) {
+  try {
+    const paymentRef = doc(db, "payments", userId); // Create or overwrite payment document
+    await setDoc(paymentRef, paymentInfo);
+  } catch (error) {
+    throw new Error("Error saving payment information: " + error.message);
+  }
+}

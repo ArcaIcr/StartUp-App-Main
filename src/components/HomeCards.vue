@@ -82,7 +82,7 @@ import { RouterLink } from "vue-router"; // Import RouterLink to handle navigati
             Find trending products in your area.
           </p>
           <RouterLink
-            to="/search"
+            to="/trend"
             class="inline-block bg-accentDark text-white rounded-lg px-4 py-2 hover:bg-darkblue transition duration-300"
           >
             Search

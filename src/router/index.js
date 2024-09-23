@@ -9,6 +9,7 @@ import { auth } from "@/firebaseConfig"; // Ensure this path is correct
 import AssessmentView from "@/views/AssessmentView.vue";
 import HomeView from "@/views/HomeView.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
+import TrendSeeker from "@/components/TrendSeeker.vue";
 
 import { createRouter, createWebHistory } from "vue-router";
 
@@ -60,6 +61,11 @@ const router = createRouter({
       path: "/analysis",
       name: "Analysis",
       component: Analysis,
+    },
+    {
+      path: "/trend",
+      name: "Trend Seeker",
+      component: TrendSeeker,
     },
     {
       path: "/:catchAll(.*)",

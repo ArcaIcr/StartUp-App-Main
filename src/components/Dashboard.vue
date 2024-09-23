@@ -119,10 +119,12 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { auth, db } from "@/firebaseConfig"; // Ensure the path is correct
+import { doc, getDoc } from "firebase/firestore";
+import { onMounted, ref } from "vue";
 
-const userName = ref("John Doe"); // This can be dynamically fetched from your user authentication data
-const showSidebar = ref(false); // State for sidebar visibility
+const userName = ref(""); // Initialize with an empty string
+const showSidebar = ref(false);
 const widgets = [
   {
     title: "ROI Calculator",
@@ -155,11 +157,22 @@ const toggleSidebar = () => {
   showSidebar.value = !showSidebar.value;
 };
 
-// Function to log out the user (placeholder)
-const logout = () => {
-  // Implement your logout logic here
-  console.log("Logging out...");
+// Function to log out the user
+const logout = async () => {
+  await auth.signOut();
+  // Redirect or handle logout
 };
+
+// Fetch user data
+onMounted(async () => {
+  const user = auth.currentUser;
+  if (user) {
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    if (userDoc.exists()) {
+      userName.value = userDoc.data().username; // Set the username from Firestore
+    }
+  }
+});
 </script>
 
 <style scoped>

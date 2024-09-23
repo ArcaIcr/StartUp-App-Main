@@ -82,7 +82,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions } from "vuex"; // Assuming Vuex is used to handle registration
 
 export default {
   data() {
@@ -110,7 +110,7 @@ export default {
           email: this.email,
           password: this.password,
         });
-        this.$router.push("/login"); // Redirect to login after successful registration
+        this.$router.push("/dashboard"); // Redirect to the dashboard after successful sign-up
       } catch (error) {
         this.errorMessage =
           error.message || "Sign-up failed. Please try again.";

@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { login } from "@/authService";
+import { login } from "@/authService"; // Assuming this handles authentication
 
 export default {
   data() {
@@ -68,7 +68,7 @@ export default {
 
       try {
         await login(this.email, this.password);
-        this.$router.push("/assessment");
+        this.$router.push("/dashboard"); // Redirect to the dashboard after successful login
       } catch (error) {
         this.errorMessage = error.message || "Login failed. Please try again.";
       }

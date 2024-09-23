@@ -4,6 +4,6 @@ import { RouterView } from "vue-router";
 </script>
 
 <template>
-  <Navbar />
+  <Navbar v-if="$route.name !== 'Dashboard'" />
   <RouterView />
 </template>

@@ -1,15 +1,18 @@
 import About from "@/components/About.vue";
 import Analysis from "@/components/Analysis.vue";
 import Business from "@/components/Business.vue";
+import Dashboard from "@/components/Dashboard.vue";
 import Login from "@/components/Login.vue";
 import Pricing from "@/components/Pricing.vue";
+import Profile from "@/components/Profile.vue"; // Add your Profile component
 import ROI from "@/components/ROI.vue";
+import Settings from "@/components/Settings.vue"; // Add your Settings component
 import SignUp from "@/components/SignUp.vue";
+import TrendSeeker from "@/components/TrendSeeker.vue";
 import { auth } from "@/firebaseConfig"; // Ensure this path is correct
 import AssessmentView from "@/views/AssessmentView.vue";
 import HomeView from "@/views/HomeView.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
-import TrendSeeker from "@/components/TrendSeeker.vue";
 
 import { createRouter, createWebHistory } from "vue-router";
 
@@ -68,6 +71,24 @@ const router = createRouter({
       component: TrendSeeker,
     },
     {
+      path: "/dashboard",
+      name: "Dashboard",
+      component: Dashboard,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/profile",
+      name: "Profile",
+      component: Profile,
+      meta: { requiresAuth: true }, // Protect this route
+    },
+    {
+      path: "/settings",
+      name: "Settings",
+      component: Settings,
+      meta: { requiresAuth: true }, // Protect this route
+    },
+    {
       path: "/:catchAll(.*)",
       name: "not-found",
       component: NotFoundView,
@@ -79,15 +100,15 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const user = auth.currentUser;
 
-  // Check if route requires authentication
+  // Check if the route requires authentication
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (user) {
-      next();
+      next(); // Proceed to the route if the user is authenticated
     } else {
-      next("/login"); // Redirect to login if not authenticated
+      next("/login"); // Redirect to the login page if not authenticated
     }
   } else {
-    next(); // Allow access if route does not require authentication
+    next(); // Allow access if the route does not require authentication
   }
 });
 

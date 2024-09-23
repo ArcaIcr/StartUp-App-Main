@@ -1,9 +1,13 @@
 <script setup>
 import Navbar from "@/components/Navbar.vue";
 import { RouterView } from "vue-router";
+
+const hideNavbarRoutes = ["Dashboard", "Profile", "Settings"]; // Add routes to hide the Navbar
 </script>
 
 <template>
-  <Navbar v-if="$route.name !== 'Dashboard'" />
-  <RouterView />
+  <div>
+    <Navbar v-if="!hideNavbarRoutes.includes($route.name)" />
+    <RouterView />
+  </div>
 </template>

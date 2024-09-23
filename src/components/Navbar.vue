@@ -9,7 +9,7 @@ const isActiveLink = (routePath) => {
 </script>
 
 <template>
-  <nav class="bg-bgLight border-b border-lightblue">
+  <nav class="bg-gradient-to-r from-bgLight to-accentLight border-b border-lightblue">
     <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
       <div class="flex h-20 items-center justify-between">
         <div
@@ -29,7 +29,7 @@ const isActiveLink = (routePath) => {
                 :class="[
                   isActiveLink('/')
                     ? 'bg-accentDark text-white'
-                    : 'hover:bg-lightblue hover:text-white',
+                    : 'hover:bg-bgLight hover:text-textDark',
                   'text-darkblue',
                   'px-4',
                   'py-2',
@@ -44,7 +44,7 @@ const isActiveLink = (routePath) => {
                 :class="[
                   isActiveLink('/about')
                     ? 'bg-accentDark text-white'
-                    : 'hover:bg-lightblue hover:text-white',
+                    : 'hover:bg-bgLight hover:text-textDark',
                   'text-darkblue',
                   'px-4',
                   'py-2',
@@ -59,7 +59,7 @@ const isActiveLink = (routePath) => {
                 :class="[
                   isActiveLink('/pricing')
                     ? 'bg-accentDark text-white'
-                    : 'hover:bg-lightblue hover:text-white',
+                    : 'hover:bg-bgLight hover:text-textDark',
                   'text-darkblue',
                   'px-4',
                   'py-2',
@@ -74,7 +74,7 @@ const isActiveLink = (routePath) => {
                 :class="[
                   isActiveLink('/login')
                     ? 'bg-accentDark text-white'
-                    : 'hover:bg-lightblue hover:text-white',
+                    : 'hover:bg-bgLight hover:text-textDark',
                   'text-darkblue',
                   'px-4',
                   'py-2',
@@ -88,8 +88,9 @@ const isActiveLink = (routePath) => {
                 to="/signup"
                 :class="[
                   isActiveLink('/signup')
-                    ? 'bg-accentDark text-white'
-                    : 'hover:bg-lightblue hover:text-white',
+                    ? 'text-textDark'
+                    : 'hover:bg-accentDark hover:text-bgLight',
+                  'bg-bgLight',
                   'text-darkblue',
                   'px-4',
                   'py-2',

@@ -9,14 +9,20 @@ import { RouterLink } from "vue-router"; // Import RouterLink to handle navigati
       <h2 class="text-3xl font-bold text-darkblue text-center mb-6">
         Explore Our Tools
       </h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 rounded-lg bg-white shadow-md">
+      <div
+        class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 rounded-lg bg-white shadow-md"
+      >
         <!-- Card for ROI Calculator -->
-        <Card bg="bg-gradient-to-br from-beige to-bgDark transition-transform transform hover:scale-105">
+        <Card
+          bg="bg-gradient-to-br from-beige to-bgDark transition-transform transform hover:scale-105"
+        >
           <h2 class="text-2xl font-bold text-darkblue flex items-center">
             <i class="pi pi-calculator mr-2 text-orange-700"></i>
             ROI Calculator
           </h2>
-          <p class="mt-2 mb-4 text-darkblue/80">Predict your returns based on the Trends!</p>
+          <p class="mt-2 mb-4 text-darkblue/80">
+            Predict your returns based on the Trends!
+          </p>
           <RouterLink to="/roi">
             <span
               class="inline-block bg-accentDark text-white rounded-lg px-4 py-2 hover:bg-darkblue transition duration-300 cursor-pointer"
@@ -27,7 +33,9 @@ import { RouterLink } from "vue-router"; // Import RouterLink to handle navigati
         </Card>
 
         <!-- Card for Business Assessment -->
-        <Card bg="bg-gradient-to-br from-beige to-bgDark transition-transform transform hover:scale-105">
+        <Card
+          bg="bg-gradient-to-br from-beige to-bgDark transition-transform transform hover:scale-105"
+        >
           <h2 class="text-2xl font-bold text-darkblue flex items-center">
             <i class="pi pi-briefcase mr-2 text-orange-700"></i>
             Business Assessment
@@ -44,7 +52,9 @@ import { RouterLink } from "vue-router"; // Import RouterLink to handle navigati
         </Card>
 
         <!-- Card for Marketing Analysis -->
-        <Card bg="bg-gradient-to-br from-beige to-bgDark transition-transform transform hover:scale-105">
+        <Card
+          bg="bg-gradient-to-br from-beige to-bgDark transition-transform transform hover:scale-105"
+        >
           <h2 class="text-2xl font-bold text-darkblue flex items-center">
             <i class="pi pi-chart-line mr-2 text-orange-700"></i>
             Marketing Analysis
@@ -61,7 +71,9 @@ import { RouterLink } from "vue-router"; // Import RouterLink to handle navigati
         </Card>
 
         <!-- Card for Trend Seeker -->
-        <Card bg="bg-gradient-to-br from-beige to-bgDark transition-transform transform hover:scale-105">
+        <Card
+          bg="bg-gradient-to-br from-beige to-bgDark transition-transform transform hover:scale-105"
+        >
           <h2 class="text-2xl font-bold text-darkblue flex items-center">
             <i class="pi pi-search mr-2 text-orange-700"></i>
             Trend Seeker

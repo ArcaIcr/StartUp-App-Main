@@ -13,7 +13,7 @@
         >
         <div class="mt-2 flex items-center">
           <img
-            :src="user.profilePicture"
+            :src="user.profilePicture || 'default_profile_picture_url'"
             alt="Profile"
             class="h-16 w-16 rounded-full object-cover mr-4"
           />

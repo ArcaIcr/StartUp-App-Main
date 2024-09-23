@@ -7,7 +7,7 @@
 
     <div class="mb-4 flex items-center">
       <img
-        :src="user.profilePicture"
+        :src="user.profilePicture || 'default_profile_picture_url'"
         alt="Profile Picture"
         class="w-16 h-16 rounded-full mr-4"
       />

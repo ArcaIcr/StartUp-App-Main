@@ -3,43 +3,46 @@
     <!-- Menu Icon Button -->
     <button
       @click="toggleSidebar"
-      class="text-white fixed top-4 left-4 z-50 hover:text-accentDark transition-colors duration-300"
+      class="text-white fixed top-4 left-4 z-50 hover:text-accentDark transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-accentDark"
+      aria-label="Toggle sidebar"
     >
       <i class="pi pi-bars text-2xl"></i>
     </button>
 
     <!-- Sidebar -->
-    <aside
-      v-if="showSidebar"
-      class="w-1/4 bg-white shadow-lg p-4 rounded-lg flex flex-col justify-between"
-    >
-      <div>
-        <div class="text-center mb-6">
-          <h2 class="text-2xl font-bold">{{ userName }}</h2>
-          <p class="text-gray-500">Profile</p>
-        </div>
-        <ul>
-          <li class="mb-4">
-            <router-link to="/profile" class="text-darkblue hover:underline"
-              >Profile Settings</router-link
-            >
-          </li>
-          <li class="mb-4">
-            <router-link to="/settings" class="text-darkblue hover:underline"
-              >Account Settings</router-link
-            >
-          </li>
-        </ul>
-      </div>
-
-      <!-- Logout Button at the Bottom -->
-      <button
-        @click="logout"
-        class="bg-accentDark text-white px-6 py-3 rounded-lg hover:bg-darkblue transition duration-300 w-full"
+    <transition name="sidebar">
+      <aside
+        v-if="showSidebar"
+        class="w-3/4 sm:w-1/4 bg-white shadow-lg p-4 rounded-lg flex flex-col justify-between fixed inset-y-0 left-0 z-40 transform transition-transform duration-300"
       >
-        Log Out
-      </button>
-    </aside>
+        <div>
+          <div class="text-center mb-6">
+            <h2 class="text-2xl font-bold">{{ userName }}</h2>
+            <p class="text-gray-500">Profile</p>
+          </div>
+          <ul>
+            <li class="mb-4">
+              <router-link to="/profile" class="text-darkblue hover:underline"
+                >Profile Settings</router-link
+              >
+            </li>
+            <li class="mb-4">
+              <router-link to="/settings" class="text-darkblue hover:underline"
+                >Account Settings</router-link
+              >
+            </li>
+          </ul>
+        </div>
+
+        <!-- Logout Button at the Bottom -->
+        <button
+          @click="logout"
+          class="bg-accentDark text-white px-6 py-3 rounded-lg hover:bg-darkblue transition duration-300 w-full focus:outline-none focus:ring-2 focus:ring-accentDark"
+        >
+          Log Out
+        </button>
+      </aside>
+    </transition>
 
     <!-- Main Content -->
     <div class="flex-1 container mx-auto px-4">
@@ -99,7 +102,7 @@
         <div
           v-for="widget in widgets"
           :key="widget.title"
-          class="bg-gradient-to-br from-beige to-bgDark p-6 rounded-lg shadow-lg transition-transform transform hover:scale-105"
+          class="bg-gradient-to-br from-beige to-bgDark p-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 hover:shadow-xl"
         >
           <h3 class="text-2xl font-bold text-darkblue mb-2 flex items-center">
             <i :class="widget.icon + ' text-orange-700 mr-2 text-xl'"></i>
@@ -176,5 +179,18 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* You can add any additional styles here if needed */
+.sidebar-enter-active,
+.sidebar-leave-active {
+  transition: transform 0.3s ease;
+}
+.sidebar-enter-from {
+  transform: translateX(-100%);
+}
+.sidebar-leave-to {
+  transform: translateX(-100%);
+}
+
+.hover\:scale-105:hover {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
 </style>

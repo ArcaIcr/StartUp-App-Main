@@ -166,7 +166,7 @@ const fetchApiData = async () => {
         </div>
 
         <!-- ROI Insights Display -->
-        <div class="p-6 bg-gray-100 rounded-lg">
+        <div class="p-6 bg-gray-100 rounded-lg transition-opacity duration-500 ease-in-out" :class="{ 'opacity-0': !response, 'opacity-100': response }">
           <div v-if="response">
             <h3 class="text-lg font-semibold text-darkblue mb-4 text-center">ROI Insights for {{ query.niche }}</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -174,11 +174,12 @@ const fetchApiData = async () => {
                 <p class="text-gray-700"><strong>Initial Interest Score:</strong> {{ response.initial_interest_score }}</p>
                 <p class="text-gray-700"><strong>Forecasted Interest Score:</strong> {{ response.forecasted_interest_score }}</p>
                 <p class="text-gray-700"><strong>Growth Trend:</strong> {{ response.growth_trend }}</p>
+                <p class="text-gray-700"><strong>Interest Growth:</strong> {{ response.interest_growth }}</p>
               </div>
               <div>
-                <p class="text-gray-700"><strong>Investment Amount:</strong> ${{ response.investment_amount }}</p>
-                <p class="text-gray-700"><strong>Forecast Period:</strong> {{ response.forecast_period_days }} days</p>
-                <p class="text-gray-700"><strong>Estimated ROI:</strong> {{ response.estimated_roi }}%</p>
+                <p class="text-gray-700"><strong>Investment Amount:</strong> {{ response.investment_amount }}</p>
+                <p class="text-gray-700"><strong>Forecast Period:</strong> {{ response.forecast_period_days }}</p>
+                <p class="text-gray-700"><strong>Estimated ROI:</strong> {{ response.estimated_roi }}</p>
                 <p class="text-gray-700"><strong>Recommendation:</strong> {{ response.recommendation }}</p>
               </div>
             </div>
@@ -199,7 +200,7 @@ const fetchApiData = async () => {
         <ul class="text-center list-disc list-inside">
           <li>Enter the niche you are interested in. For example, "coffee", "fitness", or "travel".</li>
           <li>Select the country where you plan to operate your business from the dropdown list.</li>
-          <li>Select the timeframe for which you want to estimate ROI. Choose from 1 Month, 1 Year, or 5 Years.</li>
+          <li>Select the timeframe for which you want to estimate ROI. Choose from 1 Month or 5 Years.</li>
           <li>Enter the investment amount you are planning to allocate. For example, "$500" or "$1000".</li>
           <li>Enter the forecast period in days for which you want to project the ROI. For example, "180 days" or "365 days".</li>
           <li>Click "Send Request" to calculate the estimated ROI.</li>

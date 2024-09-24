@@ -3,46 +3,61 @@
     <!-- Menu Icon Button -->
     <button
       @click="toggleSidebar"
-      class="text-white fixed top-4 left-4 z-50 hover:text-accentDark transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-accentDark"
-      aria-label="Toggle sidebar"
+      class="text-white fixed top-4 left-4 z-50 hover:text-accentDark transition-colors duration-300"
     >
       <i class="pi pi-bars text-2xl"></i>
     </button>
 
     <!-- Sidebar -->
-    <transition name="sidebar">
-      <aside
-        v-if="showSidebar"
-        class="w-3/4 sm:w-1/4 bg-white shadow-lg p-4 rounded-lg flex flex-col justify-between fixed inset-y-0 left-0 z-40 transform transition-transform duration-300"
-      >
-        <div>
-          <div class="text-center mb-6">
-            <h2 class="text-2xl font-bold">{{ userName }}</h2>
-            <p class="text-gray-500">Profile</p>
-          </div>
-          <ul>
-            <li class="mb-4">
-              <router-link to="/profile" class="text-darkblue hover:underline"
-                >Profile Settings</router-link
-              >
-            </li>
-            <li class="mb-4">
-              <router-link to="/settings" class="text-darkblue hover:underline"
-                >Account Settings</router-link
-              >
-            </li>
-          </ul>
-        </div>
+    <aside
+      v-if="showSidebar"
+      class="w-3/4 sm:w-1/4 bg-white shadow-lg p-4 rounded-lg flex flex-col justify-between fixed inset-y-0 left-0 z-40 transform transition-transform duration-300"
+    >
+      <!-- Profile Section -->
+      <div class="text-center mb-6">
+        <img
+          :src="userProfilePic"
+          alt="Profile Picture"
+          class="rounded-full w-16 h-16 mx-auto mb-4"
+        />
+        <h2 class="text-2xl font-bold">{{ userName }}</h2>
+        <p class="text-gray-500">Profile</p>
+      </div>
 
-        <!-- Logout Button at the Bottom -->
-        <button
-          @click="logout"
-          class="bg-accentDark text-white px-6 py-3 rounded-lg hover:bg-darkblue transition duration-300 w-full focus:outline-none focus:ring-2 focus:ring-accentDark"
-        >
-          Log Out
-        </button>
-      </aside>
-    </transition>
+      <!-- Links with Active Highlighting -->
+      <ul>
+        <li class="mb-4">
+          <router-link
+            to="/profile"
+            :class="{
+              'font-bold text-accentDark': $route.path === '/profile',
+              'text-darkblue': $route.path !== '/profile',
+            }"
+          >
+            Profile Settings
+          </router-link>
+        </li>
+        <li class="mb-4">
+          <router-link
+            to="/settings"
+            :class="{
+              'font-bold text-accentDark': $route.path === '/settings',
+              'text-darkblue': $route.path !== '/settings',
+            }"
+          >
+            Account Settings
+          </router-link>
+        </li>
+      </ul>
+
+      <!-- Logout Button at the Bottom -->
+      <button
+        @click="logout"
+        class="bg-accentDark text-white px-6 py-3 rounded-lg hover:bg-darkblue transition duration-300 w-full"
+      >
+        Log Out
+      </button>
+    </aside>
 
     <!-- Main Content -->
     <div class="flex-1 container mx-auto px-4">
@@ -102,7 +117,7 @@
         <div
           v-for="widget in widgets"
           :key="widget.title"
-          class="bg-gradient-to-br from-beige to-bgDark p-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 hover:shadow-xl"
+          class="bg-gradient-to-br from-beige to-bgDark p-6 rounded-lg shadow-lg transition-transform transform hover:scale-105"
         >
           <h3 class="text-2xl font-bold text-darkblue mb-2 flex items-center">
             <i :class="widget.icon + ' text-orange-700 mr-2 text-xl'"></i>
@@ -125,8 +140,11 @@
 import { auth, db } from "@/firebaseConfig"; // Ensure the path is correct
 import { doc, getDoc } from "firebase/firestore";
 import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const userName = ref(""); // Initialize with an empty string
+const userProfilePic = ref("path/to/default/profile-pic.jpg"); // Default profile picture
 const showSidebar = ref(false);
 const widgets = [
   {
@@ -163,34 +181,25 @@ const toggleSidebar = () => {
 // Function to log out the user
 const logout = async () => {
   await auth.signOut();
-  // Redirect or handle logout
+  router.push("/login"); // Redirect to login page
 };
 
 // Fetch user data
 onMounted(async () => {
   const user = auth.currentUser;
-  if (user) {
+  if (!user) {
+    router.push("/login"); // Redirect to login if no user
+  } else {
     const userDoc = await getDoc(doc(db, "users", user.uid));
     if (userDoc.exists()) {
       userName.value = userDoc.data().username; // Set the username from Firestore
+      userProfilePic.value =
+        userDoc.data().profilePicture || userProfilePic.value; // Set profile picture if available
     }
   }
 });
 </script>
 
 <style scoped>
-.sidebar-enter-active,
-.sidebar-leave-active {
-  transition: transform 0.3s ease;
-}
-.sidebar-enter-from {
-  transform: translateX(-100%);
-}
-.sidebar-leave-to {
-  transform: translateX(-100%);
-}
-
-.hover\:scale-105:hover {
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
-}
+/* You can add any additional styles here if needed */
 </style>

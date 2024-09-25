@@ -57,40 +57,151 @@
       </div>
 
       <!-- Overview Section -->
-      <div
-        class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12 animate-fade-in-up"
-      >
-        <div
-          class="bg-gradient-to-br from-beige to-bgMedium p-6 rounded-lg shadow-lg"
-        >
-          <h2 class="text-2xl font-bold text-darkblue">Business Overview</h2>
-          <p class="mt-2 text-textMedium">
-            Here’s a quick snapshot of your business's performance.
-          </p>
-          <div class="mt-4 grid grid-cols-2 gap-4">
-            <div>
-              <p class="text-2xl font-bold text-accentDark">$12,345</p>
-              <p class="text-sm text-textMedium">Total Revenue</p>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12 animate-fade-in-up">
+        <div class="relative cursor-pointer" @click="flipCard('overview')">
+          <div
+            v-if="!isFlipped['overview']"
+            class="bg-gradient-to-br from-beige to-bgMedium p-6 rounded-lg shadow-lg transition-transform duration-500 ease-in-out"
+          >
+            <h2 class="text-2xl font-bold text-darkblue">Business Overview</h2>
+            <p class="mt-2 text-textMedium">
+              Here’s a quick snapshot of your business's performance.
+            </p>
+            <div class="mt-4 grid grid-cols-2 gap-4">
+              <div>
+                <p class="text-2xl font-bold text-accentDark">$12,345</p>
+                <p class="text-sm text-textMedium">Total Revenue (This Month)</p>
+                <p class="text-sm text-green-500">
+                  <span class="change-icon">📈</span>
+                  <span class="change-value">10%</span>
+                </p>
+              </div>
+              <div>
+                <p class="text-2xl font-bold text-accentDark">98%</p>
+                <p class="text-sm text-textMedium">Customer Satisfaction</p>
+                <p class="text-sm text-red-500">
+                  <span class="change-icon">📉</span>
+                  <span class="change-value">2%</span>
+                </p>
+              </div>
             </div>
-            <div>
-              <p class="text-2xl font-bold text-accentDark">98%</p>
-              <p class="text-sm text-textMedium">Customer Satisfaction</p>
+            <a
+              href="#"
+              class="mt-4 inline-block bg-accentDark text-white font-bold py-2 px-4 rounded-md"
+            >
+              View Detailed Report
+            </a>
+          </div>
+
+          <div
+            v-if="isFlipped['overview']"
+            class="bg-gradient-to-br from-beige to-bgMedium p-6 rounded-lg shadow-lg transition-transform duration-500 ease-in-out transform rotate-y-180"
+          >
+            <h2 class="text-2xl font-bold text-darkblue">
+              Business Overview - Details
+            </h2>
+            <p class="mt-2 text-textMedium">
+              More detailed information about your business performance.
+            </p>
+            <!-- Add more detailed information here -->
+            <div class="mt-4 grid grid-cols-2 gap-4">
+              <div>
+                <p class="text-sm text-textMedium">Revenue Breakdown:</p>
+                <ul class="list-disc list-inside text-textMedium">
+                  <li>Product A: $5,000</li>
+                  <li>Product B: $3,000</li>
+                  <li>Product C: $4,345</li>
+                </ul>
+              </div>
+              <div>
+                <p class="text-sm text-textMedium">Customer Satisfaction Breakdown:</p>
+                <ul class="list-disc list-inside text-textMedium">
+                  <li>Net Promoter Score: 75</li>
+                  <li>Customer Feedback: 90% positive</li>
+                </ul>
+              </div>
             </div>
+            <a
+              href="#"
+              class="mt-4 inline-block bg-accentDark text-white font-bold py-2 px-4 rounded-md"
+            >
+              Back to Overview
+            </a>
           </div>
         </div>
 
-        <div
-          class="bg-gradient-to-br from-tan to-bgMedium p-6 rounded-lg shadow-lg"
-        >
-          <h2 class="text-2xl font-bold text-darkblue">Action Required</h2>
-          <p class="mt-2 text-textMedium">
-            Here are some tasks that need your attention.
-          </p>
-          <ul class="mt-4 list-disc list-inside text-textMedium">
-            <li>Complete your business assessment</li>
-            <li>Update your marketing strategy</li>
-            <li>Review ROI predictions for next quarter</li>
-          </ul>
+        <div class="relative cursor-pointer" @click="flipCard('action')">
+          <div
+            v-if="!isFlipped['action']"
+            class="bg-gradient-to-br from-tan to-bgMedium p-6 rounded-lg shadow-lg transition-transform duration-500 ease-in-out"
+          >
+            <h2 class="text-2xl font-bold text-darkblue">Action Required</h2>
+            <p class="mt-2 text-textMedium">
+              Here are some tasks that need your attention.
+            </p>
+            <ul class="mt-4 list-disc list-inside text-textMedium">
+              <li class="font-bold">Complete your business assessment</li>
+              <li>Update your marketing strategy</li>
+              <li>Review ROI predictions for next quarter</li>
+            </ul>
+            <a
+              href="#"
+              class="mt-4 inline-block bg-accentDark text-white font-bold py-2 px-4 rounded-md"
+            >
+              View All Tasks
+            </a>
+          </div>
+
+          <div
+            v-if="isFlipped['action']"
+            class="bg-gradient-to-br from-tan to-bgMedium p-6 rounded-lg shadow-lg transition-transform duration-500 ease-in-out transform rotate-y-180"
+          >
+            <h2 class="text-2xl font-bold text-darkblue">
+              Action Required - Details
+            </h2>
+            <p class="mt-2 text-textMedium">
+              More detailed information about your action items.
+            </p>
+            <!-- Add more detailed information here -->
+            <div class="mt-4 grid grid-cols-1 gap-4">
+              <div>
+                <p class="text-sm text-textMedium">
+                  <strong>Business Assessment:</strong>
+                </p>
+                <ul class="list-disc list-inside text-textMedium">
+                  <li>Review market trends</li>
+                  <li>Analyze competitor landscape</li>
+                  <li>Evaluate current business strategies</li>
+                </ul>
+              </div>
+              <div>
+                <p class="text-sm text-textMedium">
+                  <strong>Marketing Strategy:</strong>
+                </p>
+                <ul class="list-disc list-inside text-textMedium">
+                  <li>Develop new marketing campaigns</li>
+                  <li>Optimize existing marketing channels</li>
+                  <li>Track campaign performance</li>
+                </ul>
+              </div>
+              <div>
+                <p class="text-sm text-textMedium">
+                  <strong>ROI Predictions:</strong>
+                </p>
+                <ul class="list-disc list-inside text-textMedium">
+                  <li>Analyze historical data</li>
+                  <li>Forecast future revenue</li>
+                  <li>Identify potential risks and opportunities</li>
+                </ul>
+              </div>
+            </div>
+            <a
+              href="#"
+              class="mt-4 inline-block bg-accentDark text-white font-bold py-2 px-4 rounded-md"
+            >
+              Back to Action Required
+            </a>
+          </div>
         </div>
       </div>
 
@@ -176,6 +287,16 @@ onMounted(async () => {
     }
   }
 });
+
+// Flip card logic
+const isFlipped = ref({
+  overview: false,
+  action: false,
+});
+
+const flipCard = (cardId) => {
+  isFlipped.value[cardId] = !isFlipped.value[cardId];
+};
 </script>
 
 <style scoped>
@@ -192,5 +313,34 @@ onMounted(async () => {
 
 .hover\:scale-105:hover {
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+.bg-beige {
+  background-color: #f5f5f5;
+}
+
+.bg-medium {
+  background-color: #e0e0e0;
+}
+
+.text-darkblue {
+  color: #2980b9;
+}
+
+.text-textMedium {
+  color: #666;
+}
+
+.text-accentDark {
+  color: #3498db;
+}
+
+.change-icon {
+  font-size: 1.2em;
+  margin-right: 5px;
+}
+
+.change-value {
+  font-size: 1em;
 }
 </style>

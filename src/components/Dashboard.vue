@@ -72,7 +72,9 @@
       </div>
 
       <!-- Overview Section -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12 animate-fade-in-up">
+      <div
+        class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12 animate-fade-in-up"
+      >
         <div class="relative cursor-pointer" @click="flipCard('overview')">
           <div
             v-if="!isFlipped['overview']"
@@ -85,7 +87,9 @@
             <div class="mt-4 grid grid-cols-2 gap-4">
               <div>
                 <p class="text-2xl font-bold text-accentDark">$12,345</p>
-                <p class="text-sm text-textMedium">Total Revenue (This Month)</p>
+                <p class="text-sm text-textMedium">
+                  Total Revenue (This Month)
+                </p>
                 <p class="text-sm text-green-500">
                   <span class="change-icon">📈</span>
                   <span class="change-value">10%</span>
@@ -129,7 +133,9 @@
                 </ul>
               </div>
               <div>
-                <p class="text-sm text-textMedium">Customer Satisfaction Breakdown:</p>
+                <p class="text-sm text-textMedium">
+                  Customer Satisfaction Breakdown:
+                </p>
                 <ul class="list-disc list-inside text-textMedium">
                   <li>Net Promoter Score: 75</li>
                   <li>Customer Feedback: 90% positive</li>
@@ -322,9 +328,6 @@ const flipCard = (cardId) => {
 </script>
 
 <style scoped>
-<<<<<<< HEAD
-/* You can add any additional styles here if needed */
-=======
 .sidebar-enter-active,
 .sidebar-leave-active {
   transition: transform 0.3s ease;
@@ -368,5 +371,4 @@ const flipCard = (cardId) => {
 .change-value {
   font-size: 1em;
 }
->>>>>>> a6cc135180859a77d00c0100e3e709e2a6f292a6
 </style>

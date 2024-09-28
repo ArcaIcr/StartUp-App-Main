@@ -1,15 +1,20 @@
 import {
   createUserWithEmailAndPassword,
+  sendPasswordResetEmail as firebaseSendPasswordResetEmail,
+  getAuth,
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { auth, db } from "./firebaseConfig";
 
+// Initialize auth variable properly
+const authInstance = getAuth(); // Initialize it here
+
 // Function to register a new user
 export async function register(username, email, password) {
   try {
     const userCredential = await createUserWithEmailAndPassword(
-      auth,
+      authInstance,
       email,
       password
     );
@@ -31,7 +36,7 @@ export async function register(username, email, password) {
 export async function login(email, password) {
   try {
     const userCredential = await signInWithEmailAndPassword(
-      auth,
+      authInstance,
       email,
       password
     );
@@ -47,6 +52,11 @@ export async function login(email, password) {
     throw new Error(error.message || "Login failed");
   }
 }
+
+// Reset Password
+export const sendPasswordResetEmail = async (email) => {
+  return await firebaseSendPasswordResetEmail(authInstance, email);
+};
 
 // Function to save assessment data to Firestore
 export async function saveAssessmentToFirestore(userId, assessmentData) {

@@ -2,9 +2,11 @@ import About from "@/components/About.vue";
 import Analysis from "@/components/Analysis.vue";
 import Business from "@/components/Business.vue";
 import Dashboard from "@/components/Dashboard.vue";
+import ForgotPassword from "@/components/ForgotPassword.vue"; // Forgot Password
 import Login from "@/components/Login.vue";
 import Pricing from "@/components/Pricing.vue";
 import Profile from "@/components/Profile.vue"; // Add your Profile component
+import ResetPassword from "@/components/ResetPassword.vue"; // Reset Password
 import ROI from "@/components/ROI.vue";
 import Settings from "@/components/Settings.vue"; // Add your Settings component
 import SignUp from "@/components/SignUp.vue";
@@ -48,6 +50,16 @@ const router = createRouter({
       path: "/login",
       name: "Login",
       component: Login,
+    },
+    {
+      path: "/forgot-password",
+      name: "ForgotPassword",
+      component: ForgotPassword,
+    },
+    {
+      path: "/reset-password",
+      name: "ResetPassword",
+      component: ResetPassword,
     },
     {
       path: "/about",

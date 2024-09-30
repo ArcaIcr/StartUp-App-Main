@@ -58,8 +58,8 @@ const router = createRouter({
     },
     {
       path: "/reset-password",
+      component: () => import("@/components/ResetPassword.vue"),
       name: "ResetPassword",
-      component: ResetPassword,
     },
     {
       path: "/about",

@@ -22,13 +22,15 @@
           />
         </div>
 
+        <!-- Success Message -->
         <div
           v-if="message"
           class="bg-green-100 border border-green-400 text-green-700 p-2 rounded-lg mb-4"
         >
-          {{ message }}
+          {{ message }} Please check your inbox and follow the instructions.
         </div>
 
+        <!-- Error Message -->
         <div
           v-if="errorMessage"
           class="bg-red-100 border border-red-400 text-red-700 p-2 rounded-lg mb-4"
@@ -68,7 +70,7 @@ export default {
 
       try {
         await sendPasswordResetEmail(this.email);
-        this.message = "A reset link has been sent to your email.";
+        this.message = "A reset link has been sent to your email."; // Success message
       } catch (error) {
         this.errorMessage =
           error.message || "Failed to send reset link. Please try again.";
@@ -79,7 +81,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-/* Optional: Additional styles can be added here */
-</style>

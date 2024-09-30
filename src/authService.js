@@ -55,7 +55,12 @@ export async function login(email, password) {
 
 // Reset Password
 export const sendPasswordResetEmail = async (email) => {
-  return await firebaseSendPasswordResetEmail(authInstance, email);
+  const actionCodeSettings = {
+    url: 'http://localhost:3000/login', // Redirect after password reset
+    handleCodeInApp: true // Ensures that the reset is handled within your app
+  };
+
+  return await firebaseSendPasswordResetEmail(authInstance, email, actionCodeSettings);
 };
 
 // Function to save assessment data to Firestore
@@ -76,4 +81,4 @@ export async function savePaymentInfo(userId, paymentInfo) {
   } catch (error) {
     throw new Error("Error saving payment information: " + error.message);
   }
-}
+};

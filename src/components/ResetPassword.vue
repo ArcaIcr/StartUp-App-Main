@@ -58,11 +58,11 @@ export default {
       newPassword: "",
       errorMessage: "",
       successMessage: "",
-      code: "https://startup-compass.firebaseapp.com/reset-password?oobCode={oobCode}", // To store the oobCode from the URL
+      code: "", // Store the oobCode from the URL
     };
   },
   created() {
-    // Extract the oobCode (one-time password reset code) from the URL
+    // Extract the oobCode (one-time password reset code) from the URL query parameter
     this.code = this.$route.query.oobCode;
 
     if (!this.code) {

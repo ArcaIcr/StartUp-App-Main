@@ -55,16 +55,7 @@ export async function login(email, password) {
 
 // Reset Password
 export const sendPasswordResetEmail = async (email) => {
-  const actionCodeSettings = {
-    url: "http://localhost:3000/login", // Redirect after password reset
-    handleCodeInApp: true, // Ensures that the reset is handled within your app
-  };
-
-  return await firebaseSendPasswordResetEmail(
-    authInstance,
-    email,
-    actionCodeSettings
-  );
+  return await firebaseSendPasswordResetEmail(authInstance, email);
 };
 
 // Function to save assessment data to Firestore

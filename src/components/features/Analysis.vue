@@ -54,7 +54,7 @@ const regionalChartData = ref({
 // Method to fetch interest score data from API based on form inputs
 const fetchInterestScores = async () => {
   try {
-    const response = await axios.get(`${endpoint}/get-bar-graph-data`, {
+    const response = await axios.get(`${endpoint}/trends/get-bar-graph-data`, {
       params: {
         niche: niche.value,
         location: location.value,
@@ -88,11 +88,11 @@ const fetchInterestScores = async () => {
 // Method to fetch regional interest data
 const fetchRegionalInterestScores = async () => {
   try {
-    const response = await axios.get("https://startup-compass-api.onrender.com/interest_by_region", {
+    const response = await axios.get(`${endpoint}/trends/interest_by_region`, {
       params: {
         niche: niche.value,
-        timeframe: timeframe.value,
         location: location.value,
+        timeframe: timeframe.value,
       },
     });
 

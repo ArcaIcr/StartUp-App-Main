@@ -45,7 +45,7 @@ const fetchApiData = async () => {
   response.value = null; // Clear previous response
 
   try {
-    const res = await axios.get(`${endpoint}/calculate_roi`, {
+    const res = await axios.get(`${endpoint}/trends/calculate_roi`, {
       params: {
         niche: query.value.niche,
         location: query.value.location,

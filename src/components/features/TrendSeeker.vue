@@ -21,7 +21,7 @@ const isLoading = ref(false);
 const fetchApiData = async () => {
   try {
     isLoading.value = true;
-    const res = await axios.get(`${endpoint}/trend_seeker`, {
+    const res = await axios.get(`${endpoint}/trends/trend_seeker`, {
       params: {
         niche: query.value.niche,
         location: query.value.location,

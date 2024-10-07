@@ -1,9 +1,11 @@
 <script setup>
-import Hero from "@/components/home/Hero.vue";
-import HomeCards from "@/components/home/HomeCards.vue";
+import Hero from "@/sections/Hero.vue";
+import InformationSection from "@/sections/home/Information.vue";
+import FooterSection from "@/sections/home/Footer.vue";
 </script>
 
 <template>
   <Hero />
-  <HomeCards />
+  <InformationSection/>
+  <FooterSection/>
 </template>

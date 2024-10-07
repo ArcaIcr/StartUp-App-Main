@@ -31,7 +31,7 @@ const industries = [
 // Method to handle form submission
 const handleFormSubmit = async () => {
   try {
-    const response = await axios.get(`${endpoint}/business-assessment`, { // Use backticks for the template literal
+    const response = await axios.get(`${endpoint}/trends/business-assessment`, { // Use backticks for the template literal
       params: {
         current_revenue: revenue.value,
         previous_revenue: previousRevenue.value,

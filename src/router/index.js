@@ -1,16 +1,16 @@
-import About from "@/components/About.vue";
-import Analysis from "@/components/Analysis.vue";
-import Business from "@/components/Business.vue";
-import Dashboard from "@/components/Dashboard.vue";
-import ForgotPassword from "@/components/ForgotPassword.vue"; // Forgot Password
-import Login from "@/components/Login.vue";
-import Pricing from "@/components/Pricing.vue";
-import Profile from "@/components/Profile.vue"; // Add your Profile component
-import ResetPassword from "@/components/ResetPassword.vue"; // Reset Password
-import ROI from "@/components/ROI.vue";
-import Settings from "@/components/Settings.vue"; // Add your Settings component
-import SignUp from "@/components/SignUp.vue";
-import TrendSeeker from "@/components/TrendSeeker.vue";
+import About from "@/components/about/About.vue";
+import Analysis from "@/components/features/Analysis.vue";
+import Business from "@/components/features/Business.vue";
+import Dashboard from "@/components/dashboard/Dashboard.vue";
+import ForgotPassword from "@/components/user/ForgotPassword.vue"; // Forgot Password
+import Login from "@/components/user/Login.vue";
+import Pricing from "@/components/user/Pricing.vue";
+import Profile from "@/components/user/Profile.vue"; // Add your Profile component
+import ResetPassword from "@/components/user/ResetPassword.vue"; // Reset Password
+import ROI from "@/components/features/ROI.vue";
+import Settings from "@/components/user/Settings.vue"; // Add your Settings component
+import SignUp from "@/components/user/SignUp.vue";
+import TrendSeeker from "@/components/features/TrendSeeker.vue";
 import { auth } from "@/firebaseConfig"; // Ensure this path is correct
 import AssessmentView from "@/views/AssessmentView.vue";
 import HomeView from "@/views/HomeView.vue";
@@ -58,8 +58,8 @@ const router = createRouter({
     },
     {
       path: "/reset-password",
-      component: () => import("@/components/ResetPassword.vue"),
       name: "ResetPassword",
+      component: ResetPassword,
     },
     {
       path: "/about",

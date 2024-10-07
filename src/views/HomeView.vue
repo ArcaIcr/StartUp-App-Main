@@ -1,6 +1,6 @@
 <script setup>
-import Hero from "@/components/Hero.vue";
-import HomeCards from "@/components/HomeCards.vue";
+import Hero from "@/components/home/Hero.vue";
+import HomeCards from "@/components/home/HomeCards.vue";
 </script>
 
 <template>

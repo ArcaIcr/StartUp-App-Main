@@ -53,11 +53,17 @@
 
         <button
           type="submit"
-          :disabled="loading"
+          :disabled="loading || isLocked"
           class="w-full py-3 px-4 bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-lightblue focus:ring-offset-2"
         >
           {{ loading ? "Logging in..." : "Log In" }}
         </button>
+
+        <div v-if="isLocked" class="mt-4 text-red-600 text-center">
+          Your account is locked due to too many failed attempts. Please try
+          again in
+          <span class="font-semibold">{{ remainingTime }}</span> seconds.
+        </div>
       </form>
     </div>
   </div>
@@ -73,6 +79,11 @@ export default {
       password: "",
       errorMessage: "",
       loading: false, // Loading state for button
+      failedAttempts: 0, // Track the number of failed attempts
+      isLocked: false, // Lock the account after too many attempts
+      lockDuration: 30, // Lock duration in seconds (e.g., 30 seconds)
+      remainingTime: 0, // Time left until account unlock
+      lockInterval: null, // Timer interval
     };
   },
   methods: {
@@ -80,10 +91,26 @@ export default {
       this.errorMessage = "";
       this.loading = true; // Start loading state
 
+      if (this.isLocked) {
+        this.errorMessage = "Your account is locked. Please try again later.";
+        this.loading = false;
+        return;
+      }
+
       try {
         await login(this.email, this.password);
         this.$router.push("/dashboard"); // Redirect to the dashboard after successful login
+        this.failedAttempts = 0; // Reset failed attempts on successful login
+        this.clearLock(); // Clear any existing lock
       } catch (error) {
+        this.failedAttempts++;
+
+        if (this.failedAttempts >= 3) {
+          this.isLocked = true; // Lock the account
+          this.remainingTime = this.lockDuration; // Set remaining time to lock duration
+          this.startLockTimer(); // Start the countdown timer
+        }
+
         if (error.code === "auth/invalid-email") {
           this.errorMessage = "Please enter a valid email address.";
         } else if (error.code === "auth/wrong-password") {
@@ -96,6 +123,23 @@ export default {
         this.loading = false; // Stop loading state
       }
     },
+    startLockTimer() {
+      this.lockInterval = setInterval(() => {
+        this.remainingTime--;
+        if (this.remainingTime <= 0) {
+          this.clearLock();
+        }
+      }, 1000); // Update every second
+    },
+    clearLock() {
+      this.isLocked = false;
+      this.failedAttempts = 0; // Reset failed attempts
+      clearInterval(this.lockInterval); // Clear the timer interval
+      this.remainingTime = 0; // Reset remaining time
+    },
+  },
+  beforeDestroy() {
+    clearInterval(this.lockInterval); // Clear interval on component destruction
   },
 };
 </script>

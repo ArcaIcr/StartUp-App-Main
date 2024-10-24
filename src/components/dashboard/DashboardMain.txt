@@ -1,9 +1,9 @@
 <template>
-  <section class="bg-gray-50 min-h-screen flex">
+  <section class="bg-bgLight min-h-screen flex">
     <!-- Sidebar Toggle Button -->
     <button
       @click="toggleSidebar"
-      class="text-white fixed top-4 left-4 z-50 bg-blue-600 rounded-full p-2 hover:bg-blue-700 transition"
+      class="text-white fixed top-4 left-4 z-50 bg-primaryDark rounded-full p-2 hover:bg-accentLight transition ease-in-out duration-300"
     >
       <i class="pi pi-bars text-2xl"></i>
     </button>
@@ -26,27 +26,27 @@
         <!-- Business Overview Card -->
         <Card>
           <template #front>
-            <h2 class="text-xl font-semibold text-gray-800">
+            <h2 class="text-xl font-semibold text-textDark">
               Business Overview
             </h2>
             <div class="mt-4 flex justify-between">
               <div>
                 <p class="text-lg font-bold text-green-600">$12,345</p>
-                <p class="text-gray-500">Revenue (This Month)</p>
+                <p class="text-textMedium">Revenue (This Month)</p>
               </div>
               <div>
                 <p class="text-lg font-bold text-red-600">98%</p>
-                <p class="text-gray-500">Customer Satisfaction</p>
+                <p class="text-textMedium">Customer Satisfaction</p>
               </div>
             </div>
           </template>
           <template #back>
-            <h2 class="text-xl font-semibold text-gray-800">
+            <h2 class="text-xl font-semibold text-textDark">
               Detailed Overview
             </h2>
             <div class="mt-4 space-y-2">
-              <p class="text-gray-600">Revenue Breakdown:</p>
-              <ul class="text-gray-500 list-disc list-inside">
+              <p class="text-textMedium">Revenue Breakdown:</p>
+              <ul class="text-textMedium list-disc list-inside">
                 <li>Product A: $5,000</li>
                 <li>Product B: $3,000</li>
               </ul>
@@ -57,17 +57,17 @@
         <!-- Action Required Card -->
         <Card>
           <template #front>
-            <h2 class="text-xl font-semibold text-gray-800">Action Required</h2>
-            <ul class="mt-4 space-y-2 text-gray-600">
+            <h2 class="text-xl font-semibold text-textDark">Action Required</h2>
+            <ul class="mt-4 space-y-2 text-textMedium">
               <li>Complete Business Assessment</li>
               <li>Update Marketing Strategy</li>
             </ul>
           </template>
           <template #back>
-            <h2 class="text-xl font-semibold text-gray-800">
+            <h2 class="text-xl font-semibold text-textDark">
               Detailed Actions
             </h2>
-            <ul class="mt-4 space-y-2 text-gray-600">
+            <ul class="mt-4 space-y-2 text-textMedium">
               <li>Review trends</li>
               <li>Analyze competitors</li>
             </ul>
@@ -76,7 +76,7 @@
       </div>
 
       <!-- Tools Section -->
-      <h2 class="text-2xl font-bold text-gray-800">Your Tools</h2>
+      <h2 class="text-2xl font-bold text-textDark">Your Tools</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <Widget
           v-for="widget in widgets"

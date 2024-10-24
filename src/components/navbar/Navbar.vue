@@ -6,10 +6,29 @@ const isActiveLink = (routePath) => {
   const route = useRoute();
   return route.path === routePath;
 };
+
+// Define props for dynamic styling
+defineProps({
+  btnBackground: {
+    type: String,
+    default: "bg-gradient-light",
+  },
+  isBlur: {
+    type: String,
+    default: "bg-accentLight border-b border-lightblue",
+  },
+  darkMode: {
+    type: Boolean,
+    default: false,
+  },
+});
 </script>
 
 <template>
-  <nav class="bg-accentLight border-b border-lightblue">
+  <nav
+    class="navbar navbar-expand-lg top-0 z-index-3 position-absolute mt-4"
+    :class="[isBlur ? isBlur : 'shadow-none my-2 navbar-transparent w-100']"
+  >
     <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
       <div class="flex h-20 items-center justify-between">
         <div
@@ -18,7 +37,9 @@ const isActiveLink = (routePath) => {
           <!-- Logo -->
           <RouterLink class="flex flex-shrink-0 items-center mr-4" to="/">
             <img class="h-10 w-auto" :src="logo" alt="Vue Jobs" />
-            <span class="hidden md:block text-darkblue text-2xl font-bold ml-2"
+            <span
+              class="hidden md:block text-2xl font-bold ml-2"
+              :class="darkMode ? 'text-black' : 'text-darkblue'"
               >StartUp Compass</span
             >
           </RouterLink>
@@ -30,12 +51,8 @@ const isActiveLink = (routePath) => {
                   isActiveLink('/')
                     ? 'bg-accentDark text-white'
                     : 'hover:bg-bgLight hover:text-textDark',
-                  'text-darkblue',
-                  'px-4',
-                  'py-2',
-                  'rounded-md',
-                  'transition',
-                  'duration-300',
+                  darkMode ? 'text-black' : 'text-darkblue',
+                  'px-4 py-2 rounded-md transition duration-300',
                 ]"
                 >Home</RouterLink
               >
@@ -45,12 +62,8 @@ const isActiveLink = (routePath) => {
                   isActiveLink('/about')
                     ? 'bg-accentDark text-white'
                     : 'hover:bg-bgLight hover:text-textDark',
-                  'text-darkblue',
-                  'px-4',
-                  'py-2',
-                  'rounded-md',
-                  'transition',
-                  'duration-300',
+                  darkMode ? 'text-black' : 'text-darkblue',
+                  'px-4 py-2 rounded-md transition duration-300',
                 ]"
                 >About</RouterLink
               >
@@ -60,12 +73,8 @@ const isActiveLink = (routePath) => {
                   isActiveLink('/pricing')
                     ? 'bg-accentDark text-white'
                     : 'hover:bg-bgLight hover:text-textDark',
-                  'text-darkblue',
-                  'px-4',
-                  'py-2',
-                  'rounded-md',
-                  'transition',
-                  'duration-300',
+                  darkMode ? 'text-black' : 'text-darkblue',
+                  'px-4 py-2 rounded-md transition duration-300',
                 ]"
                 >Pricing</RouterLink
               >
@@ -75,12 +84,8 @@ const isActiveLink = (routePath) => {
                   isActiveLink('/login')
                     ? 'bg-accentDark text-white'
                     : 'hover:bg-bgLight hover:text-textDark',
-                  'text-darkblue',
-                  'px-4',
-                  'py-2',
-                  'rounded-md',
-                  'transition',
-                  'duration-300',
+                  darkMode ? 'text-black' : 'text-darkblue',
+                  'px-4 py-2 rounded-md transition duration-300',
                 ]"
                 >Log-in</RouterLink
               >
@@ -88,15 +93,10 @@ const isActiveLink = (routePath) => {
                 to="/signup"
                 :class="[
                   isActiveLink('/signup')
-                    ? 'text-textDark'
+                    ? 'bg-bgLight text-darkblue'
                     : 'hover:bg-accentDark hover:text-bgLight',
-                  'bg-bgLight',
-                  'text-darkblue',
-                  'px-4',
-                  'py-2',
-                  'rounded-md',
-                  'transition',
-                  'duration-300',
+                  darkMode ? 'text-black' : 'text-darkblue',
+                  'px-4 py-2 rounded-md transition duration-300',
                 ]"
                 >Sign-up</RouterLink
               >

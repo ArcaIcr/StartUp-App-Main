@@ -1,5 +1,5 @@
 import About from "@/components/about/About.vue";
-import Dashboard from "@/components/dashboard/DashboardMain.vue";
+import Dashboard from "@/components/dashboard/Dashboard.vue";
 import Analysis from "@/components/features/Analysis.vue";
 import Business from "@/components/features/Business.vue";
 import ROI from "@/components/features/ROI.vue";

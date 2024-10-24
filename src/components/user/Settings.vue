@@ -18,6 +18,9 @@
             class="h-16 w-16 rounded-full object-cover mr-4"
           />
           <input type="file" @change="uploadProfilePic" />
+          <span v-if="isUploading" class="ml-2 text-gray-500"
+            >Uploading...</span
+          >
         </div>
       </div>
 
@@ -105,6 +108,7 @@
       </button>
 
       <button
+        :disabled="isUploading"
         type="submit"
         class="bg-blue-500 text-white py-2 px-4 rounded mt-4"
       >
@@ -116,7 +120,7 @@
 
 <script>
 import { auth, db } from "@/firebaseConfig";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import {
   getDownloadURL,
   getStorage,
@@ -137,6 +141,7 @@ export default {
       notificationsEnabled: false,
       twoFactorEnabled: false,
       subscriptionPlan: "Basic", // Placeholder for current subscription plan
+      isUploading: false,
     };
   },
   mounted() {
@@ -157,6 +162,11 @@ export default {
   },
   methods: {
     async handleSubmit() {
+      if (!this.user.username || !this.user.email) {
+        alert("Username and email are required.");
+        return;
+      }
+
       const user = auth.currentUser;
       const userRef = doc(db, "users", user.uid);
 
@@ -176,6 +186,9 @@ export default {
         alert("Profile updated successfully!");
       } catch (error) {
         console.error("Error updating profile:", error);
+        alert(
+          "An error occurred while updating your profile. Please try again."
+        );
       }
     },
     goBack() {
@@ -184,23 +197,53 @@ export default {
     async uploadProfilePic(event) {
       const file = event.target.files[0];
       if (file) {
-        const storage = getStorage();
-        const storageRefPath = `profile_pictures/${auth.currentUser.uid}/${file.name}`;
-        const fileRef = storageRef(storage, storageRefPath);
+        this.isUploading = true; // Set to true when the upload starts
+        try {
+          const storage = getStorage();
+          const storageRefPath = `profile_pictures/${auth.currentUser.uid}/${file.name}`;
+          const fileRef = storageRef(storage, storageRefPath);
 
-        // Upload the file to Firebase Storage
-        await uploadBytes(fileRef, file);
+          // Upload the file to Firebase Storage
+          await uploadBytes(fileRef, file);
 
-        // Get the download URL
-        const downloadURL = await getDownloadURL(fileRef);
-        this.user.profilePicture = downloadURL; // Set the URL for display and saving
+          // Get the download URL
+          const downloadURL = await getDownloadURL(fileRef);
+          this.user.profilePicture = downloadURL; // Set the URL for display and saving
+          alert("Profile picture updated successfully!");
+        } catch (error) {
+          alert("Failed to upload profile picture. Please try again.");
+        } finally {
+          this.isUploading = false; // Always reset after upload completes
+        }
       }
     },
     changePlan() {
       alert("Change plan feature is not yet implemented.");
     },
-    deleteAccount() {
-      alert("Account deletion feature is not yet implemented.");
+    async deleteAccount() {
+      const confirmed = confirm(
+        "Are you sure you want to delete your account? This action cannot be undone."
+      );
+      if (confirmed) {
+        const user = auth.currentUser;
+        if (user) {
+          const userRef = doc(db, "users", user.uid);
+          try {
+            // Delete user data from Firestore
+            await deleteDoc(userRef);
+            // Delete user account from Firebase Authentication
+            await user.delete();
+            alert("Your account has been deleted successfully.");
+            // Redirect to home or login page after deletion
+            this.$router.push("/"); // Change the path as needed
+          } catch (error) {
+            console.error("Error deleting account:", error);
+            alert(
+              "An error occurred while deleting your account. Please try again."
+            );
+          }
+        }
+      }
     },
   },
 };

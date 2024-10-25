@@ -26,7 +26,7 @@ defineProps({
 
 <template>
   <nav
-    class="navbar navbar-expand-lg top-0 z-index-3 position-absolute mt-4"
+    class="navbar navbar-expand-lg top-0 z-index-3 position-absolute"
     :class="[isBlur ? isBlur : 'shadow-none my-2 navbar-transparent w-100']"
   >
     <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">

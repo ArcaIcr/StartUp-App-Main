@@ -1,9 +1,5 @@
 import About from "@/components/about/About.vue";
-import Dashboard from "@/components/dashboard/Dashboard.vue";
-import Analysis from "@/components/features/Analysis.vue";
-import Business from "@/components/features/Business.vue";
-import ROI from "@/components/features/ROI.vue";
-import TrendSeeker from "@/components/features/TrendSeeker.vue";
+import Dashboard from "@/views/DashboardView.vue";
 import ForgotPassword from "@/components/user/ForgotPassword.vue"; // Forgot Password
 import Login from "@/components/user/Login.vue";
 import Pricing from "@/components/user/Pricing.vue";
@@ -15,6 +11,12 @@ import { auth } from "@/firebaseConfig"; // Ensure this path is correct
 import AssessmentView from "@/views/AssessmentView.vue";
 import HomeView from "@/views/HomeView.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
+
+// Features
+import Analysis from "@/components/features/Analysis.vue";
+import Business from "@/components/features/Business.vue";
+import ROI from "@/components/features/ROI.vue";
+import TrendSeeker from "@/components/features/TrendSeeker.vue";
 
 import { createRouter, createWebHistory } from "vue-router";
 
@@ -92,13 +94,13 @@ const router = createRouter({
       path: "/profile",
       name: "Profile",
       component: Profile,
-      meta: { requiresAuth: true }, // Protect this route
+      meta: { requiresAuth: true },
     },
     {
       path: "/settings",
       name: "Settings",
       component: Settings,
-      meta: { requiresAuth: true }, // Protect this route
+      meta: { requiresAuth: true },
     },
     {
       path: "/:catchAll(.*)",

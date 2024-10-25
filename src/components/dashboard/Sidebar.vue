@@ -4,9 +4,9 @@ export default {
     return {
       menuItems: [
         { to: "/overview", icon: "pi pi-home", label: "Overview" },
-        { to: "/assessment", icon: "pi pi-wallet", label: "Assessment" },
-        { to: "/trend", icon: "pi pi-users", label: "Trends" },
-        { to: "/metrics", icon: "pi pi-chart-line", label: "Metrics" },
+        { to: "/assessmentwindow", icon: "pi pi-wallet", label: "Assessment" },
+        { to: "/trends", icon: "pi pi-users", label: "Trends" },
+        // { to: "/metrics", icon: "pi pi-chart-line", label: "Metrics" },
         { to: "/settings", icon: "pi pi-cog", label: "Settings" },
       ],
     };
@@ -21,7 +21,7 @@ export default {
 
 
 <template>
-    <aside class="w-64 h-screen bg-teal-500 flex flex-col justify-between">
+    <aside class="w-64 h-screen bg-accentLight flex flex-col justify-between">
       <div class="p-4">
         <div class="mb-8">
           <img src="/src/assets/img/Logo.png" alt="Logo" class="h-12" />

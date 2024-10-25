@@ -1,20 +1,27 @@
 import About from "@/components/about/About.vue";
-import Dashboard from "@/components/dashboard/Dashboard.vue";
+import Dashboard from "@/views/DashboardOverview.vue";
+import ForgotPassword from "@/components/user/ForgotPassword.vue";
+import Login from "@/components/user/Login.vue";
+import Pricing from "@/components/user/Pricing.vue";
+import Profile from "@/components/user/Profile.vue";
+import ResetPassword from "@/components/user/ResetPassword.vue";
+import Settings from "@/components/user/Settings.vue";
+import SignUp from "@/components/user/SignUp.vue";
+import { auth } from "@/firebaseConfig";
+import AssessmentView from "@/views/AssessmentView.vue";
+import HomeView from "@/views/HomeView.vue";
+import NotFoundView from "@/views/NotFoundView.vue";
+import DashboardOverview from "@/views/DashboardOverview.vue";
+
+// Features
 import Analysis from "@/components/features/Analysis.vue";
 import Business from "@/components/features/Business.vue";
 import ROI from "@/components/features/ROI.vue";
 import TrendSeeker from "@/components/features/TrendSeeker.vue";
-import ForgotPassword from "@/components/user/ForgotPassword.vue"; // Forgot Password
-import Login from "@/components/user/Login.vue";
-import Pricing from "@/components/user/Pricing.vue";
-import Profile from "@/components/user/Profile.vue"; // Add your Profile component
-import ResetPassword from "@/components/user/ResetPassword.vue"; // Reset Password
-import Settings from "@/components/user/Settings.vue"; // Add your Settings component
-import SignUp from "@/components/user/SignUp.vue";
-import { auth } from "@/firebaseConfig"; // Ensure this path is correct
-import AssessmentView from "@/views/AssessmentView.vue";
-import HomeView from "@/views/HomeView.vue";
-import NotFoundView from "@/views/NotFoundView.vue";
+
+// Dashboard Features
+import assessBusiness from "@/components/dashboard/Features/assessBusiness.vue";
+import trends from "@/components/dashboard/Features/trends.vue";
 
 import { createRouter, createWebHistory } from "vue-router";
 
@@ -25,6 +32,12 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: HomeView,
+    },
+    {
+      path: "/overview",
+      name: "Overview",
+      component: DashboardOverview,
+      meta: { requiresAuth: true },
     },
     {
       path: "/pricing",
@@ -73,6 +86,12 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: "/assessmentwindow",
+      name: "AssessBusiness",
+      component: assessBusiness,
+      meta: { requiresAuth: true },
+    },
+    {
       path: "/analysis",
       name: "Analysis",
       component: Analysis,
@@ -81,6 +100,12 @@ const router = createRouter({
       path: "/trend",
       name: "Trend Seeker",
       component: TrendSeeker,
+    },
+    {
+    path: "/trends",
+    name: "Trends",
+    component: trends,
+    meta: { requiresAuth: true },
     },
     {
       path: "/dashboard",
@@ -92,13 +117,13 @@ const router = createRouter({
       path: "/profile",
       name: "Profile",
       component: Profile,
-      meta: { requiresAuth: true }, // Protect this route
+      meta: { requiresAuth: true },
     },
     {
       path: "/settings",
       name: "Settings",
       component: Settings,
-      meta: { requiresAuth: true }, // Protect this route
+      meta: { requiresAuth: true },
     },
     {
       path: "/:catchAll(.*)",

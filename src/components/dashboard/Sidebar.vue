@@ -1,27 +1,6 @@
-<script>
-export default {
-  data() {
-    return {
-      menuItems: [
-        { to: "/overview", icon: "pi pi-home", label: "Overview" },
-        { to: "/assessmentwindow", icon: "pi pi-wallet", label: "Assessment" },
-        { to: "/trends", icon: "pi pi-users", label: "Trends" },
-        // { to: "/metrics", icon: "pi pi-chart-line", label: "Metrics" },
-        { to: "/settings", icon: "pi pi-cog", label: "Settings" },
-      ],
-    };
-  },
-  methods: {
-    handleLogout() {
-      this.$router.push("/");
-    },
-  },
-};
-</script>
-
-
 <template>
-    <aside class="w-64 h-screen bg-accentLight flex flex-col justify-between">
+  <div class="flex">
+    <aside class="fixed left-0 top-0 w-64 h-screen bg-accentLight flex flex-col justify-between">
       <div class="p-4">
         <div class="mb-8">
           <img src="/src/assets/img/Logo.png" alt="Logo" class="h-12" />
@@ -52,5 +31,35 @@ export default {
         </button>
       </div>
     </aside>
-  </template>
-  
+
+    <!-- Main content area -->
+    <div class="ml-64 p-4 w-full">
+      <router-view />
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      menuItems: [
+        { to: "/overview", icon: "pi pi-home", label: "Overview" },
+        { to: "/assessmentwindow", icon: "pi pi-wallet", label: "Assessment" },
+        { to: "/trends", icon: "pi pi-users", label: "Trends" },
+        // { to: "/metrics", icon: "pi pi-chart-line", label: "Metrics" },
+        { to: "/settings", icon: "pi pi-cog", label: "Settings" },
+      ],
+    };
+  },
+  methods: {
+    handleLogout() {
+      this.$router.push("/");
+    },
+  },
+};
+</script>
+
+<style scoped>
+/* Optional: Add any additional styles here */
+</style>

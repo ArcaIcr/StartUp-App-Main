@@ -61,6 +61,12 @@
           v-model="newPassword"
           class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
         />
+        <button
+          @click.prevent="changePassword"
+          class="mt-2 text-blue-500 hover:underline"
+        >
+          Change Password
+        </button>
       </div>
 
       <!-- Notification Preferences -->
@@ -121,6 +127,7 @@
 <script>
 import { auth, db } from "@/firebaseConfig";
 import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
+import { getAuth, updatePassword } from "firebase/auth";
 import {
   getDownloadURL,
   getStorage,
@@ -243,6 +250,29 @@ export default {
             );
           }
         }
+      }
+    },
+    async changePassword() {
+      const auth = getAuth();
+      const user = auth.currentUser;
+
+      if (!user) {
+        alert("No authenticated user found. Please log in.");
+        return;
+      }
+
+      if (!this.newPassword) {
+        alert("Please enter a new password.");
+        return;
+      }
+
+      try {
+        await updatePassword(user, this.newPassword); // Use the modular approach
+        alert("Password changed successfully!");
+        this.newPassword = ""; // Clear the password field after successful change
+      } catch (error) {
+        console.error("Error changing password:", error);
+        alert("An error occurred while changing your password. Please try again.");
       }
     },
   },

@@ -1,4 +1,5 @@
 <script setup>
+import Navbar from "@/components/navbar/Navbar.vue";
 import { savePaymentInfo } from "@/authService"; // Import the savePaymentInfo function
 import pricingData from "@/price.json"; // Adjusted import for pricing data
 import { ref } from "vue";
@@ -62,6 +63,7 @@ const redirectToSignup = async () => {
 </script>
 
 <template>
+  <Navbar />
   <section class="bg-beige min-h-screen px-4 py-10">
     <div class="container-xl lg:container m-auto">
       <h2 class="text-4xl font-bold text-darkblue mb-6 text-center">

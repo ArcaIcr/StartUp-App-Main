@@ -1,8 +1,8 @@
-import About from "@/components/about/About.vue";
+import About from "@/views/AboutView.vue";
 import Dashboard from "@/views/DashboardOverview.vue";
 import ForgotPassword from "@/components/user/ForgotPassword.vue";
 import Login from "@/components/user/Login.vue";
-import Pricing from "@/components/user/Pricing.vue";
+import Pricing from "@/views/PricingView.vue";
 import Profile from "@/components/user/Profile.vue";
 import ResetPassword from "@/components/user/ResetPassword.vue";
 import Settings from "@/components/user/Settings.vue";
@@ -20,8 +20,8 @@ import ROI from "@/components/features/ROI.vue";
 import TrendSeeker from "@/components/features/TrendSeeker.vue";
 
 // Dashboard Features
-import assessBusiness from "@/components/dashboard/Features/assessBusiness.vue";
-import trends from "@/components/dashboard/Features/trends.vue";
+import assessBusiness from "@/components/dashboard/Features/AssessBusiness.vue";
+import trends from "@/components/dashboard/Features/Trends.vue";
 
 import { createRouter, createWebHistory } from "vue-router";
 

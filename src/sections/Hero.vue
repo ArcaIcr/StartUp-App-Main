@@ -22,11 +22,9 @@
 
       <!-- Subtitle or description -->
       <p class="my-6 text-xl text-textMedium max-w-3xl animate-fade-in-up">
-        Empowering businesses in Cagayan de Oro to thrive in the digital
-        landscape! Our platform offers a suite of innovative tools designed to
-        help local entrepreneurs tackle challenges and seize opportunities. From
-        inventory management to market analysis, we provide the insights you
-        need to excel.
+        Empowering businesses to thrive in the digital landscape!
+        Our platform offers a suite of innovative tools designed to help entrepreneurs tackle challenges and seize opportunities.
+        From market analysis to trends analytics and metrics for finance, we provide the insights you need to excel.
       </p>
 
       <!-- CTA Button -->

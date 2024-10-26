@@ -1,4 +1,5 @@
 <template>
+  <Navbar />
   <div class="flex justify-center items-center h-screen bg-gray-100">
     <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
       <h2 class="text-2xl font-bold text-center mb-6">Assessment Tab</h2>
@@ -36,6 +37,7 @@
 </template>
 
 <script>
+import Navbar from "@/components/navbar/Navbar.vue";
 import { db } from "@/firebaseConfig"; // Import Firestore configuration
 import { addDoc, collection } from "firebase/firestore"; // Import necessary Firestore functions
 import { mapState } from "vuex"; // For accessing Vuex state (if needed for auth data)

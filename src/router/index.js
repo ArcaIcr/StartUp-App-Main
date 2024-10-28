@@ -1,17 +1,17 @@
 import About from "@/views/AboutView.vue";
 import Dashboard from "@/views/DashboardOverview.vue";
 import ForgotPassword from "@/components/user/ForgotPassword.vue";
-import Login from "@/components/user/Login.vue";
 import Pricing from "@/views/PricingView.vue";
 import Profile from "@/components/user/Profile.vue";
 import ResetPassword from "@/components/user/ResetPassword.vue";
 import Settings from "@/components/user/Settings.vue";
-import SignUp from "@/components/user/SignUp.vue";
 import { auth } from "@/firebaseConfig";
 import AssessmentView from "@/views/AssessmentView.vue";
 import HomeView from "@/views/HomeView.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
 import DashboardOverview from "@/views/DashboardOverview.vue";
+import LoginView from "@/views/LoginView.vue";
+import SignUpView from "@/views/SignUpView.vue";
 
 // Features
 import Analysis from "@/components/features/Analysis.vue";
@@ -57,12 +57,12 @@ const router = createRouter({
     {
       path: "/signup",
       name: "SignUp",
-      component: SignUp,
+      component: SignUpView,
     },
     {
       path: "/login",
       name: "Login",
-      component: Login,
+      component: LoginView,
     },
     {
       path: "/forgot-password",

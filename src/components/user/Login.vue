@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import { login } from "@/authService"; // Assuming this handles authentication
+import { login } from "@/authService";
 
 export default {
   data() {

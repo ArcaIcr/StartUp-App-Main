@@ -1,17 +1,18 @@
-import About from "@/views/AboutView.vue";
-import Dashboard from "@/views/DashboardOverview.vue";
+import About from "@/views/LandingPageViews/AboutView.vue";
+import Dashboard from "@/views/DashboardViews/DashboardOverview.vue";
 import ForgotPassword from "@/components/user/ForgotPassword.vue";
-import Pricing from "@/views/PricingView.vue";
+import Pricing from "@/views/LandingPageViews/PricingView.vue";
 import Profile from "@/components/user/Profile.vue";
 import ResetPassword from "@/components/user/ResetPassword.vue";
 import Settings from "@/components/user/Settings.vue";
 import { auth } from "@/firebaseConfig";
-import AssessmentView from "@/views/AssessmentView.vue";
-import HomeView from "@/views/HomeView.vue";
+import AssessmentView from "@/views/DashboardViews/AssessmentView.vue";
+import HomeView from "@/views/LandingPageViews/HomeView.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
-import DashboardOverview from "@/views/DashboardOverview.vue";
-import LoginView from "@/views/LoginView.vue";
-import SignUpView from "@/views/SignUpView.vue";
+import DashboardOverview from "@/views/DashboardViews/DashboardOverview.vue";
+import UserSpace from "@/views/DashboardViews/UserSpace.vue";
+import LoginView from "@/views/LandingPageViews/LoginView.vue";
+import SignUpView from "@/views/LandingPageViews/SignUpView.vue";
 
 // Features
 import Analysis from "@/components/features/Analysis.vue";
@@ -32,12 +33,6 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: HomeView,
-    },
-    {
-      path: "/overview",
-      name: "Overview",
-      component: DashboardOverview,
-      meta: { requiresAuth: true },
     },
     {
       path: "/pricing",
@@ -78,6 +73,15 @@ const router = createRouter({
       path: "/about",
       name: "About",
       component: About,
+    },
+
+
+    // DASHBOARD PATHS
+    {
+      path: "/overview",
+      name: "Overview",
+      component: DashboardOverview,
+      meta: { requiresAuth: true },
     },
     {
       path: "/assessment",
@@ -125,6 +129,17 @@ const router = createRouter({
       component: Settings,
       meta: { requiresAuth: true },
     },
+
+    {
+      path: "/space",
+      name: "UserSpace",
+      component: UserSpace,
+      meta: { requiresAuth: true },
+    },
+
+
+
+    // NOT FOUND PATH
     {
       path: "/:catchAll(.*)",
       name: "not-found",

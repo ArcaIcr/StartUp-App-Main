@@ -46,7 +46,7 @@ export default {
       menuItems: [
         { to: "/overview", icon: "pi pi-home", label: "Overview" },
         { to: "/assessmentwindow", icon: "pi pi-wallet", label: "Assessment" },
-        { to: "/trends", icon: "pi pi-users", label: "Trends" },
+        { to: "/space", icon: "pi pi-users", label: "Space" },
         // { to: "/metrics", icon: "pi pi-chart-line", label: "Metrics" },
         { to: "/settings", icon: "pi pi-cog", label: "Settings" },
       ],

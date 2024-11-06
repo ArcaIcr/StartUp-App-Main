@@ -3,7 +3,7 @@ import { RouterLink } from "vue-router"; // Import RouterLink for navigation
 </script>
 
 <template>
-  <section class="bg-bgLight py-16">
+  <section class="bg-bgLight">
     <div class="container mx-auto px-6 lg:px-8">
       <!-- Header Section -->
       <div class="text-center mb-12">
@@ -71,32 +71,6 @@ import { RouterLink } from "vue-router"; // Import RouterLink for navigation
               Our intuitive design allows you to explore, analyze, and act on data without a steep learning curve. Get started quickly and effortlessly.
             </p>
           </div>
-        </div>
-      </div>
-
-      <!-- Call to Action Section -->
-      <div class="text-center">
-        <h2 class="text-4xl font-bold text-darkblue mb-6">Get Started Today</h2>
-        <p class="text-xl text-textMedium mb-8">Explore the tools and take your business to the next level.</p>
-        <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-          <RouterLink
-            to="/trends"
-            class="bg-accentDark text-white font-semibold rounded-lg px-8 py-4 hover:bg-darkblue transition duration-300 ease-in-out shadow-md transform hover:scale-105"
-          >
-            Explore Trends
-          </RouterLink>
-          <RouterLink
-            to="/business"
-            class="bg-accentDark text-white font-semibold rounded-lg px-8 py-4 hover:bg-darkblue transition duration-300 ease-in-out shadow-md transform hover:scale-105"
-          >
-            Start Assessment
-          </RouterLink>
-          <RouterLink
-            to="/roi"
-            class="bg-accentDark text-white font-semibold rounded-lg px-8 py-4 hover:bg-darkblue transition duration-300 ease-in-out shadow-md transform hover:scale-105"
-          >
-            Calculate ROI
-          </RouterLink>
         </div>
       </div>
     </div>

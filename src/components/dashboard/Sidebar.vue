@@ -1,6 +1,8 @@
 <template>
   <div class="flex">
-    <aside class="fixed left-0 top-0 w-64 h-screen bg-accentLight flex flex-col justify-between">
+    <aside
+      class="fixed left-0 top-0 w-64 h-screen bg-accentLight flex flex-col justify-between"
+    >
       <div class="p-4">
         <div class="mb-8">
           <img src="/src/assets/img/Logo.png" alt="Logo" class="h-12" />
@@ -49,6 +51,7 @@ export default {
         { to: "/space", icon: "pi pi-users", label: "Space" },
         // { to: "/metrics", icon: "pi pi-chart-line", label: "Metrics" },
         { to: "/settings", icon: "pi pi-cog", label: "Settings" },
+        { to: "/maker-space", icon: "pi pi-wrench", label: "MakerSpace" },
       ],
     };
   },

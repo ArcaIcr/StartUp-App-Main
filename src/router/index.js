@@ -1,18 +1,20 @@
-import About from "@/views/LandingPageViews/AboutView.vue";
-import Dashboard from "@/views/DashboardViews/DashboardOverview.vue";
 import ForgotPassword from "@/components/user/ForgotPassword.vue";
-import Pricing from "@/views/LandingPageViews/PricingView.vue";
 import Profile from "@/components/user/Profile.vue";
 import ResetPassword from "@/components/user/ResetPassword.vue";
 import Settings from "@/components/user/Settings.vue";
 import { auth } from "@/firebaseConfig";
 import AssessmentView from "@/views/DashboardViews/AssessmentView.vue";
-import HomeView from "@/views/LandingPageViews/HomeView.vue";
-import NotFoundView from "@/views/NotFoundView.vue";
-import DashboardOverview from "@/views/DashboardViews/DashboardOverview.vue";
+import {
+  default as Dashboard,
+  default as DashboardOverview,
+} from "@/views/DashboardViews/DashboardOverview.vue";
 import UserSpace from "@/views/DashboardViews/UserSpace.vue";
+import About from "@/views/LandingPageViews/AboutView.vue";
+import HomeView from "@/views/LandingPageViews/HomeView.vue";
 import LoginView from "@/views/LandingPageViews/LoginView.vue";
+import Pricing from "@/views/LandingPageViews/PricingView.vue";
 import SignUpView from "@/views/LandingPageViews/SignUpView.vue";
+import NotFoundView from "@/views/NotFoundView.vue";
 
 // Features
 import Analysis from "@/components/features/Analysis.vue";
@@ -23,6 +25,13 @@ import TrendSeeker from "@/components/features/TrendSeeker.vue";
 // Dashboard Features
 import assessBusiness from "@/components/dashboard/Features/AssessBusiness.vue";
 import trends from "@/components/dashboard/Features/Trends.vue";
+
+// MakerSpace
+import Evaluation from "@/components/workspace/Features/Evaluation.vue";
+import FinancialAnalysis from "@/components/workspace/Features/FinancialAnalysis.vue";
+import MarketShareAnalysis from "@/components/workspace/Features/MarketShareAnalysis.vue";
+import PerformanceMeasurement from "@/components/workspace/Features/PerformanceMeasurement.vue";
+import Makerspace from "@/components/workspace/MakerSpace.vue";
 
 import { createRouter, createWebHistory } from "vue-router";
 
@@ -75,7 +84,6 @@ const router = createRouter({
       component: About,
     },
 
-
     // DASHBOARD PATHS
     {
       path: "/overview",
@@ -106,10 +114,10 @@ const router = createRouter({
       component: TrendSeeker,
     },
     {
-    path: "/trends",
-    name: "Trends",
-    component: trends,
-    meta: { requiresAuth: true },
+      path: "/trends",
+      name: "Trends",
+      component: trends,
+      meta: { requiresAuth: true },
     },
     {
       path: "/dashboard",
@@ -136,9 +144,32 @@ const router = createRouter({
       component: UserSpace,
       meta: { requiresAuth: true },
     },
-
-
-
+    // Maker Space
+    {
+      path: "/maker-space",
+      name: "MakerSpace",
+      component: Makerspace,
+    },
+    {
+      path: "/workspace/financial-analysis",
+      name: "FinancialAnalysis",
+      component: FinancialAnalysis,
+    },
+    {
+      path: "/workspace/evaluation",
+      name: "Evaluation",
+      component: Evaluation,
+    },
+    {
+      path: "/workspace/performance-measurement",
+      name: "PerformanceMeasurement",
+      component: PerformanceMeasurement,
+    },
+    {
+      path: "/workspace/market-share-analysis",
+      name: "MarketShareAnalysis",
+      component: MarketShareAnalysis,
+    },
     // NOT FOUND PATH
     {
       path: "/:catchAll(.*)",

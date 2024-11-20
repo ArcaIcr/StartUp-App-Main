@@ -11,7 +11,6 @@ export default {
         tan: "#C7BCAB",
         darkblue: "#1F2E43",
         lightblue: "#8799A6",
-        // NEW COLORS
         primaryLight: "#d4eaf7", // Light Blue
         primaryMedium: "#b6ccd8", // Medium Blue
         primaryDark: "#3b3c3d", // Dark Gray
@@ -58,6 +57,21 @@ export default {
         "fade-in-up": "fadeInUp 1s ease-out both",
         typing:
           "typing 4s steps(40, end) forwards, blink 0.75s step-end infinite",
+      },
+      // Extend width values for the sidebar collapse states
+      spacing: {
+        16: "4rem", // This will be the width for the collapsed sidebar (16rem)
+        64: "16rem", // This is the expanded sidebar width (64rem)
+      },
+      // Custom transition class for smooth sidebar toggle
+      transitionProperty: {
+        width: "width",
+      },
+      transitionDuration: {
+        300: "300ms",
+      },
+      transitionTimingFunction: {
+        "ease-in-out": "ease-in-out",
       },
     },
   },

@@ -26,14 +26,14 @@ const isActiveLink = (path) => route.path === path;
 <template>
   <nav :class="[
     'fixed w-full z-50 transition-all duration-300',
-    isScrolled ? 'bg-surface py-2' : 'py-4'
+    isScrolled ? 'bg-bgLight/95 backdrop-blur-md py-2 shadow-md' : 'py-4'
   ]">
-    <div class="container mx-auto px-4">
+    <div class="max-w-7xl mx-auto px-4">
       <div class="flex items-center justify-between">
         <!-- Logo Section -->
         <RouterLink to="/" class="flex items-center space-x-2">
           <img :src="logo" alt="StartUp Compass" class="h-8 w-auto" />
-          <span class="text-xl font-bold text-primary hidden sm:block">StartUp Compass</span>
+          <span class="text-xl font-bold text-accentDark hidden sm:block">StartUp Compass</span>
         </RouterLink>
 
         <!-- Desktop Navigation -->
@@ -49,8 +49,8 @@ const isActiveLink = (path) => route.path === path;
             class="px-4 py-2 rounded-md transition-colors"
             :class="[
               isActiveLink(item.to) 
-                ? 'text-primary font-medium'
-                : 'text-700 hover:text-primary'
+                ? 'text-accentDark font-medium'
+                : 'text-textMedium hover:text-accentDark'
             ]"
           >
             {{ item.label }}
@@ -61,8 +61,8 @@ const isActiveLink = (path) => route.path === path;
             <RouterLink to="/login">
               <Button 
                 label="Log in" 
-                class="p-button-text"
-                :class="{ 'p-button-primary': isActiveLink('/login') }"
+                class="!text-textMedium hover:!text-accentDark !bg-transparent"
+                :class="{ '!text-accentDark': isActiveLink('/login') }"
               />
             </RouterLink>
             <RouterLink to="/signup">
@@ -70,6 +70,7 @@ const isActiveLink = (path) => route.path === path;
                 label="Sign up" 
                 severity="primary"
                 raised
+                class="!bg-accentDark hover:!bg-primaryDark"
               />
             </RouterLink>
           </div>
@@ -80,7 +81,7 @@ const isActiveLink = (path) => route.path === path;
           <Button
             icon="pi pi-bars"
             @click="mobileMenuOpen = !mobileMenuOpen"
-            class="p-button-text p-button-rounded"
+            class="!text-textMedium hover:!text-accentDark !bg-transparent"
             aria-label="Menu"
           />
         </div>
@@ -89,7 +90,7 @@ const isActiveLink = (path) => route.path === path;
       <!-- Mobile Navigation -->
       <div
         v-show="mobileMenuOpen"
-        class="md:hidden absolute top-full left-0 right-0 bg-surface border-t border-surface-200 shadow-lg"
+        class="md:hidden absolute top-full left-0 right-0 bg-bgLight border-t border-bgMedium shadow-lg"
       >
         <div class="flex flex-col p-4 space-y-2">
           <RouterLink
@@ -105,8 +106,8 @@ const isActiveLink = (path) => route.path === path;
             class="px-4 py-2 rounded-md transition-colors"
             :class="[
               isActiveLink(item.to)
-                ? 'text-primary font-medium bg-primary-50'
-                : 'text-700 hover:text-primary hover:bg-surface-100'
+                ? 'text-accentDark font-medium bg-primaryLight'
+                : 'text-textMedium hover:text-accentDark hover:bg-bgMedium'
             ]"
             @click="mobileMenuOpen = false"
           >
@@ -122,39 +123,10 @@ const isActiveLink = (path) => route.path === path;
 </template>
 
 <style scoped>
-.bg-surface {
-  background: rgba(var(--surface-card-rgb), 0.95);
-  backdrop-filter: blur(8px);
-}
-
-/* Smooth transition for background */
-.fixed {
-  transition: background-color 0.3s ease, padding 0.3s ease;
-}
-
-/* Override PrimeVue button styles */
-:deep(.p-button.p-button-text:not(.p-button-primary)) {
-  color: var(--text-color-secondary);
-}
-
-:deep(.p-button.p-button-text:not(.p-button-primary)):hover {
-  color: var(--primary-color);
-  background: transparent;
-}
-
-:deep(.p-button.p-button-text.p-button-primary) {
-  color: var(--primary-color);
-}
-
-/* Container responsiveness */
-.container {
-  max-width: 1200px;
-}
-
-@media (max-width: 640px) {
-  .container {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
+/* Force override PrimeVue button styles with !important */
+:deep(.p-button) {
+  transition-property: color, background-color, border-color;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
 }
 </style>

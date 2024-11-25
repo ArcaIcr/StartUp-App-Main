@@ -1,41 +1,41 @@
 <template>
-  <section class="introduction-section">
-    <div class="container">
+  <section class="py-16 px-4 bg-bgMedium">
+    <div class="max-w-7xl mx-auto">
       <!-- Hero Section -->
-      <div class="hero-content">
-        <h1 class="title">
-          Welcome to <span class="highlight">StartUp Compass</span>
+      <div class="text-center mb-16">
+        <h1 class="text-5xl font-extrabold text-textDark mb-4 leading-tight">
+          Welcome to <span class="text-accentDark">StartUp Compass</span>
         </h1>
-        <p class="subtitle">
+        <p class="text-2xl text-textMedium max-w-2xl mx-auto mb-8">
           Navigate your business journey with data-driven insights
         </p>
-        <div class="cta-wrapper">
+        <div class="flex justify-center gap-4">
           <Button 
             label="Get Started" 
             icon="pi pi-arrow-right" 
             iconPos="right"
             severity="primary"
-            class="get-started-btn"
+            class="text-lg px-8 py-4"
             @click="navigateToSignup"
           />
         </div>
       </div>
 
       <!-- Features Grid -->
-      <div class="features-grid">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 p-4">
         <Card v-for="(feature, index) in features" 
               :key="index"
-              class="feature-card">
+              class="rounded-2xl bg-bgLight shadow-lg hover:-translate-y-1 transition-transform duration-200">
           <template #header>
-            <div class="feature-header">
-              <i :class="feature.icon"></i>
+            <div class="flex justify-center items-center p-6 bg-accentDark text-bgLight">
+              <i :class="[feature.icon, 'feature-icon']"></i>
             </div>
           </template>
           <template #title>
-            {{ feature.title }}
+            <div class="text-xl font-semibold text-textDark text-center">{{ feature.title }}</div>
           </template>
           <template #content>
-            <p>{{ feature.description }}</p>
+            <p class="text-textMedium text-center p-6">{{ feature.description }}</p>
           </template>
         </Card>
       </div>
@@ -79,109 +79,7 @@ const navigateToSignup = () => {
 </script>
 
 <style scoped>
-.introduction-section {
-  padding: 4rem 1rem;
-  background: var(--surface-ground);
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.hero-content {
-  text-align: center;
-  margin-bottom: 4rem;
-}
-
-.title {
-  font-size: 3.5rem;
-  font-weight: 800;
-  color: var(--text-color);
-  margin-bottom: 1rem;
-  line-height: 1.2;
-}
-
-.highlight {
-  color: var(--primary-color);
-}
-
-.subtitle {
-  font-size: 1.5rem;
-  color: var(--text-secondary-color);
-  max-width: 600px;
-  margin: 0 auto 2rem;
-}
-
-.cta-wrapper {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-}
-
-.get-started-btn {
-  font-size: 1.1rem;
-  padding: 1rem 2rem;
-}
-
-.features-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-  padding: 1rem;
-}
-
-.feature-card {
-  transition: transform 0.2s ease;
-}
-
-.feature-card:hover {
-  transform: translateY(-5px);
-}
-
-.feature-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 1.5rem;
-  background: var(--primary-color);
-  color: white;
-}
-
-.feature-header i {
-  font-size: 2rem;
-}
-
-:deep(.p-card) {
-  background: var(--surface-card);
-  border-radius: 1rem;
-  box-shadow: var(--card-shadow);
-}
-
-:deep(.p-card-title) {
-  font-size: 1.25rem;
-  font-weight: 600;
-  text-align: center;
-  color: var(--text-color);
-}
-
-:deep(.p-card-content) {
-  padding: 1.5rem;
-  text-align: center;
-  color: var(--text-secondary-color);
-}
-
-@media (max-width: 768px) {
-  .title {
-    font-size: 2.5rem;
-  }
-
-  .subtitle {
-    font-size: 1.25rem;
-  }
-
-  .features-grid {
-    grid-template-columns: 1fr;
-  }
+.feature-icon {
+  font-size: 3rem !important;
 }
 </style>

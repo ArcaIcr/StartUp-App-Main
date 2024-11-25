@@ -1,94 +1,101 @@
 <script setup>
-import Card from "@/components/home/Card.vue";
-import { RouterLink } from "vue-router"; // Import RouterLink to handle navigation
+import { RouterLink } from "vue-router";
 </script>
 
 <template>
-  <section class="py-5 bg-white/10">
-    <div class="container-xl lg:container m-auto rounded-lg bg-white shadow-md">
-      <h2 class="text-3xl font-bold text-darkblue text-center mb-6">
+  <section class="py-5 surface-ground">
+    <div class="container-xl lg:container m-auto">
+      <h2 class="text-3xl font-bold text-primary text-center mb-6">
         Explore Our Tools
       </h2>
-      <div
-        class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 rounded-lg bg-white shadow-md"
-      >
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4">
         <!-- Card for ROI Calculator -->
-        <Card
-          bg="bg-gradient-to-br from-beige to-bgDark transition-transform transform hover:scale-105"
-        >
-          <h2 class="text-2xl font-bold text-darkblue flex items-center">
-            <i class="pi pi-calculator mr-2 text-orange-700"></i>
-            ROI Calculator
-          </h2>
-          <p class="mt-2 mb-4 text-darkblue/80">
-            Predict your returns based on the Trends!
-          </p>
-          <RouterLink to="/roi">
-            <span
-              class="inline-block bg-accentDark text-white rounded-lg px-4 py-2 hover:bg-darkblue transition duration-300 cursor-pointer"
-            >
-              Calculate ROI
-            </span>
-          </RouterLink>
+        <Card class="transform hover:scale-105 transition-transform duration-300">
+          <template #header>
+            <div class="flex items-center text-primary">
+              <i class="pi pi-calculator mr-2 text-2xl"></i>
+              <h2 class="text-2xl font-bold">ROI Calculator</h2>
+            </div>
+          </template>
+          <template #content>
+            <p class="mt-2 mb-4">
+              Predict your returns based on the Trends!
+            </p>
+            <RouterLink to="/roi">
+              <Button label="Calculate ROI" icon="pi pi-arrow-right" iconPos="right" severity="primary" />
+            </RouterLink>
+          </template>
         </Card>
 
         <!-- Card for Business Assessment -->
-        <Card
-          bg="bg-gradient-to-br from-beige to-bgDark transition-transform transform hover:scale-105"
-        >
-          <h2 class="text-2xl font-bold text-darkblue flex items-center">
-            <i class="pi pi-briefcase mr-2 text-orange-700"></i>
-            Business Assessment
-          </h2>
-          <p class="mt-2 mb-4 text-darkblue/80">
-            Start appraising your business.
-          </p>
-          <RouterLink
-            to="/business"
-            class="inline-block bg-accentDark text-white rounded-lg px-4 py-2 hover:bg-darkblue transition duration-300"
-          >
-            Assessment
-          </RouterLink>
+        <Card class="transform hover:scale-105 transition-transform duration-300">
+          <template #header>
+            <div class="flex items-center text-primary">
+              <i class="pi pi-briefcase mr-2 text-2xl"></i>
+              <h2 class="text-2xl font-bold">Business Assessment</h2>
+            </div>
+          </template>
+          <template #content>
+            <p class="mt-2 mb-4">
+              Start appraising your business.
+            </p>
+            <RouterLink to="/business">
+              <Button label="Assessment" icon="pi pi-arrow-right" iconPos="right" severity="primary" />
+            </RouterLink>
+          </template>
         </Card>
 
         <!-- Card for Marketing Analysis -->
-        <Card
-          bg="bg-gradient-to-br from-beige to-bgDark transition-transform transform hover:scale-105"
-        >
-          <h2 class="text-2xl font-bold text-darkblue flex items-center">
-            <i class="pi pi-chart-line mr-2 text-orange-700"></i>
-            Marketing Analysis
-          </h2>
-          <p class="mt-2 mb-4 text-darkblue/80">
-            Charts and graphs for your business.
-          </p>
-          <RouterLink
-            to="/analysis"
-            class="inline-block bg-accentDark text-white rounded-lg px-4 py-2 hover:bg-darkblue transition duration-300"
-          >
-            Analysis
-          </RouterLink>
+        <Card class="transform hover:scale-105 transition-transform duration-300">
+          <template #header>
+            <div class="flex items-center text-primary">
+              <i class="pi pi-chart-line mr-2 text-2xl"></i>
+              <h2 class="text-2xl font-bold">Marketing Analysis</h2>
+            </div>
+          </template>
+          <template #content>
+            <p class="mt-2 mb-4">
+              Charts and graphs for your business.
+            </p>
+            <RouterLink to="/analysis">
+              <Button label="Analysis" icon="pi pi-arrow-right" iconPos="right" severity="primary" />
+            </RouterLink>
+          </template>
         </Card>
 
         <!-- Card for Trend Seeker -->
-        <Card
-          bg="bg-gradient-to-br from-beige to-bgDark transition-transform transform hover:scale-105"
-        >
-          <h2 class="text-2xl font-bold text-darkblue flex items-center">
-            <i class="pi pi-search mr-2 text-orange-700"></i>
-            Trend Seeker
-          </h2>
-          <p class="mt-2 mb-4 text-darkblue/80">
-            Find trending products in your area.
-          </p>
-          <RouterLink
-            to="/trend"
-            class="inline-block bg-accentDark text-white rounded-lg px-4 py-2 hover:bg-darkblue transition duration-300"
-          >
-            Search
-          </RouterLink>
+        <Card class="transform hover:scale-105 transition-transform duration-300">
+          <template #header>
+            <div class="flex items-center text-primary">
+              <i class="pi pi-search mr-2 text-2xl"></i>
+              <h2 class="text-2xl font-bold">Trend Seeker</h2>
+            </div>
+          </template>
+          <template #content>
+            <p class="mt-2 mb-4">
+              Find the latest trends in your industry.
+            </p>
+            <RouterLink to="/trend">
+              <Button label="Explore Trends" icon="pi pi-arrow-right" iconPos="right" severity="primary" />
+            </RouterLink>
+          </template>
         </Card>
       </div>
     </div>
   </section>
 </template>
+
+<style scoped>
+.text-primary {
+  color: var(--primary-color);
+}
+
+:deep(.p-card) {
+  background: var(--surface-card);
+  border-radius: var(--border-radius);
+}
+
+:deep(.p-button) {
+  border-radius: var(--border-radius);
+}
+</style>

@@ -1,16 +1,34 @@
 <template>
-    <section class="mb-10">
-        <div class="text-center">
-            <h2 class="text-4xl font-bold text-darkblue mb-6">Get Started Today</h2>
-            <p class="text-xl text-textMedium mb-8">Explore the tools and take your business to the next level.</p>
-            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-                <RouterLink
-                to="/signup"
-                class="bg-accentDark text-white font-semibold rounded-lg px-8 py-4 hover:bg-darkblue transition duration-300 ease-in-out shadow-md transform hover:scale-105"
-                >
-                START
-                </RouterLink>
-            </div>
+    <section class="bg-primary py-16">
+        <div class="container mx-auto px-4">
+            <Card class="shadow-lg border-round-xl max-w-4xl mx-auto">
+                <template #content>
+                    <div class="text-center p-6">
+                        <h2 class="text-4xl font-bold text-primary mb-6">Ready to Transform Your Business?</h2>
+                        <p class="text-xl text-700 mb-8">Start your journey towards data-driven success today.</p>
+                        <div class="flex flex-wrap justify-center gap-4">
+                            <RouterLink to="/signup">
+                                <Button label="Get Started" icon="pi pi-rocket" severity="primary" size="large" raised />
+                            </RouterLink>
+                            <RouterLink to="/demo">
+                                <Button label="Watch Demo" icon="pi pi-play" severity="secondary" size="large" outlined />
+                            </RouterLink>
+                        </div>
+                    </div>
+                </template>
+            </Card>
         </div>
     </section>
 </template>
+
+<script setup>
+import { RouterLink } from "vue-router";
+import Button from 'primevue/button';
+import Card from 'primevue/card';
+</script>
+
+<style scoped>
+.bg-primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-800) 100%);
+}
+</style>

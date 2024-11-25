@@ -1,109 +1,160 @@
 <script setup>
-import logo from "@/assets/img/logo.png";
-import { RouterLink, useRoute } from "vue-router";
+import { ref, onMounted, onUnmounted } from 'vue';
+import { RouterLink, useRoute } from 'vue-router';
+import Button from 'primevue/button';
+import logo from '@/assets/img/logo.png';
 
-const isActiveLink = (routePath) => {
-  const route = useRoute();
-  return route.path === routePath;
+const route = useRoute();
+const isScrolled = ref(false);
+const mobileMenuOpen = ref(false);
+
+const updateNavbarBackground = () => {
+  isScrolled.value = window.scrollY > 20;
 };
 
-// Define props for dynamic styling
-defineProps({
-  btnBackground: {
-    type: String,
-    default: "bg-gradient-light",
-  },
-  isBlur: {
-    type: String,
-    default: "bg-accentLight border-b border-lightblue",
-  },
-  darkMode: {
-    type: Boolean,
-    default: false,
-  },
+onMounted(() => {
+  window.addEventListener('scroll', updateNavbarBackground);
 });
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', updateNavbarBackground);
+});
+
+const isActiveLink = (path) => route.path === path;
 </script>
 
 <template>
-  <nav
-    class="navbar navbar-expand-lg top-0 z-index-3 position-absolute"
-    :class="[isBlur ? isBlur : 'shadow-none my-2 navbar-transparent w-100']"
-  >
-    <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-      <div class="flex h-[65px] items-center justify-between">
-        <div
-          class="flex flex-1 items-center justify-center md:items-stretch md:justify-start"
-        >
-          <!-- Logo -->
-          <RouterLink class="flex flex-shrink-0 items-center mr-4" to="/">
-            <img class="h-10 w-auto" :src="logo" alt="Vue Jobs" />
-            <span
-              class="hidden md:block text-2xl font-bold ml-2"
-              :class="darkMode ? 'text-black' : 'text-darkblue'"
-              >StartUp Compass</span
-            >
+  <nav :class="[
+    'fixed w-full z-50 transition-all duration-300',
+    isScrolled ? 'bg-surface py-2' : 'py-4'
+  ]">
+    <div class="container mx-auto px-4">
+      <div class="flex items-center justify-between">
+        <!-- Logo Section -->
+        <RouterLink to="/" class="flex items-center space-x-2">
+          <img :src="logo" alt="StartUp Compass" class="h-8 w-auto" />
+          <span class="text-xl font-bold text-primary hidden sm:block">StartUp Compass</span>
+        </RouterLink>
+
+        <!-- Desktop Navigation -->
+        <div class="hidden md:flex items-center space-x-1">
+          <RouterLink 
+            v-for="item in [
+              { to: '/', label: 'Home' },
+              { to: '/about', label: 'About' },
+              { to: '/pricing', label: 'Pricing' }
+            ]"
+            :key="item.to"
+            :to="item.to"
+            class="px-4 py-2 rounded-md transition-colors"
+            :class="[
+              isActiveLink(item.to) 
+                ? 'text-primary font-medium'
+                : 'text-700 hover:text-primary'
+            ]"
+          >
+            {{ item.label }}
           </RouterLink>
-          <div class="md:ml-auto">
-            <div class="flex space-x-4">
-              <RouterLink
-                to="/"
-                :class="[
-                  isActiveLink('/')
-                    ? 'bg-accentDark text-white'
-                    : 'hover:bg-bgLight hover:text-textDark',
-                  darkMode ? 'text-black' : 'text-darkblue',
-                  'px-4 py-2 rounded-md transition duration-300',
-                ]"
-                >Home</RouterLink
-              >
-              <RouterLink
-                to="/about"
-                :class="[
-                  isActiveLink('/about')
-                    ? 'bg-accentDark text-white'
-                    : 'hover:bg-bgLight hover:text-textDark',
-                  darkMode ? 'text-black' : 'text-darkblue',
-                  'px-4 py-2 rounded-md transition duration-300',
-                ]"
-                >About</RouterLink
-              >
-              <RouterLink
-                to="/pricing"
-                :class="[
-                  isActiveLink('/pricing')
-                    ? 'bg-accentDark text-white'
-                    : 'hover:bg-bgLight hover:text-textDark',
-                  darkMode ? 'text-black' : 'text-darkblue',
-                  'px-4 py-2 rounded-md transition duration-300',
-                ]"
-                >Pricing</RouterLink
-              >
-              <RouterLink
-                to="/login"
-                :class="[
-                  isActiveLink('/login')
-                    ? 'bg-accentDark text-white'
-                    : 'hover:bg-bgLight hover:text-textDark',
-                  darkMode ? 'text-black' : 'text-darkblue',
-                  'px-4 py-2 rounded-md transition duration-300',
-                ]"
-                >Log-in</RouterLink
-              >
-              <RouterLink
-                to="/signup"
-                :class="[
-                  isActiveLink('/signup')
-                    ? 'bg-bgLight text-darkblue'
-                    : 'hover:bg-accentDark hover:text-bgLight',
-                  darkMode ? 'text-black' : 'text-darkblue',
-                  'px-4 py-2 rounded-md transition duration-300',
-                ]"
-                >Sign-up</RouterLink
-              >
-            </div>
+
+          <!-- Auth Buttons -->
+          <div class="flex items-center space-x-2 ml-4">
+            <RouterLink to="/login">
+              <Button 
+                label="Log in" 
+                class="p-button-text"
+                :class="{ 'p-button-primary': isActiveLink('/login') }"
+              />
+            </RouterLink>
+            <RouterLink to="/signup">
+              <Button 
+                label="Sign up" 
+                severity="primary"
+                raised
+              />
+            </RouterLink>
           </div>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <div class="md:hidden">
+          <Button
+            icon="pi pi-bars"
+            @click="mobileMenuOpen = !mobileMenuOpen"
+            class="p-button-text p-button-rounded"
+            aria-label="Menu"
+          />
+        </div>
+      </div>
+
+      <!-- Mobile Navigation -->
+      <div
+        v-show="mobileMenuOpen"
+        class="md:hidden absolute top-full left-0 right-0 bg-surface border-t border-surface-200 shadow-lg"
+      >
+        <div class="flex flex-col p-4 space-y-2">
+          <RouterLink
+            v-for="item in [
+              { to: '/', label: 'Home' },
+              { to: '/about', label: 'About' },
+              { to: '/pricing', label: 'Pricing' },
+              { to: '/login', label: 'Log in' },
+              { to: '/signup', label: 'Sign up' }
+            ]"
+            :key="item.to"
+            :to="item.to"
+            class="px-4 py-2 rounded-md transition-colors"
+            :class="[
+              isActiveLink(item.to)
+                ? 'text-primary font-medium bg-primary-50'
+                : 'text-700 hover:text-primary hover:bg-surface-100'
+            ]"
+            @click="mobileMenuOpen = false"
+          >
+            {{ item.label }}
+          </RouterLink>
         </div>
       </div>
     </div>
   </nav>
+
+  <!-- Spacer for fixed navbar -->
+  <div :class="['h-16', isScrolled ? 'md:h-16' : 'md:h-20']"></div>
 </template>
+
+<style scoped>
+.bg-surface {
+  background: rgba(var(--surface-card-rgb), 0.95);
+  backdrop-filter: blur(8px);
+}
+
+/* Smooth transition for background */
+.fixed {
+  transition: background-color 0.3s ease, padding 0.3s ease;
+}
+
+/* Override PrimeVue button styles */
+:deep(.p-button.p-button-text:not(.p-button-primary)) {
+  color: var(--text-color-secondary);
+}
+
+:deep(.p-button.p-button-text:not(.p-button-primary)):hover {
+  color: var(--primary-color);
+  background: transparent;
+}
+
+:deep(.p-button.p-button-text.p-button-primary) {
+  color: var(--primary-color);
+}
+
+/* Container responsiveness */
+.container {
+  max-width: 1200px;
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+</style>

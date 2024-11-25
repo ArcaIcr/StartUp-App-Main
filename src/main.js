@@ -6,7 +6,23 @@ import store from "./store";
 import { createApp } from "vue";
 import App from "./App.vue";
 
+import PrimeVue from 'primevue/config';
+import Card from 'primevue/card';
+import Button from 'primevue/button';
+import Divider from 'primevue/divider';
+import Aura from '@primevue/themes/aura';
+
 const app = createApp(App);
+app.use(PrimeVue, {
+    theme: {
+        preset: Aura
+    }
+});
+
+// Register PrimeVue components globally
+app.component('Card', Card);
+app.component('Button', Button);
+app.component('Divider', Divider);
 
 app.use(store);
 app.use(router);

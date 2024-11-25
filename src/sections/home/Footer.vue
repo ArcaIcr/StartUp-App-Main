@@ -1,30 +1,30 @@
 <script setup>
-import { RouterLink } from "vue-router"; // Import RouterLink for navigation
+import { RouterLink } from "vue-router";
 </script>
 
 <template>
-  <footer class="bg-bgMedium py-8">
+  <footer class="surface-ground py-8">
     <div class="container mx-auto px-6 lg:px-8">
       <div class="flex flex-col lg:flex-row justify-between items-center mb-6">
         <div>
-          <h2 class="text-3xl font-bold text-darkblue mb-2">StartUp Compass</h2>
-          <p class="text-textMedium">
+          <h2 class="text-3xl font-bold text-primary mb-2">StartUp Compass</h2>
+          <p class="text-700">
             Your ultimate toolkit for data-driven decisions.
           </p>
         </div>
         <div class="mt-4 lg:mt-0 text-center lg:text-right">
-          <h3 class="text-2xl font-bold text-darkblue mb-2">Contact Us</h3>
-          <p class="text-textMedium">
+          <h3 class="text-2xl font-bold text-primary mb-2">Contact Us</h3>
+          <p class="text-700">
             Email:
             <a
               href="mailto:startup_compass@gmail.com"
-              class="hover:text-accentDark"
+              class="text-primary hover:text-primary-700"
               >startup_compass@gmail.com</a
             >
           </p>
-          <p class="text-textMedium">
+          <p class="text-700">
             Phone:
-            <a href="tel:+689686728500" class="hover:text-accentDark"
+            <a href="tel:+689686728500" class="text-primary hover:text-primary-700"
               >+68 968-672-8500</a
             >
           </p>
@@ -37,40 +37,40 @@ import { RouterLink } from "vue-router"; // Import RouterLink for navigation
             href="https://web.facebook.com/cjgwapo3000"
             target="_blank"
             rel="noopener noreferrer"
-            class="text-darkblue hover:text-accentDark"
+            class="text-primary hover:text-primary-700"
           >
-            <i class="pi pi-facebook"></i>
+            <i class="pi pi-facebook text-2xl"></i>
           </a>
           <a
             href="https://web.facebook.com/edgie.bajuyo.12"
             target="_blank"
             rel="noopener noreferrer"
-            class="text-darkblue hover:text-accentDark"
+            class="text-primary hover:text-primary-700"
           >
-            <i class="pi pi-twitter"></i>
+            <i class="pi pi-twitter text-2xl"></i>
           </a>
           <a
             href="https://web.facebook.com/profile.php?id=100009201655041"
             target="_blank"
             rel="noopener noreferrer"
-            class="text-darkblue hover:text-accentDark"
+            class="text-primary hover:text-primary-700"
           >
-            <i class="pi pi-linkedin"></i>
+            <i class="pi pi-linkedin text-2xl"></i>
           </a>
         </div>
       </div>
 
       <div class="text-center mt-4">
-        <p class="text-textMedium">
+        <p class="text-700">
           &copy; {{ new Date().getFullYear() }} StartUp Compass. All rights
           reserved.
         </p>
-        <p class="text-textMedium">
-          <RouterLink to="/privacy" class="hover:text-accentDark"
+        <p class="text-700">
+          <RouterLink to="/privacy" class="text-primary hover:text-primary-700"
             >Privacy Policy</RouterLink
           >
           |
-          <RouterLink to="/terms" class="hover:text-accentDark"
+          <RouterLink to="/terms" class="text-primary hover:text-primary-700"
             >Terms of Service</RouterLink
           >
         </p>
@@ -78,3 +78,17 @@ import { RouterLink } from "vue-router"; // Import RouterLink for navigation
     </div>
   </footer>
 </template>
+
+<style scoped>
+.text-primary {
+  color: var(--primary-color);
+}
+
+.text-primary-700 {
+  color: var(--primary-700);
+}
+
+.text-700 {
+  color: var(--text-color-secondary);
+}
+</style>

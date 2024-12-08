@@ -110,7 +110,7 @@ export default {
           email: this.email,
           password: this.password,
         });
-        this.$router.push("/dashboard"); // Redirect to the dashboard after successful sign-up
+        this.$router.push("/assessment"); // Redirect to assessment page after successful sign-up
       } catch (error) {
         this.errorMessage =
           error.message || "Sign-up failed. Please try again.";

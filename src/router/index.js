@@ -2,7 +2,8 @@ import ForgotPassword from "@/components/user/ForgotPassword.vue";
 import Profile from "@/components/user/Profile.vue";
 import ResetPassword from "@/components/user/ResetPassword.vue";
 import Settings from "@/components/user/Settings.vue";
-import { auth } from "@/firebaseConfig";
+import { auth, db } from "@/firebaseConfig";
+import { doc, getDoc } from "firebase/firestore";
 import AssessmentView from "@/views/DashboardViews/AssessmentView.vue";
 import {
   default as Dashboard,
@@ -180,19 +181,31 @@ const router = createRouter({
 });
 
 // Navigation Guard to protect routes
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const user = auth.currentUser;
 
   // Check if the route requires authentication
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-    if (user) {
-      next(); // Proceed to the route if the user is authenticated
-    } else {
-      next("/login"); // Redirect to the login page if not authenticated
+    if (!user) {
+      next('/login');
+      return;
     }
-  } else {
-    next(); // Allow access if the route does not require authentication
+
+    // Check if user needs to complete assessment
+    if (to.name !== 'Assessment') {
+      try {
+        const assessmentDoc = await getDoc(doc(db, 'businessAssessments', user.uid));
+        if (!assessmentDoc.exists()) {
+          next('/assessment');
+          return;
+        }
+      } catch (error) {
+        console.error('Error checking assessment status:', error);
+      }
+    }
   }
+
+  next();
 });
 
 export default router;

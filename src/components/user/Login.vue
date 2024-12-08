@@ -65,6 +65,31 @@
           <span class="font-semibold">{{ remainingTime }}</span> seconds.
         </div>
       </form>
+
+      <div class="mt-6 text-center">
+        <p class="text-sm text-gray-600">
+          Don't have an account?
+          <router-link to="/signup" class="text-lightblue hover:underline">
+            Sign Up
+          </router-link>
+        </p>
+      </div>
+
+      <div class="mt-4 text-center">
+        <div class="flex items-center justify-center">
+          <hr class="w-1/4 border-t border-gray-300" />
+          <span class="mx-4 text-sm text-gray-500">Admin Access</span>
+          <hr class="w-1/4 border-t border-gray-300" />
+        </div>
+        <div class="mt-4">
+          <router-link
+            to="/admin-login"
+            class="text-sm text-teal-600 hover:underline hover:text-teal-800"
+          >
+            Admin Login
+          </router-link>
+        </div>
+      </div>
     </div>
   </div>
 </template>

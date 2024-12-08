@@ -11,7 +11,7 @@ import { auth, db } from "./firebaseConfig";
 const authInstance = getAuth(); // Initialize it here
 
 // Function to register a new user
-export async function register(username, email, password) {
+export async function register(username, email, password, isAdmin = false) {
   try {
     const userCredential = await createUserWithEmailAndPassword(
       authInstance,
@@ -23,10 +23,13 @@ export async function register(username, email, password) {
     await setDoc(doc(db, "users", user.uid), {
       username,
       email,
+      isAdmin: isAdmin || false, // Default to false if not specified
       createdAt: new Date().toISOString(),
+      lastActive: new Date().toISOString(),
+      isOnline: true,
     });
 
-    return user;
+    return { ...user, username, isAdmin };
   } catch (error) {
     throw new Error(error.message || "Registration failed");
   }
@@ -35,20 +38,35 @@ export async function register(username, email, password) {
 // Function to login a user
 export async function login(email, password) {
   try {
+    console.log('Attempting Firebase authentication...');
     const userCredential = await signInWithEmailAndPassword(
       authInstance,
       email,
       password
     );
+    console.log('Firebase authentication successful');
+    
     const user = userCredential.user;
+    if (!user) {
+      console.error('No user data in userCredential');
+      throw new Error('Authentication failed - no user data');
+    }
 
+    console.log('Fetching user document from Firestore...');
     const userDoc = await getDoc(doc(db, "users", user.uid));
     if (userDoc.exists()) {
+      console.log('User document found in Firestore');
       return { ...user, ...userDoc.data() };
     } else {
+      console.warn('No Firestore document found for user');
       return user;
     }
   } catch (error) {
+    console.error('Login error details:', {
+      code: error.code,
+      message: error.message,
+      fullError: error
+    });
     throw new Error(error.message || "Login failed");
   }
 }

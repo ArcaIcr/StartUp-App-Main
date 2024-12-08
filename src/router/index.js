@@ -13,6 +13,7 @@ import UserSpace from "@/views/DashboardViews/UserSpace.vue";
 import About from "@/views/LandingPageViews/AboutView.vue";
 import HomeView from "@/views/LandingPageViews/HomeView.vue";
 import LoginView from "@/views/LandingPageViews/LoginView.vue";
+import AdminLoginView from "@/views/LandingPageViews/AdminLoginView.vue";
 import Pricing from "@/views/LandingPageViews/PricingView.vue";
 import SignUpView from "@/views/LandingPageViews/SignUpView.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
@@ -33,6 +34,8 @@ import FinancialAnalysis from "@/components/workspace/Features/FinancialAnalysis
 import MarketShareAnalysis from "@/components/workspace/Features/MarketShareAnalysis.vue";
 import PerformanceMeasurement from "@/components/workspace/Features/PerformanceMeasurement.vue";
 import Makerspace from "@/components/workspace/MakerSpace.vue";
+
+import AdminDashboard from "@/components/admin/AdminDashboard.vue";
 
 import { createRouter, createWebHistory } from "vue-router";
 
@@ -68,6 +71,11 @@ const router = createRouter({
       path: "/login",
       name: "Login",
       component: LoginView,
+    },
+    {
+      path: "/admin-login",
+      name: "AdminLogin",
+      component: AdminLoginView,
     },
     {
       path: "/forgot-password",
@@ -171,6 +179,15 @@ const router = createRouter({
       name: "MarketShareAnalysis",
       component: MarketShareAnalysis,
     },
+    {
+      path: "/admin",
+      name: "admin",
+      component: AdminDashboard,
+      meta: { 
+        requiresAuth: true,
+        requiresAdmin: true 
+      }
+    },
     // NOT FOUND PATH
     {
       path: "/:catchAll(.*)",
@@ -187,21 +204,34 @@ router.beforeEach(async (to, from, next) => {
   // Check if the route requires authentication
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (!user) {
-      next('/login');
+      next({ name: "login" });
       return;
     }
 
+    // Fetch user document to check assessment and admin status
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    const userData = userDoc.data();
+
     // Check if user needs to complete assessment
-    if (to.name !== 'Assessment') {
-      try {
-        const assessmentDoc = await getDoc(doc(db, 'businessAssessments', user.uid));
-        if (!assessmentDoc.exists()) {
-          next('/assessment');
-          return;
-        }
-      } catch (error) {
-        console.error('Error checking assessment status:', error);
-      }
+    if (
+      to.name !== "Assessment" && 
+      to.name !== "admin" && 
+      !userData?.assessmentCompleted && 
+      !userData?.isAdmin
+    ) {
+      next({ name: "Assessment" });
+      return;
+    }
+  }
+
+  // Check if the route requires admin access
+  if (to.matched.some((record) => record.meta.requiresAdmin)) {
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    const userData = userDoc.data();
+    
+    if (!userData?.isAdmin) {
+      next({ name: "home" });
+      return;
     }
   }
 

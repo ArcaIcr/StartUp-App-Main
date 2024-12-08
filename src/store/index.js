@@ -23,10 +23,10 @@ const store = createStore({
     },
   },
   actions: {
-    async register({ commit }, { username, email, password }) {
+    async register({ commit }, { username, email, password, isAdmin }) {
       try {
         // Call the register function from authService.js
-        const user = await register(username, email, password);
+        const user = await register(username, email, password, isAdmin);
         commit("SET_USER", user);
         return user; // Optionally return user for additional handling
       } catch (error) {

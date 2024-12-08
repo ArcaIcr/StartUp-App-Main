@@ -48,9 +48,7 @@
         </div>
 
         <div class="mb-4">
-          <label
-            for="confirmPassword"
-            class="block text-sm font-medium text-gray-700"
+          <label for="confirmPassword" class="block text-sm font-medium text-gray-700"
             >Confirm Password</label
           >
           <input
@@ -58,6 +56,31 @@
             id="confirmPassword"
             v-model="confirmPassword"
             placeholder="Confirm your password"
+            class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-lightblue focus:border-lightblue"
+            required
+          />
+        </div>
+
+        <div class="mb-4">
+          <label class="flex items-center">
+            <input
+              type="checkbox"
+              v-model="isAdmin"
+              class="form-checkbox h-4 w-4 text-teal-600"
+            />
+            <span class="ml-2 text-sm text-gray-700">Register as Admin</span>
+          </label>
+        </div>
+
+        <div v-if="isAdmin" class="mb-4">
+          <label for="adminCode" class="block text-sm font-medium text-gray-700"
+            >Admin Registration Code</label
+          >
+          <input
+            type="password"
+            id="adminCode"
+            v-model="adminCode"
+            placeholder="Enter admin registration code"
             class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-lightblue focus:border-lightblue"
             required
           />
@@ -91,6 +114,8 @@ export default {
       email: "",
       password: "",
       confirmPassword: "",
+      isAdmin: false,
+      adminCode: "",
       errorMessage: "",
     };
   },
@@ -104,16 +129,22 @@ export default {
         return;
       }
 
+      if (this.isAdmin && this.adminCode !== "ADMIN123") { 
+        this.errorMessage = "Invalid admin registration code";
+        return;
+      }
+
       try {
         await this.register({
           username: this.username,
           email: this.email,
           password: this.password,
+          isAdmin: this.isAdmin,
         });
-        this.$router.push("/assessment"); // Redirect to assessment page after successful sign-up
+        this.$router.push(this.isAdmin ? "/admin" : "/assessment"); 
       } catch (error) {
-        this.errorMessage =
-          error.message || "Sign-up failed. Please try again.";
+        console.error("Registration error:", error);
+        this.errorMessage = error.message;
       }
     },
   },

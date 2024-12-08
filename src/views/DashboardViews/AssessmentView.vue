@@ -173,10 +173,10 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { auth, db } from '@/firebaseConfig';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import Navbar from "@/components/navbar/Navbar.vue";
 
 export default {
@@ -185,6 +185,7 @@ export default {
   },
   setup() {
     const router = useRouter();
+    const user = auth.currentUser;
     const loading = ref(false);
     const errors = ref({});
 
@@ -216,6 +217,28 @@ export default {
       targetProfitMargin: '',
       businessGoals: '',
       challenges: ''
+    });
+
+    const checkAdminStatus = async () => {
+      if (!user) {
+        router.push('/login');
+        return false;
+      }
+
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      const userData = userDoc.data();
+
+      if (userData?.isAdmin) {
+        router.push('/admin');
+        return false;
+      }
+
+      return true;
+    };
+
+    onMounted(async () => {
+      const canProceed = await checkAdminStatus();
+      if (!canProceed) return;
     });
 
     const validateForm = () => {
@@ -281,22 +304,19 @@ export default {
     const submitAssessment = async () => {
       if (!validateForm()) return;
 
-      loading.value = true;
       try {
-        const userId = auth.currentUser.uid;
-        await setDoc(doc(db, 'businessAssessments', userId), {
-          ...formData.value,
-          createdAt: new Date().toISOString(),
-          userId
-        });
-        
-        // Redirect to dashboard after successful submission
+        await setDoc(doc(db, 'businessAssessments', user.uid), formData.value);
+
+        await setDoc(
+          doc(db, 'users', user.uid), 
+          { assessmentCompleted: true }, 
+          { merge: true }
+        );
+
         router.push('/dashboard');
       } catch (error) {
-        console.error('Error submitting assessment:', error);
-        alert('An error occurred while submitting the assessment. Please try again.');
-      } finally {
-        loading.value = false;
+        console.error('Assessment submission error:', error);
+        errors.value.submission = 'Failed to submit assessment. Please try again.';
       }
     };
 

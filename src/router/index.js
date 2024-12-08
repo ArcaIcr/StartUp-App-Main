@@ -3,7 +3,7 @@ import Profile from "@/components/user/Profile.vue";
 import ResetPassword from "@/components/user/ResetPassword.vue";
 import Settings from "@/components/user/Settings.vue";
 import { auth, db } from "@/firebaseConfig";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, collection, getDocs } from "firebase/firestore";
 import AssessmentView from "@/views/DashboardViews/AssessmentView.vue";
 import {
   default as Dashboard,
@@ -181,12 +181,9 @@ const router = createRouter({
     },
     {
       path: "/admin",
-      name: "admin",
+      name: "AdminDashboard",
       component: AdminDashboard,
-      meta: { 
-        requiresAuth: true,
-        requiresAdmin: true 
-      }
+      meta: { requiresAuth: true, requiresAdmin: true }
     },
     // NOT FOUND PATH
     {
@@ -197,45 +194,42 @@ const router = createRouter({
   ],
 });
 
-// Navigation Guard to protect routes
+// Navigation guard to handle different user types
 router.beforeEach(async (to, from, next) => {
   const user = auth.currentUser;
-
-  // Check if the route requires authentication
-  if (to.matched.some((record) => record.meta.requiresAuth)) {
-    if (!user) {
-      next({ name: "login" });
-      return;
-    }
-
-    // Fetch user document to check assessment and admin status
-    const userDoc = await getDoc(doc(db, "users", user.uid));
-    const userData = userDoc.data();
-
-    // Check if user needs to complete assessment
-    if (
-      to.name !== "Assessment" && 
-      to.name !== "admin" && 
-      !userData?.assessmentCompleted && 
-      !userData?.isAdmin
-    ) {
-      next({ name: "Assessment" });
-      return;
-    }
+  
+  // If no user is logged in, allow navigation
+  if (!user) {
+    next();
+    return;
   }
 
-  // Check if the route requires admin access
-  if (to.matched.some((record) => record.meta.requiresAdmin)) {
-    const userDoc = await getDoc(doc(db, "users", user.uid));
-    const userData = userDoc.data();
-    
-    if (!userData?.isAdmin) {
-      next({ name: "home" });
-      return;
-    }
-  }
+  try {
+    // Check if user is an admin
+    const adminDoc = await getDoc(doc(db, 'admins', user.uid));
+    const isAdmin = adminDoc.exists();
 
-  next();
+    // Special handling for assessment and dashboard routes
+    if (isAdmin) {
+      // Admins should only access admin routes
+      if (to.path === '/assessment' || to.path === '/overview') {
+        next('/admin');
+        return;
+      }
+    } else {
+      // Regular users should not access admin routes
+      if (to.path === '/admin') {
+        next('/overview');
+        return;
+      }
+    }
+
+    // Default navigation
+    next();
+  } catch (error) {
+    console.error('Navigation guard error:', error);
+    next('/login');
+  }
 });
 
 export default router;

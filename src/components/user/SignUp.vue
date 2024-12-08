@@ -135,13 +135,15 @@ export default {
       }
 
       try {
-        await this.register({
+        const registrationResult = await this.register({
           username: this.username,
           email: this.email,
           password: this.password,
           isAdmin: this.isAdmin,
         });
-        this.$router.push(this.isAdmin ? "/admin" : "/assessment"); 
+        
+        // Route based on the collection name or isAdmin flag
+        this.$router.push(registrationResult.collectionName === 'admins' ? "/admin" : "/assessment"); 
       } catch (error) {
         console.error("Registration error:", error);
         this.errorMessage = error.message;

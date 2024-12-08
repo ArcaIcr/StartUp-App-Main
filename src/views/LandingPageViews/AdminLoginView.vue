@@ -94,18 +94,31 @@ export default {
 
         console.log("User authenticated successfully, checking admin status...");
         
-        if (!userCredential.isAdmin) {
+        // Explicitly check if the user is in the admins collection
+        if (userCredential.collectionName !== 'admins') {
           console.error("User is not an admin");
           await this.logout();
           this.errorMessage = "Access denied. Admin privileges required.";
           return;
         }
 
-        console.log("Admin access granted, redirecting...");
+        // Successful admin login - route to admin dashboard
+        console.log("Attempting to navigate to admin dashboard");
+        
+        // Use absolute path to ensure correct routing for admin
         this.$router.push("/admin");
+        console.log("Navigation to admin dashboard completed");
       } catch (error) {
-        console.error("Admin login error:", error);
-        this.errorMessage = error.message || "Admin login failed. Please try again.";
+        console.error("Admin login navigation error:", error);
+        
+        // More specific error handling
+        if (error.message.includes('User document not found')) {
+          this.errorMessage = "No admin account found. Please contact support.";
+        } else if (error.message.includes('invalid-credential')) {
+          this.errorMessage = "Invalid email or password. Please try again.";
+        } else {
+          this.errorMessage = error.message || "Login failed. Please try again.";
+        }
       }
     },
     async logout() {

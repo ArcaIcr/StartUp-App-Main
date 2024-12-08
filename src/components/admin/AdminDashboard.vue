@@ -70,10 +70,11 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { signOut } from 'firebase/auth';
-import { auth } from '@/firebaseConfig';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, db } from '@/firebaseConfig';
 
 // Dynamically import components
 import UserManagement from './UserManagement.vue';
@@ -90,6 +91,33 @@ export default {
     const router = useRouter();
     const currentView = ref('dashboard');
 
+    // Log more detailed information about the current user
+    console.log('AdminDashboard loaded:', {
+      currentUser: auth.currentUser,
+      uid: auth.currentUser?.uid,
+      email: auth.currentUser?.email
+    });
+
+    // Verify admin status on component load
+    onMounted(async () => {
+      try {
+        if (!auth.currentUser) {
+          console.error('No user logged in');
+          router.push('/admin-login');
+          return;
+        }
+
+        const adminDoc = await getDoc(doc(db, 'admins', auth.currentUser.uid));
+        if (!adminDoc.exists()) {
+          console.error('User is not an admin');
+          router.push('/admin-login');
+        }
+      } catch (error) {
+        console.error('Admin verification error:', error);
+        router.push('/admin-login');
+      }
+    });
+
     // Dynamically select component based on current view
     const currentComponentView = computed(() => {
       const viewMap = {
@@ -103,7 +131,7 @@ export default {
     const handleLogout = async () => {
       try {
         await signOut(auth);
-        router.push('/login');
+        router.push('/admin-login');
       } catch (error) {
         console.error('Logout error:', error);
       }
@@ -114,7 +142,7 @@ export default {
       currentComponentView,
       handleLogout
     };
-  }
+  },
 };
 </script>
 

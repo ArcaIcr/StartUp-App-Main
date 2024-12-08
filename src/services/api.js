@@ -1,4 +1,18 @@
 import axios from 'axios';
+import { 
+  getAuth, 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword, 
+  signOut 
+} from 'firebase/auth';
+import { 
+  getFirestore, 
+  doc, 
+  setDoc, 
+  getDoc, 
+  collection 
+} from 'firebase/firestore';
+import { app, auth, db } from '@/firebaseConfig';
 
 const API_BASE_URL = 'https://startup-compass-api.onrender.com';
 
@@ -30,6 +44,119 @@ api.interceptors.response.use(
     throw error;
   }
 );
+
+export const authService = {
+  // Register a regular user
+  async registerUser(email, password, userData) {
+    try {
+      // Create user in Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Add user to Firestore regular users collection
+      const userDocRef = doc(db, 'users', 'regular', user.uid);
+      await setDoc(userDocRef, {
+        ...userData,
+        email,
+        createdAt: new Date(),
+        status: 'active',
+        role: 'user'
+      });
+
+      return user;
+    } catch (error) {
+      console.error('User registration error:', error);
+      throw error;
+    }
+  },
+
+  // Register an admin user
+  async registerAdmin(email, password, adminData, adminCode) {
+    // Validate admin registration code
+    if (adminCode !== 'ADMIN123') {
+      throw new Error('Invalid admin registration code');
+    }
+
+    try {
+      // Create user in Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Add user to Firestore admin users collection
+      const adminDocRef = doc(db, 'users', 'admin', user.uid);
+      await setDoc(adminDocRef, {
+        ...adminData,
+        email,
+        createdAt: new Date(),
+        status: 'active',
+        role: 'admin'
+      });
+
+      // Set custom admin claim
+      // Note: This would typically be done server-side with Firebase Cloud Functions
+      // For now, we'll simulate it by adding a token
+      await user.getIdToken(true);
+
+      return user;
+    } catch (error) {
+      console.error('Admin registration error:', error);
+      throw error;
+    }
+  },
+
+  // Login method (works for both regular and admin users)
+  async login(email, password) {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Check if user exists in either regular or admin collection
+      const regularUserRef = doc(db, 'users', 'regular', user.uid);
+      const adminUserRef = doc(db, 'users', 'admin', user.uid);
+
+      const [regularUserSnap, adminUserSnap] = await Promise.all([
+        getDoc(regularUserRef),
+        getDoc(adminUserRef)
+      ]);
+
+      if (regularUserSnap.exists()) {
+        return { 
+          ...regularUserSnap.data(), 
+          uid: user.uid, 
+          isAdmin: false 
+        };
+      }
+
+      if (adminUserSnap.exists()) {
+        return { 
+          ...adminUserSnap.data(), 
+          uid: user.uid, 
+          isAdmin: true 
+        };
+      }
+
+      throw new Error('User not found in any collection');
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
+    }
+  },
+
+  // Logout method
+  async logout() {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error('Logout error:', error);
+      throw error;
+    }
+  },
+
+  // Get current user
+  getCurrentUser() {
+    return auth.currentUser;
+  }
+};
 
 export const getIndustryInsights = async (industry, businessScale) => {
   try {

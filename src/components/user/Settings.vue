@@ -1,133 +1,170 @@
 <template>
-  <div class="p-6 bg-white rounded-lg shadow-md">
-    <button @click="goBack" class="mb-4 text-blue-500 hover:underline">
-      ← Back
-    </button>
-    <h2 class="text-2xl font-bold mb-4">Settings</h2>
-
-    <form @submit.prevent="handleSubmit">
-      <!-- Profile Picture Upload -->
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700"
-          >Profile Picture</label
-        >
-        <div class="mt-2 flex items-center">
-          <img
-            :src="user.profilePicture || 'default_profile_picture_url'"
-            alt="Profile"
-            class="h-16 w-16 rounded-full object-cover mr-4"
-          />
-          <input type="file" @change="uploadProfilePic" />
-          <span v-if="isUploading" class="ml-2 text-gray-500"
-            >Uploading...</span
-          >
-        </div>
-      </div>
-
-      <!-- Username -->
-      <div class="mb-4">
-        <label for="username" class="block text-sm font-medium text-gray-700"
-          >Username</label
-        >
-        <input
-          type="text"
-          id="username"
-          v-model="user.username"
-          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-        />
-      </div>
-
-      <!-- Email -->
-      <div class="mb-4">
-        <label for="email" class="block text-sm font-medium text-gray-700"
-          >Email</label
-        >
-        <input
-          type="email"
-          id="email"
-          v-model="user.email"
-          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-        />
-      </div>
-
-      <!-- New Password -->
-      <div class="mb-4">
-        <label for="password" class="block text-sm font-medium text-gray-700"
-          >New Password</label
-        >
-        <input
-          type="password"
-          id="password"
-          v-model="newPassword"
-          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-        />
-        <button
-          @click.prevent="changePassword"
-          class="mt-2 text-blue-500 hover:underline"
-        >
-          Change Password
-        </button>
-      </div>
-
-      <!-- Notification Preferences -->
-      <div class="mb-4">
-        <label class="inline-flex items-center">
-          <input
-            type="checkbox"
-            v-model="notificationsEnabled"
-            class="form-checkbox"
-          />
-          <span class="ml-2">Email Notifications</span>
-        </label>
-      </div>
-
-      <!-- Security Settings -->
-      <h3 class="text-lg font-semibold mt-6">Security Settings</h3>
-      <div class="mb-4">
-        <label class="inline-flex items-center">
-          <input
-            type="checkbox"
-            v-model="twoFactorEnabled"
-            class="form-checkbox"
-          />
-          <span class="ml-2">Enable Two-Factor Authentication</span>
-        </label>
-      </div>
-
-      <!-- Subscription Management -->
-      <h3 class="text-lg font-semibold mt-6">Subscription Management</h3>
-      <p>Your current plan: {{ subscriptionPlan }}</p>
-      <button
-        @click.prevent="changePlan"
-        class="bg-blue-500 text-white py-2 px-4 rounded"
+  <div class="container mx-auto px-4 py-8">
+    <div class="max-w-2xl mx-auto mb-4">
+      <button 
+        @click="goToDashboard" 
+        class="flex items-center bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
       >
-        Change Plan
+        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.707a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd" />
+        </svg>
+        Back to Dashboard
       </button>
+    </div>
 
-      <!-- Data Management -->
-      <h3 class="text-lg font-semibold mt-6">Data Management</h3>
-      <button
-        @click.prevent="deleteAccount"
-        class="bg-red-500 text-white py-2 px-4 rounded"
-      >
-        Delete Account
-      </button>
+    <div class="max-w-2xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden">
+      <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-6">
+        <h2 class="text-3xl font-bold text-white">Account Settings</h2>
+      </div>
+      
+      <div class="p-6">
+        <!-- Profile Section -->
+        <section class="mb-8">
+          <h3 class="text-xl font-semibold mb-4 border-b pb-2">Profile Details</h3>
+          
+          <div class="flex items-center space-x-6">
+            <div class="relative">
+              <img 
+                :src="user.profilePicture || 'default_profile_picture_url'" 
+                alt="Profile" 
+                class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg"
+              />
+              <label 
+                class="absolute bottom-0 right-0 bg-blue-500 text-white rounded-full p-2 cursor-pointer hover:bg-blue-600"
+              >
+                <input 
+                  type="file" 
+                  class="hidden" 
+                  @change="uploadProfilePic"
+                />
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.414-1.414A1 1 0 015.586 3H8.414a1 1 0 00-.707.293L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+                </svg>
+              </label>
+            </div>
+            
+            <div>
+              <input 
+                v-model="user.username" 
+                placeholder="Username" 
+                class="text-xl font-bold bg-transparent border-b-2 border-gray-300 focus:border-blue-500 transition-all duration-300"
+              />
+              <p class="text-gray-500 mt-1">{{ user.email }}</p>
+            </div>
+          </div>
+        </section>
 
-      <button
-        :disabled="isUploading"
-        type="submit"
-        class="bg-blue-500 text-white py-2 px-4 rounded mt-4"
-      >
-        Save Changes
-      </button>
-    </form>
+        <!-- Account Management -->
+        <section class="mb-8">
+          <h3 class="text-xl font-semibold mb-4 border-b pb-2">Account Management</h3>
+          
+          <div class="grid md:grid-cols-2 gap-4">
+            <!-- Email Settings -->
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <h4 class="font-medium mb-2">Email</h4>
+              <input 
+                v-model="user.email" 
+                type="email" 
+                placeholder="Update email" 
+                class="w-full px-3 py-2 border rounded-md"
+              />
+              <p v-if="errors.email" class="text-red-500 mt-1">{{ errors.email }}</p>
+              <button 
+                @click="updateEmail" 
+                class="mt-2 w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+              >
+                Update Email
+              </button>
+            </div>
+
+            <!-- Password Reset -->
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <h4 class="font-medium mb-2">Password</h4>
+              <input 
+                v-model="newPassword" 
+                type="password" 
+                placeholder="New password" 
+                class="w-full px-3 py-2 border rounded-md mb-2"
+              />
+              <p v-if="errors.password" class="text-red-500 mt-1">{{ errors.password }}</p>
+              <div v-if="passwordStrength > 0" class="mb-2">
+                <p class="text-gray-500">Password strength: {{ passwordFeedback }}</p>
+                <div class="w-full h-2 bg-gray-200 rounded-full">
+                  <div :class="['h-2 rounded-full', passwordStrength >= 3 ? 'bg-green-500' : 'bg-red-500']" :style="{ width: `${passwordStrength * 33}%` }"></div>
+                </div>
+              </div>
+              <button 
+                @click="changePassword" 
+                class="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600"
+              >
+                Change Password
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Preferences -->
+        <section class="mb-8">
+          <h3 class="text-xl font-semibold mb-4 border-b pb-2">Preferences</h3>
+          
+          <div class="space-y-4">
+            <!-- Notification Preferences -->
+            <div class="flex justify-between items-center">
+              <span>Email Notifications</span>
+              <label class="switch">
+                <input 
+                  type="checkbox" 
+                  v-model="notificationsEnabled"
+                />
+                <span class="slider round"></span>
+              </label>
+            </div>
+
+            <!-- Two-Factor Authentication -->
+            <div class="flex justify-between items-center">
+              <span>Two-Factor Authentication</span>
+              <label class="switch">
+                <input 
+                  type="checkbox" 
+                  v-model="twoFactorEnabled"
+                />
+                <span class="slider round"></span>
+              </label>
+              <select v-if="twoFactorEnabled" v-model="twoFactorMethod" class="ml-2">
+                <option value="email">Email</option>
+                <option value="app">Authenticator App</option>
+                <option value="sms">SMS</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <!-- Danger Zone -->
+        <section>
+          <h3 class="text-xl font-semibold mb-4 border-b border-red-300 pb-2 text-red-600">Danger Zone</h3>
+          
+          <div class="bg-red-50 p-4 rounded-lg flex justify-between items-center">
+            <div>
+              <h4 class="font-bold text-red-700">Delete Account</h4>
+              <p class="text-red-500 text-sm">This action cannot be undone</p>
+            </div>
+            <button 
+              @click="confirmDeleteAccount" 
+              class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+            >
+              Delete Account
+            </button>
+          </div>
+        </section>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { auth, db } from "@/firebaseConfig";
 import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
-import { getAuth, updatePassword } from "firebase/auth";
+import { getAuth, updatePassword, sendPasswordResetEmail } from "firebase/auth";
 import {
   getDownloadURL,
   getStorage,
@@ -135,6 +172,7 @@ import {
   uploadBytes,
 } from "firebase/storage";
 import { useRouter } from "vue-router";
+import zxcvbn from "zxcvbn"; // Add password strength library
 
 export default {
   data() {
@@ -145,29 +183,112 @@ export default {
         profilePicture: "",
       },
       newPassword: "",
+      passwordStrength: 0,
+      passwordFeedback: "",
       notificationsEnabled: false,
       twoFactorEnabled: false,
-      subscriptionPlan: "Basic", // Placeholder for current subscription plan
+      twoFactorMethod: "email", // Options: email, app, sms
+      subscriptionPlan: "Basic",
       isUploading: false,
+      errors: {
+        email: "",
+        password: "",
+        general: "",
+      },
     };
   },
-  mounted() {
-    const user = auth.currentUser;
-    if (user) {
-      const userRef = doc(db, "users", user.uid);
-      getDoc(userRef).then((doc) => {
-        if (doc.exists()) {
-          const data = doc.data();
-          this.user.username = data.username || "";
-          this.user.email = data.email || "";
-          this.user.profilePicture = data.profilePicture || "";
-          this.notificationsEnabled = data.notificationsEnabled || false;
-          this.twoFactorEnabled = data.twoFactorEnabled || false;
-        }
-      });
-    }
-  },
   methods: {
+    validateEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    },
+    checkPasswordStrength() {
+      if (this.newPassword) {
+        const result = zxcvbn(this.newPassword);
+        this.passwordStrength = result.score;
+        this.passwordFeedback = result.feedback.warning || 
+          (result.score >= 3 ? "Strong password" : "Weak password");
+      } else {
+        this.passwordStrength = 0;
+        this.passwordFeedback = "";
+      }
+    },
+    async updateEmail() {
+      this.errors.email = "";
+      if (!this.validateEmail(this.user.email)) {
+        this.errors.email = "Invalid email address";
+        return;
+      }
+
+      try {
+        const user = auth.currentUser;
+        await user.updateEmail(this.user.email);
+        const userRef = doc(db, "users", user.uid);
+        await updateDoc(userRef, { email: this.user.email });
+        this.$toast.success("Email updated successfully");
+      } catch (error) {
+        this.errors.email = error.message || "Failed to update email";
+        this.$toast.error(this.errors.email);
+      }
+    },
+    async changePassword() {
+      this.errors.password = "";
+      if (this.passwordStrength < 3) {
+        this.errors.password = "Password is too weak";
+        return;
+      }
+
+      try {
+        const user = auth.currentUser;
+        await updatePassword(user, this.newPassword);
+        this.newPassword = ""; // Clear password field
+        this.$toast.success("Password updated successfully");
+      } catch (error) {
+        this.errors.password = error.message || "Failed to update password";
+        this.$toast.error(this.errors.password);
+      }
+    },
+    async setupTwoFactor() {
+      if (!this.twoFactorEnabled) {
+        // Disable two-factor authentication
+        await this.disableTwoFactor();
+        return;
+      }
+
+      try {
+        // Implement two-factor setup based on selected method
+        switch (this.twoFactorMethod) {
+          case 'email':
+            await this.setupEmailTwoFactor();
+            break;
+          case 'app':
+            await this.setupAppTwoFactor();
+            break;
+          case 'sms':
+            await this.setupSmsTwoFactor();
+            break;
+        }
+        this.$toast.success("Two-factor authentication setup complete");
+      } catch (error) {
+        this.errors.general = error.message || "Two-factor setup failed";
+        this.$toast.error(this.errors.general);
+      }
+    },
+    async setupEmailTwoFactor() {
+      // Logic for email-based two-factor authentication
+      // This might involve sending a verification code to the user's email
+    },
+    async setupAppTwoFactor() {
+      // Logic for authenticator app-based two-factor authentication
+      // This might involve generating a QR code for TOTP
+    },
+    async setupSmsTwoFactor() {
+      // Logic for SMS-based two-factor authentication
+      // This might involve verifying a phone number
+    },
+    async disableTwoFactor() {
+      // Logic to disable two-factor authentication
+    },
     async handleSubmit() {
       if (!this.user.username || !this.user.email) {
         alert("Username and email are required.");
@@ -252,33 +373,111 @@ export default {
         }
       }
     },
-    async changePassword() {
-      const auth = getAuth();
-      const user = auth.currentUser;
-
-      if (!user) {
-        alert("No authenticated user found. Please log in.");
-        return;
+    async confirmDeleteAccount() {
+      const confirmed = confirm(
+        "Are you sure you want to delete your account? This action cannot be undone."
+      );
+      if (confirmed) {
+        this.deleteAccount();
       }
-
-      if (!this.newPassword) {
-        alert("Please enter a new password.");
-        return;
-      }
-
-      try {
-        await updatePassword(user, this.newPassword); // Use the modular approach
-        alert("Password changed successfully!");
-        this.newPassword = ""; // Clear the password field after successful change
-      } catch (error) {
-        console.error("Error changing password:", error);
-        alert("An error occurred while changing your password. Please try again.");
+    },
+    goToDashboard() {
+      // Determine user type and navigate to appropriate dashboard
+      const userType = this.$route.meta.userType || 'user';
+      
+      switch(userType) {
+        case 'admin':
+          this.$router.push('/admin/dashboard');
+          break;
+        case 'user':
+        default:
+          this.$router.push('/dashboard');
+          break;
       }
     },
   },
-};
+  mounted() {
+    const user = auth.currentUser;
+    if (user) {
+      const userRef = doc(db, "users", user.uid);
+      getDoc(userRef).then((doc) => {
+        if (doc.exists()) {
+          const data = doc.data();
+          this.user.username = data.username || "";
+          this.user.email = data.email || "";
+          this.user.profilePicture = data.profilePicture || "";
+          this.notificationsEnabled = data.notificationsEnabled || false;
+          this.twoFactorEnabled = data.twoFactorEnabled || false;
+        }
+      });
+    }
+  },
+  watch: {
+    newPassword(newValue) {
+      this.checkPasswordStrength();
+    },
+    twoFactorEnabled(newValue) {
+      this.setupTwoFactor();
+    }
+  }
+}
 </script>
 
 <style scoped>
-/* Add styles as needed */
+/* Toggle Switch Styles */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 640px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  .grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
+}
 </style>

@@ -1,90 +1,177 @@
 <template>
-    <div class="flex h-screen bg-gray-100">
-      <!-- Sidebar (optional) -->
-      <aside class="w-1/4 bg-gray-800 text-white hidden md:block p-4">
-        <h2 class="text-xl font-bold mb-4">Market Analysis Tools</h2>
-        <ul>
-          <li class="mb-2"><button class="text-gray-200 hover:text-white">Overview</button></li>
-          <li class="mb-2"><button class="text-gray-200 hover:text-white">Trends</button></li>
-          <li class="mb-2"><button class="text-gray-200 hover:text-white">Metrics</button></li>
-          <li class="mb-2"><button class="text-gray-200 hover:text-white">Graphs</button></li>
-          <li class="mb-2"><button class="text-gray-200 hover:text-white">Reports</button></li>
-        </ul>
-      </aside>
-  
-      <!-- Workbench Main Area -->
-      <main class="flex-1 p-6">
-        <!-- Header -->
-        <div class="mb-6 flex justify-between items-center">
-          <h1 class="text-2xl font-bold text-gray-800">Market Analysis Workbench</h1>
-          <button class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
-            Save Analysis
-          </button>
+  <div class="flex h-screen bg-gray-100">
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- Header -->
+      <header class="bg-white shadow-sm p-4">
+        <div class="flex justify-between items-center">
+          <h1 class="text-2xl font-bold text-gray-800">{{ activeToolName }}</h1>
+          <div class="flex items-center space-x-4">
+            <!-- Collaboration Status -->
+            <div class="flex items-center">
+              <span class="text-sm text-gray-600 mr-2">{{ activeCollaborators.length }} active</span>
+              <div class="flex -space-x-2">
+                <img v-for="user in activeCollaborators.slice(0, 3)" 
+                     :key="user.id"
+                     :src="user.avatar"
+                     :alt="user.name"
+                     class="w-8 h-8 rounded-full border-2 border-white"
+                >
+              </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="flex space-x-2">
+              <button 
+                @click="navigateToDashboard"
+                class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+              >
+                Back to Dashboard
+              </button>
+              <button 
+                v-if="canCreateTemplates"
+                class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+                @click="createTemplate"
+              >
+                Create Template
+              </button>
+              <button 
+                class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                @click="saveWorkspace"
+              >
+                Save Work
+              </button>
+            </div>
+          </div>
         </div>
-  
-        <!-- Workbench Container -->
-        <div class="bg-white shadow rounded-lg p-6 grid gap-6">
-          <!-- Search Bar / Input Fields -->
-          <div>
-            <label for="search" class="block text-gray-700 font-medium">Search Market Data</label>
-            <input
-              type="text"
-              id="search"
-              placeholder="Enter a market keyword or product"
-              class="mt-2 p-2 w-full border rounded-md focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-  
-          <!-- Analysis Sections -->
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <!-- Data Analysis Card -->
-            <div class="bg-gray-50 p-4 rounded-lg shadow">
-              <h2 class="text-lg font-semibold text-gray-800">Data Analysis</h2>
-              <p class="text-sm text-gray-600">Run metrics and analyze trends in this section.</p>
-              <button class="mt-4 w-full px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
-                Analyze Data
-              </button>
+      </header>
+
+      <!-- Main Workspace Area -->
+      <main class="flex-1 overflow-x-hidden overflow-y-auto">
+        <div class="p-6">
+          <div class="grid grid-cols-1 gap-6">
+            <!-- Tool Area -->
+            <div>
+              <div class="bg-white shadow rounded-lg p-6">
+                <component 
+                  :is="activeComponent"
+                  :config="toolConfig"
+                  :user-role="userRole"
+                  @update="handleToolUpdate"
+                />
+              </div>
             </div>
-  
-            <!-- Graph Area -->
-            <div class="bg-gray-50 p-4 rounded-lg shadow">
-              <h2 class="text-lg font-semibold text-gray-800">Graphs</h2>
-              <p class="text-sm text-gray-600">Visualize trends with graphs and charts.</p>
-              <button class="mt-4 w-full px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
-                Generate Graphs
-              </button>
-            </div>
-  
-            <!-- Insights Panel -->
-            <div class="bg-gray-50 p-4 rounded-lg shadow">
-              <h2 class="text-lg font-semibold text-gray-800">Insights</h2>
-              <p class="text-sm text-gray-600">Gain insights from your market data.</p>
-              <button class="mt-4 w-full px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
-                Generate Insights
-              </button>
-            </div>
-          </div>
-  
-          <!-- Results / Output Area -->
-          <div class="mt-6 bg-gray-50 p-4 rounded-lg shadow">
-            <h2 class="text-lg font-semibold text-gray-800">Results</h2>
-            <p class="text-sm text-gray-600">View your market analysis results here.</p>
-            <div class="mt-4 bg-gray-100 p-4 rounded-md h-40 overflow-y-auto">
-              <!-- Placeholder for data output -->
-              <p class="text-gray-700">No data to display. Start an analysis to view results.</p>
+
+            <!-- Collaborative Features -->
+            <div>
+              <CollaborativeFeatures />
             </div>
           </div>
         </div>
       </main>
     </div>
+  </div>
 </template>
-  
+
 <script>
-    export default {
-    name: 'MarketAnalysisWorkbench',
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { useAuth } from '@/composables/useAuth';
+import { useWorkspaceStore } from '@/store/workspace';
+import CollaborativeFeatures from '@/components/workspace/CollaborativeFeatures.vue';
+import { useRouter } from 'vue-router';
+
+export default {
+  name: 'UnifiedWorkspace',
+  components: {
+    CollaborativeFeatures
+  },
+  
+  setup() {
+    const router = useRouter();
+    const { userRole } = useAuth();
+    const workspaceStore = useWorkspaceStore();
+    const activeToolId = ref(null);
+
+    // Unified tools list with role-based visibility
+    const tools = [
+      {
+        id: 'analysis',
+        name: 'Analysis',
+        icon: 'pi pi-chart-line',
+        component: 'AnalysisTool',
+        roles: ['user', 'maker']
+      },
+      {
+        id: 'templates',
+        name: 'Templates',
+        icon: 'pi pi-file',
+        component: 'TemplateManager',
+        roles: ['maker']
+      },
+      {
+        id: 'collaboration',
+        name: 'Collaboration',
+        icon: 'pi pi-users',
+        component: 'CollaborationTool',
+        roles: ['user', 'maker']
+      }
+    ];
+
+    // Auto-save interval
+    let autoSaveInterval;
+    onMounted(() => {
+      autoSaveInterval = setInterval(() => {
+        workspaceStore.saveWorkspaceState();
+      }, 5 * 60 * 1000); // Every 5 minutes
+    });
+
+    onBeforeUnmount(() => {
+      if (autoSaveInterval) {
+        clearInterval(autoSaveInterval);
+      }
+      workspaceStore.saveWorkspaceState();
+    });
+
+    // Methods
+    const saveWorkspace = async () => {
+      await workspaceStore.saveWorkspaceState();
+      // Show success notification
     };
+
+    const createTemplate = () => {
+      // Implement template creation logic
+    };
+
+    const navigateToDashboard = () => {
+      router.push('/dashboard');
+    };
+
+    return {
+      canCreateTemplates: computed(() => userRole.value === 'maker'),
+      activeToolName: computed(() => {
+        const tool = tools.find(t => t.id === activeToolId.value);
+        return tool ? tool.name : 'Workspace';
+      }),
+      activeCollaborators: computed(() => workspaceStore.projectCollaborators),
+      workspaceStore,
+      saveWorkspace,
+      createTemplate,
+      navigateToDashboard
+    };
+  }
+};
 </script>
 
 <style scoped>
-/* Additional custom styling if needed */
+/* Theme transitions */
+.workspace {
+  @apply transition-colors duration-300;
+}
+
+/* Responsive adjustments */
+@screen sm {
+  .sidebar-collapsed {
+    @apply w-16;
+  }
+}
 </style>

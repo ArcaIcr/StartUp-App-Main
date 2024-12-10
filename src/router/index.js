@@ -17,6 +17,7 @@ import AdminLoginView from "@/views/LandingPageViews/AdminLoginView.vue";
 import Pricing from "@/views/LandingPageViews/PricingView.vue";
 import SignUpView from "@/views/LandingPageViews/SignUpView.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
+import Help from '../views/Help.vue'; // Import the Help component
 
 // Features
 import Analysis from "@/components/features/Analysis.vue";
@@ -92,7 +93,11 @@ const router = createRouter({
       name: "About",
       component: About,
     },
-
+    {
+      path: "/help", 
+      name: "Help",
+      component: Help,
+    },
     // DASHBOARD PATHS
     {
       path: "/overview",

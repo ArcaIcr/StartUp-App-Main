@@ -73,8 +73,6 @@
                 class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">
           Export Data
         </button>
-        <button @click="$router.push('/maker-space')"
-                class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">Back to Makerspace</button>
       </div>
     </div>
   </div>

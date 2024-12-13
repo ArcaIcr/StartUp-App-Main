@@ -1,6 +1,5 @@
 <template>
   <div class="flex">
-    <!-- Sidebar with feature icons and links -->
     <aside
       :class="[
         'fixed top-0 left-0 h-screen bg-accentLight flex flex-col justify-between transition-all duration-300 ease-in-out',
@@ -9,7 +8,6 @@
     >
       <div class="p-4">
         <div class="mb-8">
-          <!-- Logo or text content -->
           <img
             v-if="!isCollapsed"
             src="/src/assets/img/Logo.png"
@@ -19,11 +17,12 @@
         </div>
         <nav>
           <ul class="space-y-4">
-            <li v-for="item in menuItems" :key="item.label">
+            <li v-for="item in filteredMenuItems" :key="item.label">
               <router-link
                 :to="item.to"
                 class="text-white hover:bg-accentDark p-2 block rounded items-center space-x-2"
                 :aria-label="item.label"
+                v-tooltip="item.tooltip"
               >
                 <i :class="item.icon"></i>
                 <span v-if="!isCollapsed">{{ item.label }}</span>
@@ -33,7 +32,6 @@
         </nav>
       </div>
       <div class="p-4">
-        <!-- Button to navigate to the dashboard -->
         <button
           @click="goToDashboard"
           class="text-white hover:bg-accentDark p-2 block rounded items-center space-x-2"
@@ -42,7 +40,6 @@
           <i class="pi pi-home"></i>
           <span v-if="!isCollapsed">Dashboard</span>
         </button>
-        <!-- Button to toggle sidebar collapse -->
         <button
           @click="toggleSidebar"
           class="text-white hover:bg-accentDark p-2 mt-4 rounded flex items-center space-x-2"
@@ -52,10 +49,17 @@
           <i class="pi pi-chevron-right" v-if="isCollapsed"></i>
           <span v-if="!isCollapsed">Collapse</span>
         </button>
+        <button
+          @click="showHelp"
+          class="text-white hover:bg-accentDark p-2 mt-4 rounded flex items-center space-x-2"
+          aria-label="Help"
+        >
+          <i class="pi pi-question"></i>
+          <span v-if="!isCollapsed">Help</span>
+        </button>
       </div>
     </aside>
 
-    <!-- Main content area -->
     <div
       :class="{ 'ml-16': isCollapsed, 'ml-64': !isCollapsed }"
       class="p-8 w-full"
@@ -65,7 +69,14 @@
         Access various tools and resources to help you with your projects.
         Select a feature from the sidebar to begin.
       </p>
+      <input
+        type="text"
+        v-model="searchQuery"
+        placeholder="Search tools..."
+        class="mb-4 p-2 border rounded"
+      />
       <router-view />
+      <div v-if="notification" class="notification">{{ notification }}</div>
     </div>
   </div>
 </template>
@@ -74,43 +85,50 @@
 export default {
   data() {
     return {
-      // Sidebar collapse state
       isCollapsed: false,
+      searchQuery: '',
+      notification: '',
       menuItems: [
-        {
-          to: "/workspace/financial-analysis",
-          icon: "pi pi-chart-bar",
-          label: "Financial Analysis",
-        },
-        {
-          to: "/workspace/evaluation",
-          icon: "pi pi-pencil",
-          label: "Evaluation",
-        },
-        {
-          to: "/workspace/performance-measurement",
-          icon: "pi pi-chart-line",
-          label: "Performance Measurement",
-        },
-        {
-          to: "/workspace/market-share-analysis",
-          icon: "pi pi-chart-pie",
-          label: "Market Share Analysis",
-        },
+        { to: '/workspace/financial-analysis', icon: 'pi pi-chart-bar', label: 'Financial Analysis', tooltip: 'Analyze financial data' },
+        { to: '/workspace/evaluation', icon: 'pi pi-pencil', label: 'Evaluation', tooltip: 'Evaluate projects' },
+        { to: '/workspace/performance-measurement', icon: 'pi pi-chart-line', label: 'Performance Measurement', tooltip: 'Measure performance metrics' },
+        { to: '/workspace/market-share-analysis', icon: 'pi pi-chart-pie', label: 'Market Share Analysis', tooltip: 'Analyze market share' },
       ],
     };
   },
+  computed: {
+    filteredMenuItems() {
+      return this.menuItems.filter(item => item.label.toLowerCase().includes(this.searchQuery.toLowerCase()));
+    },
+  },
   methods: {
     toggleSidebar() {
-      this.isCollapsed = !this.isCollapsed; // Toggle sidebar collapse state
+      this.isCollapsed = !this.isCollapsed;
     },
     goToDashboard() {
-      this.$router.push("/dashboard"); // Redirect to the dashboard page
+      this.$router.push('/dashboard');
+      this.showNotification('Navigating to Dashboard');
+    },
+    showHelp() {
+      this.$router.push('/help');
+      this.showNotification('Navigating to Help');
+    },
+    showNotification(message) {
+      this.notification = message;
+      setTimeout(() => {
+        this.notification = '';
+      }, 3000);
     },
   },
 };
 </script>
 
 <style scoped>
-/* Optional: Add any additional styles here */
+.notification {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 10px;
+}
 </style>

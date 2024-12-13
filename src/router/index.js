@@ -2,7 +2,8 @@ import ForgotPassword from "@/components/user/ForgotPassword.vue";
 import Profile from "@/components/user/Profile.vue";
 import ResetPassword from "@/components/user/ResetPassword.vue";
 import Settings from "@/components/user/Settings.vue";
-import { auth } from "@/firebaseConfig";
+import { auth, db } from "@/firebaseConfig";
+import { doc, getDoc, collection, getDocs } from "firebase/firestore";
 import AssessmentView from "@/views/DashboardViews/AssessmentView.vue";
 import {
   default as Dashboard,
@@ -12,9 +13,11 @@ import UserSpace from "@/views/DashboardViews/UserSpace.vue";
 import About from "@/views/LandingPageViews/AboutView.vue";
 import HomeView from "@/views/LandingPageViews/HomeView.vue";
 import LoginView from "@/views/LandingPageViews/LoginView.vue";
+import AdminLoginView from "@/views/LandingPageViews/AdminLoginView.vue";
 import Pricing from "@/views/LandingPageViews/PricingView.vue";
 import SignUpView from "@/views/LandingPageViews/SignUpView.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
+import Help from '../views/Help.vue'; // Import the Help component
 
 // Features
 import Analysis from "@/components/features/Analysis.vue";
@@ -32,6 +35,8 @@ import FinancialAnalysis from "@/components/workspace/Features/FinancialAnalysis
 import MarketShareAnalysis from "@/components/workspace/Features/MarketShareAnalysis.vue";
 import PerformanceMeasurement from "@/components/workspace/Features/PerformanceMeasurement.vue";
 import Makerspace from "@/components/workspace/MakerSpace.vue";
+
+import AdminDashboard from "@/components/admin/AdminDashboard.vue";
 
 import { createRouter, createWebHistory } from "vue-router";
 
@@ -69,6 +74,11 @@ const router = createRouter({
       component: LoginView,
     },
     {
+      path: "/admin-login",
+      name: "AdminLogin",
+      component: AdminLoginView,
+    },
+    {
       path: "/forgot-password",
       name: "ForgotPassword",
       component: ForgotPassword,
@@ -83,7 +93,11 @@ const router = createRouter({
       name: "About",
       component: About,
     },
-
+    {
+      path: "/help", 
+      name: "Help",
+      component: Help,
+    },
     // DASHBOARD PATHS
     {
       path: "/overview",
@@ -170,6 +184,12 @@ const router = createRouter({
       name: "MarketShareAnalysis",
       component: MarketShareAnalysis,
     },
+    {
+      path: "/admin",
+      name: "AdminDashboard",
+      component: AdminDashboard,
+      meta: { requiresAuth: true, requiresAdmin: true }
+    },
     // NOT FOUND PATH
     {
       path: "/:catchAll(.*)",
@@ -179,19 +199,41 @@ const router = createRouter({
   ],
 });
 
-// Navigation Guard to protect routes
-router.beforeEach((to, from, next) => {
+// Navigation guard to handle different user types
+router.beforeEach(async (to, from, next) => {
   const user = auth.currentUser;
+  
+  // If no user is logged in, allow navigation
+  if (!user) {
+    next();
+    return;
+  }
 
-  // Check if the route requires authentication
-  if (to.matched.some((record) => record.meta.requiresAuth)) {
-    if (user) {
-      next(); // Proceed to the route if the user is authenticated
+  try {
+    // Check if user is an admin
+    const adminDoc = await getDoc(doc(db, 'admins', user.uid));
+    const isAdmin = adminDoc.exists();
+
+    // Special handling for assessment and dashboard routes
+    if (isAdmin) {
+      // Admins should only access admin routes
+      if (to.path === '/assessment' || to.path === '/overview') {
+        next('/admin');
+        return;
+      }
     } else {
-      next("/login"); // Redirect to the login page if not authenticated
+      // Regular users should not access admin routes
+      if (to.path === '/admin') {
+        next('/overview');
+        return;
+      }
     }
-  } else {
-    next(); // Allow access if the route does not require authentication
+
+    // Default navigation
+    next();
+  } catch (error) {
+    console.error('Navigation guard error:', error);
+    next('/login');
   }
 });
 

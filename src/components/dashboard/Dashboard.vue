@@ -11,7 +11,7 @@
             <li>
               <router-link
                 to="/overview"
-                class="text-white hover:bg-teal-600 p-2 block rounded flex items-center space-x-2"
+                class="text-white hover:bg-teal-600 p-2 rounded flex items-center space-x-2"
                 aria-label="Overview"
               >
                 <i class="pi pi-home"></i>
@@ -21,7 +21,7 @@
             <li>
               <router-link
                 to="/transactions"
-                class="text-white hover:bg-teal-600 p-2 block rounded flex items-center space-x-2"
+                class="text-white hover:bg-teal-600 p-2 rounded flex items-center space-x-2"
                 aria-label="Transactions"
               >
                 <i class="pi pi-wallet"></i>
@@ -31,7 +31,7 @@
             <li>
               <router-link
                 to="/customers"
-                class="text-white hover:bg-teal-600 p-2 block rounded flex items-center space-x-2"
+                class="text-white hover:bg-teal-600 p-2 rounded flex items-center space-x-2"
                 aria-label="Customers"
               >
                 <i class="pi pi-users"></i>
@@ -41,7 +41,7 @@
             <li>
               <router-link
                 to="/reports"
-                class="text-white hover:bg-teal-600 p-2 block rounded flex items-center space-x-2"
+                class="text-white hover:bg-teal-600 p-2 rounded flex items-center space-x-2"
                 aria-label="Reports"
               >
                 <i class="pi pi-chart-line"></i>
@@ -51,7 +51,7 @@
             <li>
               <router-link
                 to="/settings"
-                class="text-white hover:bg-teal-600 p-2 block rounded flex items-center space-x-2"
+                class="text-white hover:bg-teal-600 p-2 rounded flex items-center space-x-2"
                 aria-label="Settings"
               >
                 <i class="pi pi-cog"></i>
@@ -64,7 +64,7 @@
       <div class="p-4">
         <button
           @click="handleLogout"
-          class="text-white hover:bg-teal-600 p-2 block rounded flex items-center space-x-2"
+          class="text-white hover:bg-teal-600 p-2 rounded flex items-center space-x-2"
           aria-label="Log out"
         >
           <i class="pi pi-sign-out"></i>

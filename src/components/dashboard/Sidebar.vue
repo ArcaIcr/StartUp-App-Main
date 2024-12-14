@@ -12,7 +12,7 @@
             <li v-for="item in menuItems" :key="item.label">
               <router-link
                 :to="item.to"
-                class="text-white hover:bg-accentLight p-2 block rounded flex items-center space-x-2"
+                class="text-white hover:bg-accentLight p-2 rounded flex items-center space-x-2"
                 :aria-label="item.label"
               >
                 <i :class="item.icon"></i>
@@ -25,7 +25,7 @@
       <div class="p-4">
         <button
           @click="handleLogout"
-          class="text-white hover:bg-accentLight p-2 block rounded flex items-center space-x-2"
+          class="text-white hover:bg-accentLight p-2 rounded flex items-center space-x-2"
           aria-label="Log out"
         >
           <i class="pi pi-sign-out"></i>
@@ -51,7 +51,7 @@ export default {
         { to: "/space", icon: "pi pi-users", label: "Space" },
         // { to: "/metrics", icon: "pi pi-chart-line", label: "Metrics" },
         { to: "/settings", icon: "pi pi-cog", label: "Settings" },
-        { to: "/maker-space", icon: "pi pi-wrench", label: "MakerSpace" },
+        // { to: "/maker-space", icon: "pi pi-wrench", label: "MakerSpace" },
       ],
     };
   },

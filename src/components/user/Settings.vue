@@ -157,6 +157,11 @@
           </div>
         </section>
       </div>
+        <div class="flex justify-end">
+            <button class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600" @click="saveChanges">
+              Save Changes
+            </button>
+        </div>
     </div>
   </div>
 </template>
@@ -395,6 +400,90 @@ export default {
           break;
       }
     },
+    async saveChanges() {
+        // Comprehensive method to save all changes
+        try {
+          const user = auth.currentUser;
+          const userRef = doc(db, "users", user.uid);
+
+          // Validate inputs before saving
+          if (!this.user.username) {
+            this.$toast.error("Username cannot be empty");
+            return;
+          }
+
+          if (!this.validateEmail(this.user.email)) {
+            this.$toast.error("Invalid email address");
+            return;
+          }
+
+          // Prepare update object
+          const updateData = {
+            username: this.user.username,
+            email: this.user.email,
+            notificationsEnabled: this.notificationsEnabled,
+            twoFactorEnabled: this.twoFactorEnabled,
+            twoFactorMethod: this.twoFactorMethod
+          };
+
+          // Add profile picture if it has changed
+          if (this.user.profilePicture) {
+            updateData.profilePicture = this.user.profilePicture;
+          }
+
+          // Update Firestore document
+          await updateDoc(userRef, updateData);
+
+          // Handle email update if changed
+          if (this.user.email !== user.email) {
+            await user.updateEmail(this.user.email);
+          }
+
+          // Handle password change if a new password is provided
+          if (this.newPassword) {
+            if (this.passwordStrength < 3) {
+              this.$toast.error("Password is too weak");
+              return;
+            }
+            await updatePassword(user, this.newPassword);
+            this.newPassword = ""; // Clear password field
+          }
+
+          // Handle two-factor authentication setup
+          await this.setupTwoFactor();
+
+          // Success notifications
+          this.$toast.success("Profile updated successfully");
+          
+          // Optional: Refresh user data or redirect
+          await this.fetchUserData();
+        } catch (error) {
+          console.error("Error saving changes:", error);
+          this.$toast.error(error.message || "Failed to save changes");
+        }
+      },
+      async fetchUserData() {
+        // Method to refresh user data after updates
+        const user = auth.currentUser;
+        if (user) {
+          const userRef = doc(db, "users", user.uid);
+          try {
+            const docSnap = await getDoc(userRef);
+            if (docSnap.exists()) {
+              const data = docSnap.data();
+              this.user.username = data.username || "";
+              this.user.email = data.email || "";
+              this.user.profilePicture = data.profilePicture || "";
+              this.notificationsEnabled = data.notificationsEnabled || false;
+              this.twoFactorEnabled = data.twoFactorEnabled || false;
+              this.twoFactorMethod = data.twoFactorMethod || "email";
+            }
+          } catch (error) {
+            console.error("Error fetching user data:", error);
+            this.$toast.error("Failed to refresh user data");
+          }
+        }
+      },
   },
   mounted() {
     const user = auth.currentUser;

@@ -159,15 +159,6 @@ const handleFormSubmit = async () => {
             <p>{{ insights }}</p>
           </div>
         </div>
-  
-        <!-- Navigation Section -->
-        <div class="p-6 border-t">
-          <RouterLink to="/signup">
-            <span class="inline-block bg-darkblue text-white rounded-lg px-4 py-2 hover:bg-lightblue cursor-pointer transition duration-300">
-              Start Full Assessment
-            </span>
-          </RouterLink>
-        </div>
       </div>
     </div>
   </div>

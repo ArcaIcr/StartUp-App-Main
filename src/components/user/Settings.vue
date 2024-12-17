@@ -1,149 +1,70 @@
 <template>
-  <div class="container mx-auto px-4 py-8">
-    <div class="max-w-2xl mx-auto mb-4">
-      <button 
-        @click="goToDashboard" 
-        class="flex items-center bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-      >
-        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.707a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd" />
-        </svg>
-        Back to Dashboard
-      </button>
+  <div class="settings-container p-6 bg-white rounded-lg shadow-md">
+    <h2 class="text-3xl font-semibold mb-6">Account Settings</h2>
+
+    <!-- Profile Section -->
+    <div v-if="user" class="profile-section mb-6">
+      <div class="flex items-center space-x-4">
+        <img :src="user.profilePicture || defaultProfilePic" alt="Profile Picture" class="w-24 h-24 rounded-full object-cover" />
+        <div>
+          <input type="file" @change="uploadProfilePic" accept="image/*" class="block mb-2" />
+          <button v-if="isUploading" class="bg-blue-500 text-white px-4 py-2 rounded mt-2">Uploading...</button>
+          <p v-if="profilePicError" class="text-red-500 mt-2 text-sm">{{ profilePicError }}</p>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <label for="username" class="block text-lg font-medium">Username</label>
+        <input type="text" id="username" v-model="user.username" class="mt-2 p-2 border border-gray-300 rounded w-full" />
+      </div>
     </div>
 
-    <div class="max-w-2xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden">
-      <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-6">
-        <h2 class="text-3xl font-bold text-white">Account Settings</h2>
-      </div>
-      
-      <div class="p-6">
-        <!-- Profile Section -->
-        <section class="mb-8">
-          <h3 class="text-xl font-semibold mb-4 border-b pb-2">Profile Details</h3>
-          
-          <div class="flex items-center space-x-6">
-            <div class="relative">
-              <img 
-                :src="user.profilePicture || 'default_profile_picture_url'" 
-                alt="Profile" 
-                class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg"
-              />
-              <label 
-                class="absolute bottom-0 right-0 bg-blue-500 text-white rounded-full p-2 cursor-pointer hover:bg-blue-600"
-              >
-                <input 
-                  type="file" 
-                  class="hidden" 
-                  @change="uploadProfilePic"
-                />
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.414-1.414A1 1 0 015.586 3H8.414a1 1 0 00-.707.293L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
-                </svg>
-              </label>
-            </div>
-            
-            <div>
-              <input 
-                v-model="user.username" 
-                placeholder="Username" 
-                class="text-xl font-bold bg-transparent border-b-2 border-gray-300 focus:border-blue-500 transition-all duration-300"
-              />
-              <p class="text-gray-500 mt-1">{{ user.email }}</p>
-            </div>
-          </div>
-        </section>
+    <!-- Password Change Section -->
+    <div class="password-section mb-6">
+      <h3 class="text-2xl font-semibold mb-2">Change Password</h3>
+      <input type="password" v-model="newPassword" placeholder="New Password" class="mt-2 p-2 border border-gray-300 rounded w-full" @input="checkPasswordStrength" />
+      <p v-if="passwordFeedback" :class="passwordStrength < 3 ? 'text-red-500' : 'text-green-500'" class="mt-2 text-sm">{{ passwordFeedback }}</p>
+      <button @click="changePassword" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">Change Password</button>
+      <p v-if="errors.password" class="text-red-500 text-sm mt-2">{{ errors.password }}</p>
+    </div>
 
-        <!-- Account Management -->
-        <section class="mb-8">
-          <h3 class="text-xl font-semibold mb-4 border-b pb-2">Account Management</h3>
-          
-          <div class="grid md:grid-cols-2 gap-4">
-            <!-- Email Settings (Now only display email) -->
-            <div class="bg-gray-50 p-4 rounded-lg">
-              <h4 class="font-medium mb-2">Email</h4>
-              <p class="text-gray-500">{{ user.email }}</p>
-            </div>
+    <!-- Account Deletion Section -->
+    <div class="account-deletion-section mb-6">
+      <button @click="confirmDeleteAccount" class="bg-red-500 text-white px-4 py-2 rounded">Delete Account</button>
+    </div>
 
-            <!-- Password Reset -->
-            <div class="bg-gray-50 p-4 rounded-lg">
-              <h4 class="font-medium mb-2">Password</h4>
-              <input 
-                v-model="newPassword" 
-                type="password" 
-                placeholder="New password" 
-                class="w-full px-3 py-2 border rounded-md mb-2"
-              />
-              <p v-if="errors.password" class="text-red-500 mt-1">{{ errors.password }}</p>
-              <div v-if="passwordStrength > 0" class="mb-2">
-                <p class="text-gray-500">Password strength: {{ passwordFeedback }}</p>
-                <div class="w-full h-2 bg-gray-200 rounded-full">
-                  <div :class="['h-2 rounded-full', passwordStrength >= 3 ? 'bg-green-500' : 'bg-red-500']" :style="{ width: `${passwordStrength * 33}%` }"></div>
-                </div>
-              </div>
-              <button 
-                @click="changePassword" 
-                class="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600"
-              >
-                Change Password
-              </button>
-            </div>
-          </div>
-        </section>
-
-        <!-- Danger Zone -->
-        <section>
-          <h3 class="text-xl font-semibold mb-4 border-b border-red-300 pb-2 text-red-600">Danger Zone</h3>
-          
-          <div class="bg-red-50 p-4 rounded-lg flex justify-between items-center">
-            <div>
-              <h4 class="font-bold text-red-700">Delete Account</h4>
-              <p class="text-red-500 text-sm">This action cannot be undone</p>
-            </div>
-            <button 
-              @click="confirmDeleteAccount" 
-              class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-            >
-              Delete Account
-            </button>
-          </div>
-        </section>
-      </div>
-      
-      <div class="flex justify-end">
-        <button class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600" @click="saveChanges">
-          Save Changes
-        </button>
-      </div>
+    <!-- Save Changes and Back to Dashboard -->
+    <div class="save-changes-section">
+      <button @click="saveChanges" class="bg-green-500 text-white px-4 py-2 rounded">Save Changes</button>
+      <button @click="goToDashboard" class="ml-4 bg-gray-500 text-white px-4 py-2 rounded">Back to Dashboard</button>
     </div>
   </div>
 </template>
 
 <script>
-import { auth, db } from "@/firebaseConfig";
-import { deleteDoc, doc, updateDoc } from "firebase/firestore";
-import { getAuth, updatePassword } from "firebase/auth";
-import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
-import zxcvbn from "zxcvbn"; // Password strength checker
+import { getAuth, updatePassword } from 'firebase/auth';
+import { doc, getDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+import zxcvbn from 'zxcvbn'; // Password strength checker
+import { db } from '@/firebaseConfig'; // Adjust with the correct Firebase initialization
 
 export default {
   data() {
     return {
-      user: {
-        username: "",
-        email: "",
-        profilePicture: "",
-      },
-      newPassword: "",
+      user: null,
+      newPassword: '',
       passwordStrength: 0,
-      passwordFeedback: "",
-      isUploading: false,
+      passwordFeedback: '',
       errors: {
-        password: "",
+        password: '',
       },
+      isUploading: false,
+      profilePicError: '',
+      defaultProfilePic: 'https://via.placeholder.com/150', // Fallback if user doesn't have a profile picture
     };
   },
   methods: {
+    // Method to check password strength
     checkPasswordStrength() {
       if (this.newPassword) {
         const result = zxcvbn(this.newPassword);
@@ -155,137 +76,120 @@ export default {
         this.passwordFeedback = "";
       }
     },
-    async changePassword() {
-      this.errors.password = "";
-      if (this.passwordStrength < 3) {
-        this.errors.password = "Password is too weak";
-        return;
-      }
 
-      try {
-        const user = auth.currentUser;
-        await updatePassword(user, this.newPassword);
-        this.newPassword = ""; // Clear password field
-        this.$toast.success("Password updated successfully");
-      } catch (error) {
-        this.errors.password = error.message || "Failed to update password";
-        this.$toast.error(this.errors.password);
-      }
-    },
+    // Method to upload profile picture
     async uploadProfilePic(event) {
+      if (this.isUploading) return;
+
       const file = event.target.files[0];
       if (file) {
         this.isUploading = true;
+        this.profilePicError = ''; // Reset previous error
         try {
           const storage = getStorage();
-          const storageRefPath = `profile_pictures/${auth.currentUser.uid}/${file.name}`;
-          const fileRef = storageRef(storage, storageRefPath);
+          const fileRef = storageRef(storage, `profile_pictures/${this.user.email}/${file.name}`);
           await uploadBytes(fileRef, file);
-          const downloadURL = await getDownloadURL(fileRef);
-          this.user.profilePicture = downloadURL;
-          this.$toast.success("Profile picture uploaded successfully");
+          const url = await getDownloadURL(fileRef);
+          this.user.profilePicture = url;
+          await updateDoc(doc(db, 'users', this.user.uid), {
+            profilePicture: url,
+          });
         } catch (error) {
-          this.$toast.error("Failed to upload profile picture");
+          this.profilePicError = 'Error uploading profile picture. Please try again.';
+          console.error("Error uploading profile picture:", error);
         } finally {
           this.isUploading = false;
         }
       }
     },
-    saveChanges() {
-      this.$toast.success("Changes saved successfully");
+
+    // Method to change the password
+    async changePassword() {
+      if (this.newPassword.length < 6) {
+        this.errors.password = "Password must be at least 6 characters long.";
+        return;
+      }
+      this.errors.password = "";
+      try {
+        const user = getAuth().currentUser;
+        await updatePassword(user, this.newPassword);
+        alert("Password updated successfully.");
+      } catch (error) {
+        console.error("Error changing password:", error);
+      }
     },
+
+    // Method to confirm and delete account
+    async confirmDeleteAccount() {
+      const confirmation = confirm("Are you sure you want to delete your account? This action cannot be undone.");
+      if (confirmation) {
+        try {
+          await deleteDoc(doc(db, 'users', this.user.uid));
+          await getAuth().currentUser.delete();
+          alert("Account deleted successfully.");
+          // Redirect user to login page or home page after deletion
+          this.$router.push('/login');
+        } catch (error) {
+          console.error("Error deleting account:", error);
+        }
+      }
+    },
+
+    // Method to save changes made to the profile
+    async saveChanges() {
+      try {
+        await updateDoc(doc(db, "users", this.user.uid), {
+          username: this.user.username,
+        });
+        alert("Profile updated successfully.");
+      } catch (error) {
+        console.error("Error saving changes:", error);
+      }
+    },
+
+    // Method to redirect user back to dashboard
     goToDashboard() {
       this.$router.push("/dashboard");
-    },
-    confirmDeleteAccount() {
-      if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
-        this.deleteAccount();
-      }
-    },
-    async deleteAccount() {
-      try {
-        const user = auth.currentUser;
-        await deleteDoc(doc(db, "users", user.uid));
-        await user.delete();
-        this.$toast.success("Account deleted successfully");
-        this.$router.push("/signup");
-      } catch (error) {
-        this.$toast.error("Failed to delete account");
-      }
-    },
+    }
   },
-  computed: {
-    user() {
-      const currentUser = auth.currentUser;
-      if (currentUser) {
-        return {
-          email: currentUser.email,
-          username: currentUser.displayName,
-          profilePicture: currentUser.photoURL,
-        };
+
+  async mounted() {
+    const user = getAuth().currentUser;
+    if (user) {
+      // Fetch user details from Firestore
+      const userDocRef = doc(db, 'users', user.uid);
+      const userDocSnap = await getDoc(userDocRef);
+      if (userDocSnap.exists()) {
+        this.user = userDocSnap.data();
       }
-      return {};
-    },
+    }
   },
 };
 </script>
 
-
 <style scoped>
-/* Toggle Switch Styles */
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
+.settings-container {
+  padding: 2rem;
+  background-color: #f9fafb;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
+.profile-section input,
+.password-section input,
+.account-deletion-section button,
+.save-changes-section button {
+  transition: all 0.3s ease;
 }
 
-.slider {
-  position: absolute;
+.profile-section input:hover,
+.password-section input:hover,
+.account-deletion-section button:hover,
+.save-changes-section button:hover {
+  background-color: var(--accent-light);
+}
+
+button {
   cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  transition: .4s;
-  border-radius: 34px;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  transition: .4s;
-  border-radius: 50%;
-}
-
-input:checked + .slider {
-  background-color: #2196F3;
-}
-
-input:checked + .slider:before {
-  transform: translateX(26px);
-}
-
-/* Responsive Adjustments */
-@media (max-width: 640px) {
-  .container {
-    padding: 1rem;
-  }
-  
-  .grid-cols-2 {
-    grid-template-columns: 1fr;
-  }
 }
 </style>

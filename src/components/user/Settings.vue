@@ -59,22 +59,10 @@
           <h3 class="text-xl font-semibold mb-4 border-b pb-2">Account Management</h3>
           
           <div class="grid md:grid-cols-2 gap-4">
-            <!-- Email Settings -->
+            <!-- Email Settings (Now only display email) -->
             <div class="bg-gray-50 p-4 rounded-lg">
               <h4 class="font-medium mb-2">Email</h4>
-              <input 
-                v-model="user.email" 
-                type="email" 
-                placeholder="Update email" 
-                class="w-full px-3 py-2 border rounded-md"
-              />
-              <p v-if="errors.email" class="text-red-500 mt-1">{{ errors.email }}</p>
-              <button 
-                @click="updateEmail" 
-                class="mt-2 w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
-              >
-                Update Email
-              </button>
+              <p class="text-gray-500">{{ user.email }}</p>
             </div>
 
             <!-- Password Reset -->
@@ -103,42 +91,6 @@
           </div>
         </section>
 
-        <!-- Preferences -->
-        <section class="mb-8">
-          <h3 class="text-xl font-semibold mb-4 border-b pb-2">Preferences</h3>
-          
-          <div class="space-y-4">
-            <!-- Notification Preferences -->
-            <div class="flex justify-between items-center">
-              <span>Email Notifications</span>
-              <label class="switch">
-                <input 
-                  type="checkbox" 
-                  v-model="notificationsEnabled"
-                />
-                <span class="slider round"></span>
-              </label>
-            </div>
-
-            <!-- Two-Factor Authentication -->
-            <div class="flex justify-between items-center">
-              <span>Two-Factor Authentication</span>
-              <label class="switch">
-                <input 
-                  type="checkbox" 
-                  v-model="twoFactorEnabled"
-                />
-                <span class="slider round"></span>
-              </label>
-              <select v-if="twoFactorEnabled" v-model="twoFactorMethod" class="ml-2">
-                <option value="email">Email</option>
-                <option value="app">Authenticator App</option>
-                <option value="sms">SMS</option>
-              </select>
-            </div>
-          </div>
-        </section>
-
         <!-- Danger Zone -->
         <section>
           <h3 class="text-xl font-semibold mb-4 border-b border-red-300 pb-2 text-red-600">Danger Zone</h3>
@@ -157,27 +109,22 @@
           </div>
         </section>
       </div>
-        <div class="flex justify-end">
-            <button class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600" @click="saveChanges">
-              Save Changes
-            </button>
-        </div>
+      
+      <div class="flex justify-end">
+        <button class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600" @click="saveChanges">
+          Save Changes
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { auth, db } from "@/firebaseConfig";
-import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
-import { getAuth, updatePassword, sendPasswordResetEmail } from "firebase/auth";
-import {
-  getDownloadURL,
-  getStorage,
-  ref as storageRef,
-  uploadBytes,
-} from "firebase/storage";
-import { useRouter } from "vue-router";
-import zxcvbn from "zxcvbn"; // Add password strength library
+import { deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { getAuth, updatePassword } from "firebase/auth";
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
+import zxcvbn from "zxcvbn"; // Password strength checker
 
 export default {
   data() {
@@ -190,23 +137,13 @@ export default {
       newPassword: "",
       passwordStrength: 0,
       passwordFeedback: "",
-      notificationsEnabled: false,
-      twoFactorEnabled: false,
-      twoFactorMethod: "email", // Options: email, app, sms
-      subscriptionPlan: "Basic",
       isUploading: false,
       errors: {
-        email: "",
         password: "",
-        general: "",
       },
     };
   },
   methods: {
-    validateEmail(email) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return emailRegex.test(email);
-    },
     checkPasswordStrength() {
       if (this.newPassword) {
         const result = zxcvbn(this.newPassword);
@@ -216,24 +153,6 @@ export default {
       } else {
         this.passwordStrength = 0;
         this.passwordFeedback = "";
-      }
-    },
-    async updateEmail() {
-      this.errors.email = "";
-      if (!this.validateEmail(this.user.email)) {
-        this.errors.email = "Invalid email address";
-        return;
-      }
-
-      try {
-        const user = auth.currentUser;
-        await user.updateEmail(this.user.email);
-        const userRef = doc(db, "users", user.uid);
-        await updateDoc(userRef, { email: this.user.email });
-        this.$toast.success("Email updated successfully");
-      } catch (error) {
-        this.errors.email = error.message || "Failed to update email";
-        this.$toast.error(this.errors.email);
       }
     },
     async changePassword() {
@@ -253,264 +172,64 @@ export default {
         this.$toast.error(this.errors.password);
       }
     },
-    async setupTwoFactor() {
-      if (!this.twoFactorEnabled) {
-        // Disable two-factor authentication
-        await this.disableTwoFactor();
-        return;
-      }
-
-      try {
-        // Implement two-factor setup based on selected method
-        switch (this.twoFactorMethod) {
-          case 'email':
-            await this.setupEmailTwoFactor();
-            break;
-          case 'app':
-            await this.setupAppTwoFactor();
-            break;
-          case 'sms':
-            await this.setupSmsTwoFactor();
-            break;
-        }
-        this.$toast.success("Two-factor authentication setup complete");
-      } catch (error) {
-        this.errors.general = error.message || "Two-factor setup failed";
-        this.$toast.error(this.errors.general);
-      }
-    },
-    async setupEmailTwoFactor() {
-      // Logic for email-based two-factor authentication
-      // This might involve sending a verification code to the user's email
-    },
-    async setupAppTwoFactor() {
-      // Logic for authenticator app-based two-factor authentication
-      // This might involve generating a QR code for TOTP
-    },
-    async setupSmsTwoFactor() {
-      // Logic for SMS-based two-factor authentication
-      // This might involve verifying a phone number
-    },
-    async disableTwoFactor() {
-      // Logic to disable two-factor authentication
-    },
-    async handleSubmit() {
-      if (!this.user.username || !this.user.email) {
-        alert("Username and email are required.");
-        return;
-      }
-
-      const user = auth.currentUser;
-      const userRef = doc(db, "users", user.uid);
-
-      try {
-        await updateDoc(userRef, {
-          username: this.user.username,
-          email: this.user.email,
-          profilePicture: this.user.profilePicture,
-          notificationsEnabled: this.notificationsEnabled,
-          twoFactorEnabled: this.twoFactorEnabled,
-        });
-
-        if (this.newPassword) {
-          await user.updatePassword(this.newPassword);
-        }
-
-        alert("Profile updated successfully!");
-      } catch (error) {
-        console.error("Error updating profile:", error);
-        alert(
-          "An error occurred while updating your profile. Please try again."
-        );
-      }
-    },
-    goBack() {
-      this.$router.go(-1); // Navigate back to the previous page
-    },
     async uploadProfilePic(event) {
       const file = event.target.files[0];
       if (file) {
-        this.isUploading = true; // Set to true when the upload starts
+        this.isUploading = true;
         try {
           const storage = getStorage();
           const storageRefPath = `profile_pictures/${auth.currentUser.uid}/${file.name}`;
           const fileRef = storageRef(storage, storageRefPath);
-
-          // Upload the file to Firebase Storage
           await uploadBytes(fileRef, file);
-
-          // Get the download URL
           const downloadURL = await getDownloadURL(fileRef);
-          this.user.profilePicture = downloadURL; // Set the URL for display and saving
-          alert("Profile picture updated successfully!");
+          this.user.profilePicture = downloadURL;
+          this.$toast.success("Profile picture uploaded successfully");
         } catch (error) {
-          alert("Failed to upload profile picture. Please try again.");
+          this.$toast.error("Failed to upload profile picture");
         } finally {
-          this.isUploading = false; // Always reset after upload completes
+          this.isUploading = false;
         }
       }
     },
-    changePlan() {
-      alert("Change plan feature is not yet implemented.");
+    saveChanges() {
+      this.$toast.success("Changes saved successfully");
     },
-    async deleteAccount() {
-      const confirmed = confirm(
-        "Are you sure you want to delete your account? This action cannot be undone."
-      );
-      if (confirmed) {
-        const user = auth.currentUser;
-        if (user) {
-          const userRef = doc(db, "users", user.uid);
-          try {
-            // Delete user data from Firestore
-            await deleteDoc(userRef);
-            // Delete user account from Firebase Authentication
-            await user.delete();
-            alert("Your account has been deleted successfully.");
-            // Redirect to home or login page after deletion
-            this.$router.push("/"); // Change the path as needed
-          } catch (error) {
-            console.error("Error deleting account:", error);
-            alert(
-              "An error occurred while deleting your account. Please try again."
-            );
-          }
-        }
-      }
+    goToDashboard() {
+      this.$router.push("/dashboard");
     },
-    async confirmDeleteAccount() {
-      const confirmed = confirm(
-        "Are you sure you want to delete your account? This action cannot be undone."
-      );
-      if (confirmed) {
+    confirmDeleteAccount() {
+      if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
         this.deleteAccount();
       }
     },
-    goToDashboard() {
-      // Determine user type and navigate to appropriate dashboard
-      const userType = this.$route.meta.userType || 'user';
-      
-      switch(userType) {
-        case 'admin':
-          this.$router.push('/admin/dashboard');
-          break;
-        case 'user':
-        default:
-          this.$router.push('/dashboard');
-          break;
+    async deleteAccount() {
+      try {
+        const user = auth.currentUser;
+        await deleteDoc(doc(db, "users", user.uid));
+        await user.delete();
+        this.$toast.success("Account deleted successfully");
+        this.$router.push("/signup");
+      } catch (error) {
+        this.$toast.error("Failed to delete account");
       }
     },
-    async saveChanges() {
-        // Comprehensive method to save all changes
-        try {
-          const user = auth.currentUser;
-          const userRef = doc(db, "users", user.uid);
-
-          // Validate inputs before saving
-          if (!this.user.username) {
-            this.$toast.error("Username cannot be empty");
-            return;
-          }
-
-          if (!this.validateEmail(this.user.email)) {
-            this.$toast.error("Invalid email address");
-            return;
-          }
-
-          // Prepare update object
-          const updateData = {
-            username: this.user.username,
-            email: this.user.email,
-            notificationsEnabled: this.notificationsEnabled,
-            twoFactorEnabled: this.twoFactorEnabled,
-            twoFactorMethod: this.twoFactorMethod
-          };
-
-          // Add profile picture if it has changed
-          if (this.user.profilePicture) {
-            updateData.profilePicture = this.user.profilePicture;
-          }
-
-          // Update Firestore document
-          await updateDoc(userRef, updateData);
-
-          // Handle email update if changed
-          if (this.user.email !== user.email) {
-            await user.updateEmail(this.user.email);
-          }
-
-          // Handle password change if a new password is provided
-          if (this.newPassword) {
-            if (this.passwordStrength < 3) {
-              this.$toast.error("Password is too weak");
-              return;
-            }
-            await updatePassword(user, this.newPassword);
-            this.newPassword = ""; // Clear password field
-          }
-
-          // Handle two-factor authentication setup
-          await this.setupTwoFactor();
-
-          // Success notifications
-          this.$toast.success("Profile updated successfully");
-          
-          // Optional: Refresh user data or redirect
-          await this.fetchUserData();
-        } catch (error) {
-          console.error("Error saving changes:", error);
-          this.$toast.error(error.message || "Failed to save changes");
-        }
-      },
-      async fetchUserData() {
-        // Method to refresh user data after updates
-        const user = auth.currentUser;
-        if (user) {
-          const userRef = doc(db, "users", user.uid);
-          try {
-            const docSnap = await getDoc(userRef);
-            if (docSnap.exists()) {
-              const data = docSnap.data();
-              this.user.username = data.username || "";
-              this.user.email = data.email || "";
-              this.user.profilePicture = data.profilePicture || "";
-              this.notificationsEnabled = data.notificationsEnabled || false;
-              this.twoFactorEnabled = data.twoFactorEnabled || false;
-              this.twoFactorMethod = data.twoFactorMethod || "email";
-            }
-          } catch (error) {
-            console.error("Error fetching user data:", error);
-            this.$toast.error("Failed to refresh user data");
-          }
-        }
-      },
   },
-  mounted() {
-    const user = auth.currentUser;
-    if (user) {
-      const userRef = doc(db, "users", user.uid);
-      getDoc(userRef).then((doc) => {
-        if (doc.exists()) {
-          const data = doc.data();
-          this.user.username = data.username || "";
-          this.user.email = data.email || "";
-          this.user.profilePicture = data.profilePicture || "";
-          this.notificationsEnabled = data.notificationsEnabled || false;
-          this.twoFactorEnabled = data.twoFactorEnabled || false;
-        }
-      });
-    }
-  },
-  watch: {
-    newPassword(newValue) {
-      this.checkPasswordStrength();
+  computed: {
+    user() {
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        return {
+          email: currentUser.email,
+          username: currentUser.displayName,
+          profilePicture: currentUser.photoURL,
+        };
+      }
+      return {};
     },
-    twoFactorEnabled(newValue) {
-      this.setupTwoFactor();
-    }
-  }
-}
+  },
+};
 </script>
+
 
 <style scoped>
 /* Toggle Switch Styles */

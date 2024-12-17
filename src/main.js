@@ -11,6 +11,8 @@ import Card from 'primevue/card';
 import Button from 'primevue/button';
 import Divider from 'primevue/divider';
 import Aura from '@primevue/themes/aura';
+import Toast from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-sugar.css';
 
 const app = createApp(App);
 
@@ -31,4 +33,5 @@ app.component('Divider', Divider);
 
 app.use(store);
 app.use(router);
+app.use(Toast);
 app.mount("#app");

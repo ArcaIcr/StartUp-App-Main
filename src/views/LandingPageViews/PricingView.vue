@@ -1,94 +1,3 @@
-<script setup>
-import Navbar from "@/components/navbar/Navbar.vue";
-import { savePaymentInfo } from "@/authService";
-import pricingData from "@/price.json";
-import { ref, computed } from "vue";
-
-const isYearly = ref(false);
-const pricingOptions = ref(pricingData.map(plan => ({
-  ...plan,
-  features: [
-    { name: "Basic Analytics", included: true },
-    { name: "Market Trends", included: plan.id >= 2 },
-    { name: "Financial Reports", included: plan.id >= 2 },
-    { name: "ROI Calculator", included: plan.id >= 2 },
-    { name: "Business Assessment", included: plan.id >= 3 },
-    { name: "Performance Metrics", included: plan.id >= 3 },
-    { name: "AI Recommendations", included: plan.id >= 3 },
-    { name: "Priority Support", included: plan.id >= 3 }
-  ]
-})));
-
-const calculatedPricing = computed(() => {
-  return pricingOptions.value.map(option => ({
-    ...option,
-    monthlyPrice: parseFloat(option.price.replace('$', '').replace('/month', '')),
-    yearlyPrice: parseFloat(option.price.replace('$', '').replace('/month', '')) * 10 // 2 months free
-  }));
-});
-
-const showModal = ref(false);
-const selectedOption = ref(null);
-const paymentMethod = ref("card");
-const cardInfo = ref({ number: "", expiration: "", cvv: "" });
-const onlineInfo = ref({ accountNumber: "", paymentReference: "" });
-const formErrors = ref([]);
-const processingPayment = ref(false);
-
-const choosePlan = (option) => {
-  selectedOption.value = option;
-  showModal.value = true;
-};
-
-const validateBillingForm = () => {
-  formErrors.value = [];
-
-  if (paymentMethod.value === "card") {
-    if (!cardInfo.value.number || !cardInfo.value.expiration || !cardInfo.value.cvv) {
-      formErrors.value.push("Please complete all card information.");
-    }
-    // Add card validation logic here
-    if (cardInfo.value.number && !/^\d{16}$/.test(cardInfo.value.number.replace(/\s/g, ''))) {
-      formErrors.value.push("Invalid card number.");
-    }
-  } else if (paymentMethod.value === "online") {
-    if (!onlineInfo.value.accountNumber || !onlineInfo.value.paymentReference) {
-      formErrors.value.push("Please complete all online payment details.");
-    }
-  }
-
-  return formErrors.value.length === 0;
-};
-
-const redirectToSignup = async () => {
-  if (!validateBillingForm()) return;
-  
-  processingPayment.value = true;
-  try {
-    const userId = "USER_ID_HERE";
-    const paymentInfo = {
-      plan: selectedOption.value.title,
-      billing: isYearly.value ? 'yearly' : 'monthly',
-      method: paymentMethod.value,
-      details: paymentMethod.value === "card" ? cardInfo.value : onlineInfo.value,
-    };
-
-    await savePaymentInfo(userId, paymentInfo);
-    window.location.href = "/signup";
-  } catch (error) {
-    formErrors.value.push(error.message);
-  } finally {
-    processingPayment.value = false;
-  }
-};
-
-const formatCardNumber = (e) => {
-  let value = e.target.value.replace(/\s/g, '');
-  if (value.length > 16) value = value.slice(0, 16);
-  cardInfo.value.number = value.replace(/(\d{4})/g, '$1 ').trim();
-};
-</script>
-
 <template>
   <Navbar />
   <section class="bg-gradient-to-b from-beige to-white min-h-screen px-4 py-16">
@@ -257,44 +166,12 @@ const formatCardNumber = (e) => {
 
         <!-- Payment Details Form -->
         <div v-if="paymentMethod === 'card'" class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
-              Card Number
-            </label>
-            <input
-              v-model="cardInfo.number"
-              @input="formatCardNumber"
-              type="text"
-              placeholder="1234 5678 9012 3456"
-              class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-lightblue focus:border-lightblue"
-              maxlength="19"
-            />
-          </div>
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">
-                Expiration
-              </label>
-              <input
-                v-model="cardInfo.expiration"
-                type="text"
-                placeholder="MM/YY"
-                class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-lightblue focus:border-lightblue"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">
-                CVV
-              </label>
-              <input
-                v-model="cardInfo.cvv"
-                type="password"
-                placeholder="123"
-                class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-lightblue focus:border-lightblue"
-                maxlength="4"
-              />
-            </div>
-          </div>
+          <form @submit.prevent="submitPayment">
+            <div id="card-element"></div>
+            <button type="submit">Pay</button>
+            <div v-if="errorMessage">{{ errorMessage }}</div>
+            <div v-if="successMessage">{{ successMessage }}</div>
+          </form>
         </div>
 
         <div v-else class="space-y-4">
@@ -346,6 +223,143 @@ const formatCardNumber = (e) => {
     </div>
   </section>
 </template>
+
+<script setup>
+import Navbar from "@/components/navbar/Navbar.vue";
+import { savePaymentInfo } from "@/authService";
+import pricingData from "@/price.json";
+import { ref, computed } from "vue";
+import { loadStripe } from '@stripe/stripe-js';
+
+const isYearly = ref(false);
+const pricingOptions = ref(pricingData.map(plan => ({
+  ...plan,
+  features: [
+    { name: "Basic Analytics", included: true },
+    { name: "Market Trends", included: plan.id >= 2 },
+    { name: "Financial Reports", included: plan.id >= 2 },
+    { name: "ROI Calculator", included: plan.id >= 2 },
+    { name: "Business Assessment", included: plan.id >= 3 },
+    { name: "Performance Metrics", included: plan.id >= 3 },
+    { name: "AI Recommendations", included: plan.id >= 3 },
+    { name: "Priority Support", included: plan.id >= 3 }
+  ]
+})));
+
+
+const calculatedPricing = computed(() => {
+  return pricingOptions.value.map(option => ({
+    ...option,
+    monthlyPrice: parseFloat(option.price.replace('$', '').replace('/month', '')),
+    yearlyPrice: parseFloat(option.price.replace('$', '').replace('/month', '')) * 10 // 2 months free
+  }));
+});
+
+const showModal = ref(false);
+const selectedOption = ref(null);
+const paymentMethod = ref("card");
+const cardInfo = ref({ number: "", expiration: "", cvv: "" });
+const onlineInfo = ref({ accountNumber: "", paymentReference: "" });
+const formErrors = ref([]);
+const processingPayment = ref(false);
+const stripe = ref(null);
+const card = ref(null);
+const errorMessage = ref('');
+const successMessage = ref('');
+
+async function submitPayment() {
+  errorMessage.value = '';
+  successMessage.value = '';
+
+  // Call your backend to create a payment intent
+  const response = await fetch('/create-payment-intent', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ amount: 1000 }), // Amount in cents
+  });
+
+  const { clientSecret, error } = await response.json();
+
+  if (error) {
+    errorMessage.value = error;
+    return;
+  }
+
+  // Confirm the payment with the card details
+  const { error: stripeError } = await stripe.value.confirmCardPayment(clientSecret, {
+    payment_method: {
+      card: card.value,
+    },
+  });
+
+  if (stripeError) {
+    errorMessage.value = stripeError.message;
+  } else {
+    successMessage.value = 'Payment successful!';
+  }
+}
+
+const choosePlan = (option) => {
+  selectedOption.value = option;
+  showModal.value = true;
+};
+
+const validateBillingForm = () => {
+  formErrors.value = [];
+
+  if (paymentMethod.value === "card") {
+    if (!cardInfo.value.number || !cardInfo.value.expiration || !cardInfo.value.cvv) {
+      formErrors.value.push("Please complete all card information.");
+    }
+    // Add card validation logic here
+    if (cardInfo.value.number && !/^\d{16}$/.test(cardInfo.value.number.replace(/\s/g, ''))) {
+      formErrors.value.push("Invalid card number.");
+    }
+  } else if (paymentMethod.value === "online") {
+    if (!onlineInfo.value.accountNumber || !onlineInfo.value.paymentReference) {
+      formErrors.value.push("Please complete all online payment details.");
+    }
+  }
+
+  return formErrors.value.length === 0;
+};
+
+const redirectToSignup = async () => {
+  if (!validateBillingForm()) return;
+  
+  processingPayment.value = true;
+  try {
+    const userId = "USER_ID_HERE";
+    const paymentInfo = {
+      plan: selectedOption.value.title,
+      billing: isYearly.value ? 'yearly' : 'monthly',
+      method: paymentMethod.value,
+      details: paymentMethod.value === "card" ? cardInfo.value : onlineInfo.value,
+    };
+
+    await savePaymentInfo(userId, paymentInfo);
+    window.location.href = "/signup";
+  } catch (error) {
+    formErrors.value.push(error.message);
+  } finally {
+    processingPayment.value = false;
+  }
+};
+
+const formatCardNumber = (e) => {
+  let value = e.target.value.replace(/\s/g, '');
+  if (value.length > 16) value = value.slice(0, 16);
+  cardInfo.value.number = value.replace(/(\d{4})/g, '$1 ').trim();
+};
+
+async function mounted() {
+  stripe.value = await loadStripe('pk_test_51QUWzSAt94MkqoH6prF5eXCKqVJukqfK9aLtvkVnfoI6sfHI3gpPGb7FrpVdBOSFx2LHz3fSIFNdEo5QeMg8WCvT00xYp4PMOE');
+  const elements = stripe.value.elements();
+  card.value = elements.create('card');
+  card.value.mount('#card-element');
+}
+mounted();
+</script>
 
 <style scoped>
 .pi {

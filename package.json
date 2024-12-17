@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@primevue/themes": "^4.2.3",
+    "@stripe/stripe-js": "^5.2.0",
     "axios": "^1.7.7",
     "chart.js": "^4.4.7",
     "date-fns": "^4.1.0",
@@ -20,10 +21,13 @@
     "primevue": "^4.2.3",
     "qrcode": "^1.5.4",
     "speakeasy": "^2.0.0",
+    "stripe": "^17.4.0",
+    "toast": "^0.5.4",
     "v-tooltip": "^2.1.3",
     "vue": "^3.4.29",
     "vue-chartjs": "^5.3.1",
     "vue-router": "^4.4.5",
+    "vue-toast-notification": "^3.1.3",
     "vuex": "^4.0.2",
     "zxcvbn": "^4.4.2"
   },

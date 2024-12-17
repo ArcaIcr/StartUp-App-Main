@@ -90,7 +90,7 @@ const generateAnalysis = () => {
     <div class="mb-8">
       <h2 class="text-2xl font-bold text-gray-800 mb-4">Performance Measurement</h2>
       <p class="text-gray-600">Track and analyze key performance indicators</p>
-      <button @click="$router.push('/makerspace')">Back to Makerspace</button>
+      <button @click="$router.push('/maker-space')">Back to Makerspace</button>
     </div>
 
     <!-- KPI Cards -->

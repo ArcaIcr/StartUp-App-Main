@@ -1,25 +1,25 @@
-&lt;template&gt;
-  &lt;div class="bg-white p-6 rounded-lg shadow-md"&gt;
-    &lt;h2 class="text-lg font-semibold mb-4"&gt;Business Goals Progress&lt;/h2&gt;
-    &lt;div class="space-y-4"&gt;
-      &lt;div v-for="(goal, index) in goals" :key="index" class="relative"&gt;
-        &lt;div class="flex justify-between mb-1"&gt;
-          &lt;span class="text-sm font-medium text-gray-700"&gt;{{ goal.name }}&lt;/span&gt;
-          &lt;span class="text-sm font-medium text-gray-700"&gt;{{ goal.progress }}%&lt;/span&gt;
-        &lt;/div&gt;
-        &lt;div class="w-full bg-gray-200 rounded-full h-2.5"&gt;
-          &lt;div 
+<template>
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-lg font-semibold mb-4">Business Goals Progress</h2>
+    <div class="space-y-4">
+      <div v-for="(goal, index) in goals" :key="index" class="relative">
+        <div class="flex justify-between mb-1">
+          <span class="text-sm font-medium text-gray-700">{{ goal.name }}</span>
+          <span class="text-sm font-medium text-gray-700">{{ goal.progress }}%</span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2.5">
+          <div 
             class="bg-blue-600 h-2.5 rounded-full transition-all duration-500"
             :style="{ width: `${goal.progress}%` }"
             :class="{ 'bg-green-600': goal.progress >= 100 }"
-          &gt;&lt;/div&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/template&gt;
+          ></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
 
-&lt;script&gt;
+<script>
 import { ref, onMounted } from 'vue';
 import { auth, db } from '@/firebaseConfig';
 import { doc, getDoc } from 'firebase/firestore';
@@ -88,4 +88,4 @@ export default {
     };
   }
 };
-&lt;/script&gt;
+</script>

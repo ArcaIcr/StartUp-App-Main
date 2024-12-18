@@ -1,56 +1,65 @@
 <script setup>
-import axios from "axios"; // Import Axios for making HTTP requests
+import axios from "axios";
 import { ref } from "vue";
-import { RouterLink } from "vue-router"; // Import RouterLink to handle navigation
-import Sidebar from "../Sidebar.vue"; // Import Sidebar component
+import { useRouter } from "vue-router";
 
-// Import API endpoint
-import { getApiEndpoint } from '@/apiConfig';
-const endpoint = getApiEndpoint(); // Get the API endpoint
+// PrimeVue Components
+import Button from 'primevue/button';
+import InputNumber from 'primevue/inputnumber';
+import Dropdown from 'primevue/dropdown';
+import Card from 'primevue/card';
+import Panel from 'primevue/panel';
+import Sidebar from '../Sidebar.vue'; // Import local Sidebar component
+
+// Import AI API endpoint
+import { getAIApiEndpoint } from '@/apiConfig';
+const aiEndpoint = getAIApiEndpoint();
 
 // Reactive variables to store form inputs
-const revenue = ref("");
-const previousRevenue = ref("");
-const totalExpenses = ref("");
-const customerBase = ref("");
+const revenue = ref(null);
+const previousRevenue = ref(null);
+const totalExpenses = ref(null);
+const customerBase = ref(null);
 const months = ref(12); // Default to 12 months
-const industry = ref(""); // Added industry field
+const industry = ref(null); // Added industry field
 const insights = ref("");
+const businessMetrics = ref(null);
+const isLoading = ref(false);
+
+const router = useRouter();
 
 // List of available industries
 const industries = [
-  "Retail",
-  "Tech",
-  "Healthcare",
-  "Finance",
-  "Energy",
-  "Consumer Goods",
-  "Utilities",
-  "Industrial",
+  "Retail", "Tech", "Healthcare", "Finance", "Energy", 
+  "Consumer Goods", "Utilities", "Industrial"
 ];
 
 // Method to handle form submission
 const handleFormSubmit = async () => {
+  isLoading.value = true;
+  insights.value = "";
+  businessMetrics.value = null;
+
   try {
-    const response = await axios.get(`${endpoint}/trends/business-assessment`, {
+    const response = await axios.get(aiEndpoint, {
       params: {
         current_revenue: revenue.value,
         previous_revenue: previousRevenue.value,
         total_expenses: totalExpenses.value,
         customer_base: customerBase.value,
         months: months.value,
-        industry: industry.value, // Include industry in the request
+        industry: industry.value,
       },
     });
 
-    // Set insights from the response
-    insights.value = response.data.insights.join("\n");
+    // Store business metrics and insights
+    businessMetrics.value = response.data.business_metrics;
+    insights.value = response.data.ai_insights.join("\n");
   } catch (error) {
-    if (error.response) {
-      insights.value = error.response.data.error || "An error occurred.";
-    } else {
-      insights.value = "An error occurred while connecting to the API.";
-    }
+    insights.value = error.response?.data?.error || 
+      "An error occurred while fetching business insights. Please try again.";
+  } finally {
+    isLoading.value = false;
   }
 };
 </script>
@@ -59,118 +68,153 @@ const handleFormSubmit = async () => {
   <div class="flex h-screen">
     <Sidebar />
     
-    <div class="flex-1 relative p-4"> <!-- Main content area with padding -->
-      <!-- Fixed Business Assessment Window -->
-      <div class="bg-white rounded-lg shadow-lg w-full md:w-3/4 lg:w-1/2 max-h-screen overflow-hidden">
-        <!-- Window Header -->
-        <div class="bg-darkblue text-white rounded-t-lg p-4 flex justify-between items-center">
-          <h2 class="text-xl font-bold">Business Assessment</h2>
-          <button @click="$emit('close')" class="text-white hover:bg-red-600 rounded-full p-2">
-            <i class="pi pi-times"></i>
-          </button>
-        </div>
-  
-        <!-- Window Content -->
-        <div class="p-6 overflow-y-auto max-h-[calc(100vh-200px)]"> <!-- Set a max height for the scrollable area -->
+    <div class="flex-1 p-4 overflow-y-auto">
+      <Card>
+        <template #title>
+          <div class="flex justify-between items-center">
+            <span>Business Assessment</span>
+            <Button 
+              icon="pi pi-times" 
+              class="p-button-rounded p-button-text p-button-danger"
+              @click="$emit('close')"
+            />
+          </div>
+        </template>
+        
+        <template #content>
           <p class="mb-4 text-gray-700">
             Evaluate your business's performance and get tailored recommendations to boost growth.
           </p>
-  
-          <!-- Business Performance Overview Form -->
-          <form @submit.prevent="handleFormSubmit">
-            <!-- Revenue Input -->
-            <label for="revenue" class="block mb-2">Current Monthly Revenue ($)</label>
-            <input
-              v-model="revenue"
-              type="number"
-              id="revenue"
-              class="w-full p-2 mb-4 border border-gray-300 rounded-lg"
-              placeholder="Enter your current monthly revenue"
-              required
-            />
-  
-            <!-- Previous Revenue Input -->
-            <label for="previous-revenue" class="block mb-2">Previous Monthly Revenue ($)</label>
-            <input
-              v-model="previousRevenue"
-              type="number"
-              id="previous-revenue"
-              class="w-full p-2 mb-4 border border-gray-300 rounded-lg"
-              placeholder="Enter your previous monthly revenue"
-              required
-            />
-  
-            <!-- Total Expenses Input -->
-            <label for="total-expenses" class="block mb-2">Total Expenses ($)</label>
-            <input
-              v-model="totalExpenses"
-              type="number"
-              id="total-expenses"
-              class="w-full p-2 mb-4 border border-gray-300 rounded-lg"
-              placeholder="Enter your total expenses"
-              required
-            />
-  
-            <!-- Customer Base Input -->
-            <label for="customer-base" class="block mb-2">Customer Base (Number of Customers)</label>
-            <input
-              v-model="customerBase"
-              type="number"
-              id="customer-base"
-              class="w-full p-2 mb-4 border border-gray-300 rounded-lg"
-              placeholder="Enter the size of your customer base"
-              required
-            />
-  
-            <!-- Months Input -->
-            <label for="months" class="block mb-2">Months for Average Revenue Calculation</label>
-            <input
-              v-model="months"
-              type="number"
-              id="months"
-              class="w-full p-2 mb-4 border border-gray-300 rounded-lg"
-              placeholder="Enter the number of months (default is 12)"
-            />
-  
-            <!-- Industry Input as a Dropdown -->
-            <label for="industry" class="block mb-2">Industry</label>
-            <select
-              v-model="industry"
-              id="industry"
-              class="w-full p-2 mb-4 border border-gray-300 rounded-lg"
-              required
-            >
-              <option disabled value="">Select your industry</option>
-              <option v-for="ind in industries" :key="ind" :value="ind">{{ ind }}</option>
-            </select>
-  
-            <!-- Submit Button -->
-            <button
-              type="submit"
-              class="inline-block bg-darkblue text-white rounded-lg px-4 py-2 hover:bg-lightblue cursor-pointer transition duration-300"
-            >
-              Get Insights
-            </button>
+
+          <form @submit.prevent="handleFormSubmit" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="revenue" class="block mb-2">Current Monthly Revenue ($)</label>
+              <InputNumber 
+                v-model="revenue" 
+                inputId="revenue"
+                :min="0"
+                mode="currency" 
+                currency="USD"
+                placeholder="Enter current monthly revenue"
+                class="w-full"
+                required
+              />
+            </div>
+
+            <div>
+              <label for="previous-revenue" class="block mb-2">Previous Monthly Revenue ($)</label>
+              <InputNumber 
+                v-model="previousRevenue" 
+                inputId="previous-revenue"
+                :min="0"
+                mode="currency" 
+                currency="USD"
+                placeholder="Enter previous monthly revenue"
+                class="w-full"
+                required
+              />
+            </div>
+
+            <div>
+              <label for="total-expenses" class="block mb-2">Total Expenses ($)</label>
+              <InputNumber 
+                v-model="totalExpenses" 
+                inputId="total-expenses"
+                :min="0"
+                mode="currency" 
+                currency="USD"
+                placeholder="Enter total expenses"
+                class="w-full"
+                required
+              />
+            </div>
+
+            <div>
+              <label for="customer-base" class="block mb-2">Customer Base</label>
+              <InputNumber 
+                v-model="customerBase" 
+                inputId="customer-base"
+                :min="0"
+                placeholder="Number of customers"
+                class="w-full"
+                required
+              />
+            </div>
+
+            <div>
+              <label for="months" class="block mb-2">Months for Calculation</label>
+              <InputNumber 
+                v-model="months" 
+                inputId="months"
+                :min="1"
+                placeholder="Default is 12"
+                class="w-full"
+              />
+            </div>
+
+            <div>
+              <label for="industry" class="block mb-2">Industry</label>
+              <Dropdown 
+                v-model="industry" 
+                :options="industries"
+                placeholder="Select your industry"
+                class="w-full"
+                required
+              />
+            </div>
+
+            <div class="col-span-full">
+              <Button 
+                type="submit" 
+                :loading="isLoading"
+                class="w-full"
+                severity="secondary"
+              >
+                {{ isLoading ? 'Generating Insights...' : 'Get Insights' }}
+              </Button>
+            </div>
           </form>
-  
-          <!-- Displaying Insights -->
-          <div v-if="insights" class="mt-6 p-4 bg-gray-100 rounded-lg">
-            <h3 class="text-xl font-bold">Your Insights</h3>
-            <p>{{ insights }}</p>
-          </div>
-        </div>
-      </div>
+
+          <!-- Business Metrics Panel -->
+          <Panel v-if="businessMetrics" header="Business Metrics" class="mt-4">
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <strong>Average Monthly Revenue:</strong> 
+                ${{ businessMetrics.average_revenue_per_month.toFixed(2) }}
+              </div>
+              <div>
+                <strong>Growth Rate:</strong> 
+                {{ (businessMetrics.growth_rate * 100).toFixed(2) }}%
+              </div>
+              <div>
+                <strong>Profit Margin:</strong> 
+                {{ (businessMetrics.profit_margin * 100).toFixed(2) }}%
+              </div>
+              <div>
+                <strong>Customer Base:</strong> 
+                {{ businessMetrics.customer_base }}
+              </div>
+            </div>
+          </Panel>
+
+          <!-- Insights Panel -->
+          <Panel v-if="insights" header="Strategic Insights" class="mt-4">
+            <pre class="whitespace-pre-wrap text-sm">{{ insights }}</pre>
+          </Panel>
+        </template>
+
+        <template #footer>
+          <Button 
+            label="Start Full Assessment" 
+            @click="router.push('/signup')"
+            severity="secondary"
+          />
+        </template>
+      </Card>
     </div>
   </div>
 </template>
 
 <style scoped>
-/* Styles for the window */
-.fixed {
-  position: fixed; /* Keeps the modal in a fixed position */
-}
-
-.z-50 {
-  z-index: 50; /* Higher than the sidebar */
-}
+/* Any additional custom styles can be added here */
 </style>

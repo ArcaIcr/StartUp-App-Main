@@ -184,11 +184,11 @@ const handleFormSubmit = async () => {
               </div>
               <div>
                 <strong>Growth Rate:</strong> 
-                {{ (businessMetrics.growth_rate * 100).toFixed(2) }}%
+                {{ (businessMetrics.growth_rate).toFixed(2) }}%
               </div>
               <div>
                 <strong>Profit Margin:</strong> 
-                {{ (businessMetrics.profit_margin * 100).toFixed(2) }}%
+                {{ (businessMetrics.profit_margin).toFixed(2) }}%
               </div>
               <div>
                 <strong>Customer Base:</strong> 
@@ -201,14 +201,6 @@ const handleFormSubmit = async () => {
           <Panel v-if="insights" header="Strategic Insights" class="mt-4">
             <pre class="whitespace-pre-wrap text-sm">{{ insights }}</pre>
           </Panel>
-        </template>
-
-        <template #footer>
-          <Button 
-            label="Start Full Assessment" 
-            @click="router.push('/signup')"
-            severity="secondary"
-          />
         </template>
       </Card>
     </div>

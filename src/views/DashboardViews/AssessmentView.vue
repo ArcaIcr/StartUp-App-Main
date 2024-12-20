@@ -178,6 +178,7 @@ import { useRouter } from 'vue-router';
 import { auth, db } from '@/firebaseConfig';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import Navbar from "@/components/navbar/Navbar.vue";
+import axios from 'axios';
 
 export default {
   components: {
@@ -185,9 +186,26 @@ export default {
   },
   setup() {
     const router = useRouter();
-    const user = auth.currentUser;
+    const user = ref(auth.currentUser);
     const loading = ref(false);
     const errors = ref({});
+    const formData = ref({
+      businessName: '',
+      industry: '',
+      businessScale: '',
+      location: '',
+      currentRevenue: null,
+      targetRevenue: null,
+      currentProfitMargin: null,
+      targetProfitMargin: null,
+      businessGoals: '',
+      challenges: ''
+    });
+
+    // New state for comprehensive analysis
+    const analysisResult = ref(null);
+    const analysisError = ref(null);
+    const isAnalysisLoading = ref(false);
 
     const industries = [
       'Technology',
@@ -200,133 +218,192 @@ export default {
       'Construction',
       'Food & Beverage',
       'Agriculture',
-      'Transportation',
-      'Entertainment',
-      'Professional Services',
       'Other'
     ];
 
-    const formData = ref({
-      businessName: '',
-      industry: '',
-      businessScale: '',
-      location: '',
-      currentRevenue: '',
-      targetRevenue: '',
-      currentProfitMargin: '',
-      targetProfitMargin: '',
-      businessGoals: '',
-      challenges: ''
-    });
-
-    const checkAdminStatus = async () => {
-      if (!user) {
-        router.push('/login');
-        return false;
-      }
-
-      const userDoc = await getDoc(doc(db, 'users', user.uid));
-      const userData = userDoc.data();
-
-      if (userData?.isAdmin) {
-        router.push('/admin');
-        return false;
-      }
-
-      return true;
-    };
-
-    onMounted(async () => {
-      const canProceed = await checkAdminStatus();
-      if (!canProceed) return;
-    });
-
+    // Validate form before submission
     const validateForm = () => {
-      errors.value = {};
       let isValid = true;
+      errors.value = {};
 
       // Basic Information Validation
-      if (!formData.value.businessName.trim()) {
+      if (!formData.value.businessName) {
         errors.value.businessName = 'Business name is required';
         isValid = false;
       }
 
       if (!formData.value.industry) {
-        errors.value.industry = 'Please select an industry';
+        errors.value.industry = 'Industry is required';
         isValid = false;
       }
 
       if (!formData.value.businessScale) {
-        errors.value.businessScale = 'Please select business scale';
+        errors.value.businessScale = 'Business scale is required';
         isValid = false;
       }
 
-      if (!formData.value.location.trim()) {
+      if (!formData.value.location) {
         errors.value.location = 'Location is required';
         isValid = false;
       }
 
       // Financial Information Validation
-      if (!formData.value.currentRevenue || formData.value.currentRevenue < 0) {
-        errors.value.currentRevenue = 'Please enter valid current revenue';
+      if (!formData.value.currentRevenue || formData.value.currentRevenue <= 0) {
+        errors.value.currentRevenue = 'Valid current revenue is required';
         isValid = false;
       }
 
-      if (!formData.value.targetRevenue || formData.value.targetRevenue < 0) {
-        errors.value.targetRevenue = 'Please enter valid target revenue';
+      if (!formData.value.targetRevenue || formData.value.targetRevenue <= 0) {
+        errors.value.targetRevenue = 'Valid target revenue is required';
         isValid = false;
       }
 
-      if (!formData.value.currentProfitMargin || formData.value.currentProfitMargin < 0 || formData.value.currentProfitMargin > 100) {
-        errors.value.currentProfitMargin = 'Please enter valid profit margin (0-100%)';
+      if (formData.value.currentProfitMargin === null || formData.value.currentProfitMargin < 0 || formData.value.currentProfitMargin > 100) {
+        errors.value.currentProfitMargin = 'Valid current profit margin is required (0-100%)';
         isValid = false;
       }
 
-      if (!formData.value.targetProfitMargin || formData.value.targetProfitMargin < 0 || formData.value.targetProfitMargin > 100) {
-        errors.value.targetProfitMargin = 'Please enter valid target profit margin (0-100%)';
+      if (formData.value.targetProfitMargin === null || formData.value.targetProfitMargin < 0 || formData.value.targetProfitMargin > 100) {
+        errors.value.targetProfitMargin = 'Valid target profit margin is required (0-100%)';
         isValid = false;
       }
 
       // Business Goals Validation
-      if (!formData.value.businessGoals.trim()) {
-        errors.value.businessGoals = 'Please describe your business goals';
+      if (!formData.value.businessGoals || formData.value.businessGoals.trim().length < 10) {
+        errors.value.businessGoals = 'Please provide more detailed business goals';
         isValid = false;
       }
 
-      if (!formData.value.challenges.trim()) {
-        errors.value.challenges = 'Please describe your key challenges';
+      if (!formData.value.challenges || formData.value.challenges.trim().length < 10) {
+        errors.value.challenges = 'Please describe your key challenges in more detail';
         isValid = false;
       }
 
       return isValid;
     };
 
+    // Prepare business data for analysis
+    const prepareBusinessAnalysisData = () => {
+      return {
+        businessName: formData.value.businessName,
+        industry: formData.value.industry,
+        businessScale: formData.value.businessScale,
+        location: formData.value.location,
+        currentAnnualRevenue: formData.value.currentRevenue,
+        targetAnnualRevenue: formData.value.targetRevenue,
+        currentProfitMargin: formData.value.currentProfitMargin,
+        targetProfitMargin: formData.value.targetProfitMargin,
+        businessGoals: formData.value.businessGoals,
+        keyChallenges: formData.value.challenges
+      };
+    };
+
+    // Perform comprehensive business analysis
+    const performComprehensiveAnalysis = async (businessData) => {
+      isAnalysisLoading.value = true;
+      analysisError.value = null;
+
+      try {
+        const response = await axios.post(
+          'https://business-report-worker.adriane-loquinte.workers.dev/business-analysis', 
+          businessData, 
+          {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+
+        analysisResult.value = response.data;
+        console.log('Business Analysis Result:', response.data);
+        return response.data;
+      } catch (err) {
+        analysisError.value = err.response?.data?.error || 'An unexpected error occurred during business analysis';
+        console.error('Business Analysis Error:', analysisError.value);
+        throw err;
+      } finally {
+        isAnalysisLoading.value = false;
+      }
+    };
+
+    // Submit assessment with business analysis
     const submitAssessment = async () => {
+      // Validate form first
       if (!validateForm()) return;
 
       try {
-        await setDoc(doc(db, 'businessAssessments', user.uid), formData.value);
+        // Prepare business data for analysis
+        const businessAnalysisData = prepareBusinessAnalysisData();
+        
+        // Perform comprehensive business analysis
+        const analysisResult = await performComprehensiveAnalysis(businessAnalysisData);
+        
+        // Ensure user is authenticated
+        if (!user.value) {
+          throw new Error('User not authenticated');
+        }
 
+        // Combine original form data with analysis results
+        const assessmentData = {
+          ...formData.value,
+          businessAnalysis: analysisResult,
+          submittedAt: new Date().toISOString()
+        };
+
+        // Store in Firestore
+        await setDoc(doc(db, 'businessAssessments', user.value.uid), assessmentData);
+
+        // Update user document
         await setDoc(
-          doc(db, 'users', user.uid), 
-          { assessmentCompleted: true }, 
+          doc(db, 'users', user.value.uid), 
+          { 
+            assessmentCompleted: true,
+            lastBusinessAnalysisScore: analysisResult.overallScore || null,
+            lastAssessmentDate: new Date().toISOString()
+          }, 
           { merge: true }
         );
 
+        // Navigate to dashboard or results page
         router.push('/dashboard');
       } catch (error) {
-        console.error('Assessment submission error:', error);
+        console.error('Assessment Submission Error:', error);
         errors.value.submission = 'Failed to submit assessment. Please try again.';
       }
     };
+
+    // Lifecycle hook to load existing assessment if available
+    onMounted(async () => {
+      if (!user.value) return;
+
+      try {
+        const docRef = doc(db, 'businessAssessments', user.value.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const existingData = docSnap.data();
+          // Populate form with existing data
+          Object.keys(formData.value).forEach(key => {
+            if (existingData[key] !== undefined) {
+              formData.value[key] = existingData[key];
+            }
+          });
+        }
+      } catch (error) {
+        console.error('Error loading existing assessment:', error);
+      }
+    });
 
     return {
       formData,
       industries,
       loading,
       errors,
-      submitAssessment
+      submitAssessment,
+      analysisResult,
+      analysisError,
+      isAnalysisLoading
     };
   }
-};
+}
 </script>

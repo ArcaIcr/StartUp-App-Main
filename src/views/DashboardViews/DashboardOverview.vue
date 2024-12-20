@@ -31,8 +31,6 @@ export default {
     Header,
     StatsCards,
     TrendChart,
-    SalesChart,
-    TransactionsChart,
     // Commented out for future use
     // GoalsChart,
     // ChallengesChart,

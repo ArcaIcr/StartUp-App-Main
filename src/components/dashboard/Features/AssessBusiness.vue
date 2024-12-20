@@ -3,6 +3,11 @@ import axios from "axios";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { auth } from '@/firebaseConfig';
+import ProgressSpinner from 'primevue/progressspinner';
+
+// Add a ref for loading state
+const isLoading = ref(false);
+
 
 // PrimeVue Components
 import Button from 'primevue/button';
@@ -77,7 +82,7 @@ const validateForm = () => {
 const performComprehensiveAnalysis = async (businessData) => {
   try {
     console.log('Sending data:', JSON.stringify(businessData, null, 2)); // Detailed logging
-
+    isLoading.value = true;
     const response = await axios.post(
       'https://business-report-worker.adriane-loquinte.workers.dev/business-insights', 
       businessData, 
@@ -143,6 +148,8 @@ const performComprehensiveAnalysis = async (businessData) => {
     analysisResult.value = null;
     isResultsVisible.value = false;
     throw error;
+  } finally {
+    isLoading.value = false;
   }
 };
 
@@ -276,10 +283,13 @@ const exportBusinessReportPDF = () => {
             {{ errors.analysis }}
           </div>
 
-          <!-- Loading Indicator -->
-          <div v-if="isResultsVisible === false && analysisResult === null" 
-               class="mt-4 text-blue-600">
-            Generating business insights... This may take up to a minute.
+          <!-- Add loading overlay when analysis is in progress -->
+          <div v-if="isLoading" class="absolute inset-0 z-50 flex items-center justify-center bg-white bg-opacity-75">
+            <ProgressSpinner 
+              strokeWidth="4" 
+              animationDuration=".5s" 
+              class="w-16 h-16"
+            />
           </div>
 
           <!-- Results Display -->

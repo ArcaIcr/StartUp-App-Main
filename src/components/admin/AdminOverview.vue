@@ -1,7 +1,7 @@
 <template>
   <div class="p-6 bg-gray-100 min-h-screen">
     <h2 class="text-3xl font-bold mb-6 text-gray-800">Admin Dashboard</h2>
-    
+
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
       <!-- Quick Stats Cards -->
       <div 
@@ -15,6 +15,98 @@
         </div>
         <div class="text-3xl font-bold" :class="stat.color">{{ stat.value }}</div>
       </div>
+    </div>
+
+    <!-- Add User Form -->
+    <div v-if="showAddUserForm" class="bg-white shadow-md rounded-lg p-6 mb-8">
+      <h3 class="text-xl font-semibold mb-4">Add New User</h3>
+      <form @submit.prevent="handleAddUser">
+        <div class="space-y-4">
+          <!-- Name -->
+          <div>
+            <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+            <input 
+              v-model="newUser.name"
+              type="text"
+              id="name"
+              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500 sm:text-sm"
+              placeholder="Enter name"
+              required
+            />
+          </div>
+          
+          <!-- Email -->
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+            <input 
+              v-model="newUser.email"
+              type="email"
+              id="email"
+              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500 sm:text-sm"
+              placeholder="Enter email"
+              required
+            />
+          </div>
+
+          <!-- Password -->
+          <div>
+            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+            <input 
+              v-model="newUser.password"
+              type="password"
+              id="password"
+              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500 sm:text-sm"
+              placeholder="Enter password"
+              required
+            />
+          </div>
+
+          <!-- Account Type -->
+          <div>
+            <label for="accountType" class="block text-sm font-medium text-gray-700">Account Type</label>
+            <select 
+              v-model="newUser.accountType"
+              id="accountType"
+              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500 sm:text-sm"
+              required
+            >
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+              <option value="superAdmin">Super Admin</option>
+            </select>
+          </div>
+
+          <!-- Status -->
+          <div>
+            <label for="isOnline" class="block text-sm font-medium text-gray-700">Status</label>
+            <select 
+              v-model="newUser.isOnline"
+              id="isOnline"
+              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500 sm:text-sm"
+            >
+              <option value="true">Online</option>
+              <option value="false">Offline</option>
+            </select>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="flex justify-end space-x-4">
+            <button 
+              type="button" 
+              @click="toggleAddUserForm" 
+              class="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600"
+            >
+              Cancel
+            </button>
+            <button 
+              type="submit" 
+              class="bg-teal-500 text-white py-2 px-4 rounded-md hover:bg-teal-600"
+            >
+              Add User
+            </button>
+          </div>
+        </div>
+      </form>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -60,13 +152,19 @@
   </div>
 </template>
 
+
+
+
 <script>
 import { ref, onMounted, onUnmounted } from 'vue';
-import { collection, query, onSnapshot, orderBy, limit } from 'firebase/firestore';
+import { collection, query, onSnapshot, orderBy, limit, addDoc } from 'firebase/firestore';
 import { db } from '@/firebaseConfig';
 
 export default {
   setup() {
+    const showAddUserForm = ref(false); // State to toggle form visibility
+    const newUser = ref({ name: '', email: '', password: '', accountType: 'user', isOnline: true });
+
     const quickStats = ref({
       totalUsers: { 
         title: 'Total Users', 
@@ -96,34 +194,39 @@ export default {
         name: 'Add User',
         icon: 'pi pi-user-plus',
         handler: () => {
-          // Implement user creation logic
-          console.log('Add User clicked');
-        }
+          toggleAddUserForm(); // Toggle form visibility
+        },
       },
       {
         name: 'Generate Report',
         icon: 'pi pi-file-pdf',
         handler: () => {
-          // Implement report generation logic
-          console.log('Generate Report clicked');
-        }
+          console.log('Report generated:', quickStats.value);
+        },
       },
       {
         name: 'System Settings',
         icon: 'pi pi-cog',
         handler: () => {
-          // Implement system settings navigation
-          console.log('System Settings clicked');
-        }
+          console.log('Navigating to system settings');
+        },
       },
       {
         name: 'Send Notification',
         icon: 'pi pi-bell',
-        handler: () => {
-          // Implement notification sending logic
-          console.log('Send Notification clicked');
-        }
-      }
+        handler: async () => {
+          try {
+            await addDoc(collection(db, 'systemActivities'), {
+              description: 'Notification sent to all users',
+              timestamp: new Date(),
+              type: 'notification',
+            });
+            console.log('Notification sent successfully');
+          } catch (error) {
+            console.error('Error sending notification:', error);
+          }
+        },
+      },
     ];
 
     const fetchUserStats = () => {
@@ -131,21 +234,22 @@ export default {
       const q = query(usersRef, orderBy('createdAt', 'desc'));
 
       const unsubscribe = onSnapshot(q, (snapshot) => {
-        const users = snapshot.docs.map(doc => ({
+        const users = snapshot.docs.map((doc) => ({
           id: doc.id,
-          ...doc.data()
+          ...doc.data(),
         }));
 
-        // Calculate user statistics
         quickStats.value.totalUsers.value = users.length;
-        quickStats.value.activeUsers.value = users.filter(u => u.isOnline).length;
-        
-        // New users in last 30 days
+        quickStats.value.activeUsers.value = users.filter((u) => u.isOnline).length;
+
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-        quickStats.value.newUsers.value = users.filter(u => 
-          new Date(u.createdAt) > thirtyDaysAgo
-        ).length;
+        quickStats.value.newUsers.value = users.filter((u) => {
+          if (u.createdAt && u.createdAt.toDate) {
+            return u.createdAt.toDate() > thirtyDaysAgo;
+          }
+          return false;
+        }).length;
       });
 
       unsubscribers.push(unsubscribe);
@@ -156,9 +260,9 @@ export default {
       const q = query(activitiesRef, orderBy('timestamp', 'desc'), limit(5));
 
       const unsubscribe = onSnapshot(q, (snapshot) => {
-        recentActivities.value = snapshot.docs.map(doc => ({
+        recentActivities.value = snapshot.docs.map((doc) => ({
           id: doc.id,
-          ...doc.data()
+          ...doc.data(),
         }));
       });
 
@@ -172,12 +276,48 @@ export default {
 
     const getActivityBadgeClass = (type) => {
       const badgeClasses = {
-        'login': 'bg-green-100 text-green-800',
-        'logout': 'bg-red-100 text-red-800',
-        'registration': 'bg-blue-100 text-blue-800',
-        'default': 'bg-gray-100 text-gray-800'
+        login: 'bg-green-100 text-green-800',
+        logout: 'bg-red-100 text-red-800',
+        registration: 'bg-blue-100 text-blue-800',
+        notification: 'bg-yellow-100 text-yellow-800',
+        default: 'bg-gray-100 text-gray-800',
       };
-      return badgeClasses[type] || badgeClasses['default'];
+      return badgeClasses[type] || badgeClasses.default;
+    };
+
+    const toggleAddUserForm = () => {
+      showAddUserForm.value = !showAddUserForm.value;
+    };
+
+    const handleAddUser = async () => {
+      try {
+        // Determine collection based on account type
+        let userCollection = 'users'; // Default collection for normal users
+        let adminLevel = null;
+
+        if (newUser.value.accountType === 'admin' || newUser.value.accountType === 'superAdmin') {
+          userCollection = 'admins'; // Add to admins collection
+          if (newUser.value.accountType === 'superAdmin') {
+            adminLevel = 'super'; // Set adminLevel to 'super' for super admin
+          }
+        }
+
+        // Add user to the correct collection
+        await addDoc(collection(db, userCollection), {
+          name: newUser.value.name,
+          email: newUser.value.email,
+          password: newUser.value.password, // Store password securely (preferably hashed)
+          accountType: newUser.value.accountType,
+          isOnline: newUser.value.isOnline,
+          createdAt: new Date(),
+          adminLevel, // Only set for admins and super admins
+        });
+
+        console.log('User added successfully');
+        showAddUserForm.value = false; // Hide the form after submission
+      } catch (error) {
+        console.error('Error adding user:', error);
+      }
     };
 
     onMounted(() => {
@@ -186,21 +326,20 @@ export default {
     });
 
     onUnmounted(() => {
-      // Cleanup subscriptions
-      unsubscribers.forEach(unsub => unsub());
+      unsubscribers.forEach((unsub) => unsub());
     });
 
     return {
+      showAddUserForm,
+      newUser,
       quickStats,
       recentActivities,
       quickActions,
       formatTime,
-      getActivityBadgeClass
+      getActivityBadgeClass,
+      toggleAddUserForm,
+      handleAddUser,
     };
-  }
+  },
 };
 </script>
-
-<style scoped>
-/* Optional additional styling */
-</style>

@@ -6,10 +6,22 @@ import { auth } from '@/firebaseConfig';
 import ProgressSpinner from 'primevue/progressspinner';
 import { useToast } from 'vue-toast-notification';
 import html2pdf from 'html2pdf.js';
+import markdownIt from 'markdown-it'; // Import markdown-it
 
 // Add a ref for loading state
 const isLoading = ref(false);
 const $toast = useToast();
+
+// Markdown parsing method
+const parseMarkdown = (content) => {
+  if (!content) return '';
+  const md = markdownIt({
+    html: true,      // Enable HTML tags in source
+    breaks: true,    // Convert '\n' in paragraphs into <br>
+    linkify: true,   // Autoconvert URL-like text to links
+  });
+  return md.render(content);
+};
 
 // PrimeVue Components
 import Button from 'primevue/button';
@@ -18,6 +30,8 @@ import Dropdown from 'primevue/dropdown';
 import Card from 'primevue/card';
 import Panel from 'primevue/panel';
 import Sidebar from '../Sidebar.vue';
+
+
 
 // Reactive variables to store form inputs
 const formData = ref({
@@ -563,31 +577,33 @@ const exportBusinessReportPDF = async () => {
             <template #title>Business Analysis Results</template>
             <template #content>
               <div class="space-y-4">
+
+                <!-- Key Metrics Panel -->
                 <Panel header="Key Metrics">
                   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <strong>Revenue Growth:</strong> 
-                      {{ analysisResult.metrics.revenueGrowth.toFixed(2) }}%
+                      **Revenue Growth:** {{ analysisResult.metrics.revenueGrowth.toFixed(2) }}%
                     </div>
                     <div>
-                      <strong>Profit Margin:</strong> 
-                      {{ analysisResult.metrics.profitMargin.toFixed(2) }}%
+                      **Profit Margin:** {{ analysisResult.metrics.profitMargin.toFixed(2) }}%
                     </div>
                     <div>
-                      <strong>Customer Growth Rate:</strong> 
-                      {{ analysisResult.metrics.customerGrowthRate.toFixed(2) }}%
+                      **Customer Growth Rate:** {{ analysisResult.metrics.customerGrowthRate.toFixed(2) }}%
                     </div>
                   </div>
                 </Panel>
 
+                <!-- Growth Opportunities Panel -->
                 <Panel header="Growth Opportunities">
-                  <p>{{ analysisResult.growthOpportunities }}</p>
+                  <div v-html="parseMarkdown(analysisResult.growthOpportunities)"></div>
                 </Panel>
 
+                <!-- Strategic Recommendations Panel -->
                 <Panel header="Strategic Recommendations">
-                  <p>{{ analysisResult.strategicRecommendations }}</p>
+                  <div v-html="parseMarkdown(analysisResult.strategicRecommendations)"></div>
                 </Panel>
 
+                <!-- Export Button -->
                 <div class="flex justify-end">
                   <Button 
                     label="Export PDF" 

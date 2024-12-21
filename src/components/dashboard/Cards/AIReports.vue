@@ -1,59 +1,79 @@
 <template>
-    <div class="bg-white p-6 rounded-lg shadow-md">
-        <h2 class="text-lg font-semibold text-gray-700 mb-4">Strategic Business Insights</h2>
-        
-        <div v-if="loading" class="flex justify-center items-center">
-            <p class="text-gray-500">Loading insights...</p>
+    <div class="bg-white p-8 rounded-xl shadow-lg"> <!-- Enlarged padding and enhanced shadow -->
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-800">Strategic Business Insights</h2>
+            <div class="flex items-center space-x-3">
+                <button 
+                    @click="fetchAIReports" 
+                    class="text-gray-500 hover:text-blue-600 transition-colors"
+                >
+                    <i class="fas fa-sync"></i>
+                </button>
+            </div>
         </div>
         
-        <div v-else-if="reports.length === 0" class="text-center text-gray-500">
-            <p>No strategic insights available. Complete a business assessment to generate insights.</p>
-            <router-link 
-                to="/assessment" 
-                class="mt-4 inline-block px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-            >
-                Complete Assessment
-            </router-link>
+        <div v-if="loading" class="flex flex-col justify-center items-center h-64">
+            <div class="animate-pulse text-center">
+                <p class="text-gray-500 text-lg">Loading strategic insights...</p>
+            </div>
         </div>
         
-        <div v-else class="space-y-4">
+        <div v-else-if="reports.length === 0" class="text-center py-12">
+            <div class="bg-blue-50 p-6 rounded-lg">
+                <p class="text-gray-600 mb-4">No strategic insights available. Complete a business assessment to generate insights.</p>
+                <router-link 
+                    to="/assessment" 
+                    class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors inline-block"
+                >
+                    Complete Assessment
+                </router-link>
+            </div>
+        </div>
+        
+        <div v-else class="space-y-6">
             <div 
                 v-for="(report, index) in reports" 
                 :key="index" 
-                class="border-b pb-4 last:border-b-0"
+                class="bg-gray-50 p-6 rounded-lg border border-gray-200 hover:shadow-md transition-all"
             >
-                <h3 class="font-medium text-gray-800">{{ report.title }}</h3>
-                <p class="text-sm text-gray-600 mt-2">{{ report.summary }}</p>
-                
-                <div class="mt-2 flex justify-between items-center">
-                    <span class="text-xs text-gray-500">{{ formatDate(report.createdAt) }}</span>
-                    <button 
-                        @click="viewFullReport(report)" 
-                        class="text-sm text-blue-600 hover:text-blue-800"
-                    >
-                        View Full Insights
-                    </button>
+                <div class="flex justify-between items-start mb-4">
+                    <h3 class="text-xl font-semibold text-gray-800">{{ report.title }}</h3>
+                    <span class="text-sm text-gray-500">{{ formatDate(report.createdAt) }}</span>
                 </div>
-
-                <div v-if="report.details" class="mt-4 bg-blue-50 p-3 rounded-md">
-                    <div v-if="report.details.opportunities && report.details.opportunities.length">
-                        <h4 class="text-sm font-semibold text-gray-700 mb-2">Key Opportunities</h4>
-                        <ul class="list-disc list-inside text-xs text-gray-600">
-                            <li v-for="(opportunity, idx) in report.details.opportunities.slice(0, 2)" :key="idx">
+                
+                <p class="text-gray-600 mb-4">{{ report.summary }}</p>
+                
+                <div v-if="report.details" class="space-y-4">
+                    <div v-if="report.details.opportunities && report.details.opportunities.length" class="bg-white p-4 rounded-lg">
+                        <h4 class="text-md font-semibold text-gray-700 mb-3">Key Opportunities</h4>
+                        <ul class="list-disc list-inside text-sm text-gray-600 space-y-2">
+                            <li v-for="(opportunity, idx) in report.details.opportunities.slice(0, 3)" :key="idx">
                                 {{ opportunity }}
                             </li>
                         </ul>
                     </div>
-                    <div v-if="report.details.overallScore" class="mt-2">
-                        <span class="text-xs text-gray-500">Overall Business Score: 
-                            <span :class="{
-                                'text-green-600': report.details.overallScore >= 70,
-                                'text-yellow-600': report.details.overallScore >= 50 && report.details.overallScore < 70,
-                                'text-red-600': report.details.overallScore < 50
-                            }">
+                    
+                    <div class="flex justify-between items-center">
+                        <div v-if="report.details.overallScore" class="flex items-center">
+                            <span class="text-sm text-gray-500 mr-2">Business Score:</span>
+                            <span 
+                                class="px-3 py-1 rounded-full text-sm font-semibold"
+                                :class="{
+                                    'bg-green-100 text-green-800': report.details.overallScore >= 70,
+                                    'bg-yellow-100 text-yellow-800': report.details.overallScore >= 50 && report.details.overallScore < 70,
+                                    'bg-red-100 text-red-800': report.details.overallScore < 50
+                                }"
+                            >
                                 {{ report.details.overallScore }}%
                             </span>
-                        </span>
+                        </div>
+                        
+                        <button 
+                            @click="viewFullReport(report)" 
+                            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                        >
+                            View Full Insights
+                        </button>
                     </div>
                 </div>
             </div>
@@ -68,53 +88,51 @@ import { doc, getDoc } from 'firebase/firestore';
 
 export default {
     name: 'AIReports',
-    setup() {
+    emits: ['view-strategic-insights'],
+    setup(props, { emit }) {
         const reports = ref([]);
         const loading = ref(true);
 
         const formatDate = (date) => {
-            return date ? new Date(date).toLocaleDateString() : 'N/A';
+            return date ? new Date(date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            }) : 'N/A';
         };
 
         const fetchAIReports = async () => {
             try {
-                // Ensure user is authenticated
+                loading.value = true;
                 const user = auth.currentUser;
                 if (!user) {
                     loading.value = false;
                     return;
                 }
 
-                // Reference to the main business assessment document
                 const businessAssessmentRef = doc(db, 'businessAssessments', user.uid);
                 const businessAssessmentSnap = await getDoc(businessAssessmentRef);
 
                 if (businessAssessmentSnap.exists()) {
                     const businessAssessmentData = businessAssessmentSnap.data();
-
-                    // Extract `strategic_insights` data
                     const strategicInsights = businessAssessmentData.strategic_insights;
 
                     if (strategicInsights) {
-                        // Extract opportunities and recommendations from the `strategic_insights` object
                         const growthOpportunities = strategicInsights.growth_opportunities || [];
                         const strategicRecommendations = strategicInsights.strategic_recommendations || [];
 
-                        // Only create reports if there are insights
                         if (growthOpportunities.length > 0 || strategicRecommendations.length > 0) {
-                            reports.value = [
-                                {
-                                    title: 'Strategic Business Insights',
-                                    summary: 'Business strategy analysis',
-                                    createdAt: new Date(),
-                                    details: {
-                                        opportunities: growthOpportunities,
-                                        recommendations: strategicRecommendations,
-                                        summary: 'Strategic insights for business growth',
-                                        overallScore: businessAssessmentData.businessAnalysis?.overallScore || null
-                                    }
+                            reports.value = [{
+                                title: 'Strategic Business Insights',
+                                summary: 'Comprehensive business strategy analysis and growth opportunities',
+                                createdAt: new Date(),
+                                details: {
+                                    opportunities: growthOpportunities,
+                                    recommendations: strategicRecommendations,
+                                    summary: 'Strategic insights for business growth',
+                                    overallScore: businessAssessmentData.businessAnalysis?.overallScore || null
                                 }
-                            ];
+                            }];
                         } else {
                             reports.value = [];
                         }
@@ -122,7 +140,6 @@ export default {
                         reports.value = [];
                     }
                 } else {
-                    // No business assessment document exists
                     reports.value = [];
                 }
 
@@ -135,8 +152,7 @@ export default {
         };
 
         const viewFullReport = (report) => {
-            // Emit the full report details to the parent component
-            this.$emit('view-strategic-insights', report.details);
+            emit('view-strategic-insights', report.details);
         };
 
         onMounted(fetchAIReports);
@@ -151,3 +167,18 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+</style>

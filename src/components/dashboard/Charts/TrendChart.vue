@@ -64,10 +64,10 @@ export default {
             try {
                 const apiUrl = getApiEndpoint();
                 const queryString = new URLSearchParams(this.queryParams).toString();
-                const response = await axios.get(`${apiUrl}/trends/get-bar-graph-data?${queryString}`);
+                const response = await axios.get(`${apiUrl}/trends/interest_by_region?${queryString}`);
                 
-                // Destructure the first object from the response
-                const trendData = response.data[0];
+                // Check if response.data is an array or an object
+                const trendData = Array.isArray(response.data) ? response.data[0] : response.data;
                 
                 this.chartData = {
                     labels: trendData.labels,

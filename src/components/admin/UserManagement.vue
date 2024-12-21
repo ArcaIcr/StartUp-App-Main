@@ -99,7 +99,7 @@
 
 <script>
 import { ref, computed, onMounted } from 'vue';
-import { collection, query, onSnapshot, where, orderBy, updateDoc, doc } from 'firebase/firestore';
+import { collection, query, onSnapshot, orderBy, updateDoc, doc } from 'firebase/firestore';
 import { db } from '@/firebaseConfig';
 
 export default {
@@ -109,21 +109,41 @@ export default {
     const filterRole = ref('');
     const selectedUser = ref(null);
 
+    // Fetch both admins and users from Firestore
     const fetchUsers = () => {
-      const usersRef = collection(db, 'users');
-      const q = query(usersRef, orderBy('lastActive', 'desc'));
+      const adminsRef = collection(db, 'admins'); 
+      const usersRef = collection(db, 'users'); 
 
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        users.value = snapshot.docs.map(doc => ({
+      const adminQuery = query(adminsRef, orderBy('lastActive', 'desc'));
+      const userQuery = query(usersRef, orderBy('lastActive', 'desc'));
+
+      const unsubscribeAdmins = onSnapshot(adminQuery, (snapshot) => {
+        const adminUsers = snapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data(),
-          isActive: doc.data().isActive !== false // Default to true if not specified
+          isAdmin: true,
+          isActive: doc.data().isOnline !== false,
         }));
+        users.value = [...users.value, ...adminUsers];
       });
 
-      return unsubscribe;
+      const unsubscribeUsers = onSnapshot(userQuery, (snapshot) => {
+        const normalUsers = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+          isAdmin: false,
+          isActive: doc.data().isOnline !== false,
+        }));
+        users.value = [...users.value, ...normalUsers];
+      });
+
+      return () => {
+        unsubscribeAdmins();
+        unsubscribeUsers();
+      };
     };
 
+    // Filter users based on search query and role selection
     const filteredUsers = computed(() => {
       return users.value.filter(user => {
         const matchesSearch = user.username.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
@@ -137,6 +157,7 @@ export default {
       });
     });
 
+    // Format the 'lastActive' timestamp
     const formatLastActive = (timestamp) => {
       if (!timestamp) return 'Never';
       
@@ -151,21 +172,24 @@ export default {
       }
     };
 
+    // View user details in the modal
     const viewUserDetails = (user) => {
       selectedUser.value = user;
     };
 
+    // Toggle user status (active/inactive)
     const toggleUserStatus = async (user) => {
       try {
-        const userRef = doc(db, 'users', user.id);
+        const userRef = doc(db, user.isAdmin ? 'admins' : 'users', user.id); 
         await updateDoc(userRef, {
-          isActive: !user.isActive
+          isOnline: !user.isActive // Toggle 'isOnline' field
         });
       } catch (error) {
         console.error('Error toggling user status:', error);
       }
     };
 
+    // Fetch users on component mount
     onMounted(() => {
       const unsubscribe = fetchUsers();
       return () => unsubscribe();

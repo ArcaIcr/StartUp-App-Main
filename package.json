@@ -19,6 +19,7 @@
     "html2pdf.js": "^0.10.2",
     "json-server": "^1.0.0-beta.2",
     "jspdf": "^2.5.2",
+    "markdown-it": "^14.1.0",
     "pinia": "^2.3.0",
     "primeicons": "^7.0.0",
     "primevue": "^4.2.3",

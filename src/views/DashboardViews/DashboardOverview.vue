@@ -4,8 +4,8 @@
     <div class="flex-1 flex flex-col bg-gray-100 overflow-y-auto">
       <Header />
       <StatsCards />
-      <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 p-4">
-        <TrendChart />
+      <TrendChart />
+      <div class="grid grid-cols-1 lg:grid-cols-1 xl:grid-cols-2 gap-4 p-4">
         <AIReports @view-strategic-insights="openStrategicInsightsModal" />
         <GoalsChart />
       </div>

@@ -9,6 +9,7 @@ import {
   default as Dashboard,
   default as DashboardOverview,
 } from "@/views/DashboardViews/DashboardOverview.vue";
+import DemoView from "@/views/DashboardViews/DemoView.vue";
 import UserSpace from "@/views/DashboardViews/UserSpace.vue";
 import About from "@/views/LandingPageViews/AboutView.vue";
 import HomeView from "@/views/LandingPageViews/HomeView.vue";
@@ -47,6 +48,11 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: HomeView,
+    },
+    {
+      path:'/demo',
+      name: 'Demo',
+      component: DemoView,
     },
     {
       path: "/pricing",

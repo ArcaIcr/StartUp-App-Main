@@ -1,6 +1,5 @@
 <template>
-    <div class="bg-white p-8 rounded-xl shadow-lg"> <!-- Enlarged padding and enhanced shadow -->
-        <!-- Header -->
+    <div class="bg-white p-8 rounded-xl shadow-lg">
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-2xl font-bold text-gray-800">Strategic Business Insights</h2>
             <button 
@@ -21,7 +20,7 @@
         <!-- Empty State -->
         <div v-else-if="!reports.length" class="text-center py-12">
             <div class="bg-blue-50 p-6 rounded-lg">
-                <p class="text-gray-600 mb-4">No strategic insights available. Complete a business assessment to generate insights.</p>
+                <p class="text-gray-600 mb-4">No strategic insights available.</p>
                 <router-link 
                     to="/assessment" 
                     class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors inline-block"
@@ -38,48 +37,47 @@
                 :key="index" 
                 class="bg-gray-50 p-6 rounded-lg border border-gray-200 hover:shadow-md transition-all"
             >
-                <div class="flex justify-between items-start mb-4">
-                    <h3 class="text-xl font-semibold text-gray-800">{{ report.title }}</h3>
-                    <span class="text-sm text-gray-500">{{ formatDate(report.createdAt) }}</span>
-                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Strategic Insights</h3>
                 
-                <p class="text-gray-600 mb-4">{{ report.summary }}</p>
-                
-                <div v-if="report.details" class="space-y-4">
-                    <!-- Key Opportunities -->
-                    <div v-if="report.details.opportunities?.length" class="bg-white p-4 rounded-lg">
-                        <h4 class="text-md font-semibold text-gray-700 mb-3">Key Opportunities</h4>
-                        <ul class="list-disc list-inside text-sm text-gray-600 space-y-2">
-                            <li v-for="(opportunity, idx) in report.details.opportunities.slice(0, 3)" :key="idx">
-                                {{ opportunity }}
-                            </li>
-                        </ul>
-                    </div>
-                    
-                    <!-- Business Score -->
-                    <div class="flex justify-between items-center">
-                        <div v-if="report.details.overallScore !== null" class="flex items-center">
-                            <span class="text-sm text-gray-500 mr-2">Business Score:</span>
-                            <span 
-                                class="px-3 py-1 rounded-full text-sm font-semibold"
-                                :class="{
-                                    'bg-green-100 text-green-800': report.details.overallScore >= 70,
-                                    'bg-yellow-100 text-yellow-800': report.details.overallScore >= 50 && report.details.overallScore < 70,
-                                    'bg-red-100 text-red-800': report.details.overallScore < 50
-                                }"
-                            >
-                                {{ report.details.overallScore || 'N/A' }}%
-                            </span>
-                        </div>
-                        
-                        <!-- View Full Insights Button -->
-                        <button 
-                            @click="viewFullReport(report)" 
-                            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                <!-- Growth Opportunities Section -->
+                <section v-if="report.details.opportunities && report.details.opportunities.length" class="mb-6">
+                    <h4 class="text-lg font-medium text-gray-700 mb-3">Growth Opportunities</h4>
+                    <ul class="list-disc list-inside text-gray-600 space-y-2">
+                        <li 
+                            v-for="(opportunity, idx) in report.details.opportunities" 
+                            :key="`opportunity-${idx}`"
                         >
-                            View Full Insights
-                        </button>
-                    </div>
+                            {{ opportunity }}
+                        </li>
+                    </ul>
+                </section>
+                
+                <!-- Strategic Recommendations Section -->
+                <section v-if="report.details.recommendations && report.details.recommendations.length" class="mb-6">
+                    <h4 class="text-lg font-medium text-gray-700 mb-3">Strategic Recommendations</h4>
+                    <ul class="list-disc list-inside text-gray-600 space-y-2">
+                        <li 
+                            v-for="(recommendation, idx) in report.details.recommendations" 
+                            :key="`recommendation-${idx}`"
+                        >
+                            {{ recommendation }}
+                        </li>
+                    </ul>
+                </section>
+                
+                <!-- Overall Business Score -->
+                <div v-if="report.details.overallScore !== null" class="mt-4">
+                    <span class="text-gray-600">Overall Business Score: </span>
+                    <span 
+                        class="px-3 py-1 rounded-full text-sm font-semibold"
+                        :class="{
+                            'bg-green-100 text-green-800': report.details.overallScore >= 70,
+                            'bg-yellow-100 text-yellow-800': report.details.overallScore >= 50 && report.details.overallScore < 70,
+                            'bg-red-100 text-red-800': report.details.overallScore < 50
+                        }"
+                    >
+                        {{ report.details.overallScore }}%
+                    </span>
                 </div>
             </div>
         </div>

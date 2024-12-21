@@ -214,6 +214,9 @@ export default {
     };
   },
   methods: {
+    goToDashboard() {
+      this.$router.push('/overview');
+    },
     validateEmail(email) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return emailRegex.test(email);
